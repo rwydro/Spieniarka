@@ -8,5 +8,6 @@ namespace TOReportApplication.ViewModels.interfaces
 {
     public interface IFormViewModel
     {
+        void Dispose();
     }
 }

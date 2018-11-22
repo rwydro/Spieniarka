@@ -15,9 +15,7 @@ using Unity;
 namespace TOReportApplication.ViewModels
 {
     public class FormViewModel: ViewModelBase, IFormViewModel
-    {
-        private readonly IFormTopPanelViewModel formTopPanelViewModel;
-
+    {      
         public DelegateCommand GenereteReportCommand { get; set; }
         public DelegateCommand GenereteAllReportCommand { get; set; }
 
@@ -45,15 +43,17 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        public IFormTopPanelViewModel FormTopPanelViewModel
+        private readonly ISettingsAndFilterPanelViewModel settingsAndFilterPanelViewModel;
+        public ISettingsAndFilterPanelViewModel SettingsAndFilterPanelViewModel
         {
-            get { return this.formTopPanelViewModel; }
+            get { return this.settingsAndFilterPanelViewModel; }
         }
 
-        public FormViewModel(IUnityContainer container, IFormTopPanelViewModel formTopPanelViewModel) : base(container)
-        { 
-            this.formTopPanelViewModel = formTopPanelViewModel;
-            this.formTopPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
+        public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger) : base(container)
+        {
+            this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository);
+            this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
+            this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
 
             GenereteReportCommand = new DelegateCommand(OnGenerateReportForChamber);
             GenereteAllReportCommand = new DelegateCommand(OnGenerateAllReportForChambers);
@@ -193,6 +193,11 @@ namespace TOReportApplication.ViewModels
                 chamberItems = value;
                 OnPropertyChanged("ChamberItems");
             }
+        }
+
+        public void Dispose()
+        {
+            this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction -= OnGetFormReportsModelItems;
         }
     }
 }

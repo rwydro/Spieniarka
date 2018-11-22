@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TOReportApplication.Views"
              mc:Ignorable="d" 
-             xmlns:views="clr-namespace:TOReportApplication.Views">
+             xmlns:views="clr-namespace:TOReportApplication.Views"
+             Unloaded="FormView_OnUnloaded">
     <UserControl.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="FormMidPanelButtonStyle">
             <Setter Property="MinHeight" Value="30"/>
@@ -21,7 +22,7 @@
             <RowDefinition Height="6*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0" >
-            <views:FormSettingsPanelView  HorizontalAlignment="Left" DataContext="{Binding Path=FormTopPanelViewModel}"/>
+            <views:SettingsAndFilterPanelView  HorizontalAlignment="Left" DataContext="{Binding Path=SettingsAndFilterPanelViewModel}"/>
         </Border>
         <Border Grid.Row="1"  BorderThickness="5,5,5,5">
             <Border.Effect>

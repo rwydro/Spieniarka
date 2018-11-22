@@ -26,9 +26,10 @@ namespace TOReportApplication.Castle
             /////////////////////////////////// viewModels
             container.RegisterType<IShell, Shell>();
             container.RegisterType<IFormViewModel, FormViewModel>();
-            container.RegisterType<IFormTopPanelViewModel, FormTopPanelViewModel>();
+            container.RegisterType<ISettingsAndFilterPanelViewModel, SettingsAndFilterPanelViewModel>();
+            container.RegisterType<IBlowingMachineViewModel, BlowingMachineViewModel>();
             ////////////////////////////////// different
-            container.RegisterType<IForm2Repository,Form2Repository>();
+            container.RegisterType<IApplicationRepository,ApplicationRepository>();
             container.RegisterType<IMyLogger, MyLogger>();
         }
 

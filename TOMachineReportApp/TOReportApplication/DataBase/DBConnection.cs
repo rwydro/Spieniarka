@@ -10,6 +10,7 @@ namespace TOReportApplication.DataBase
     public class DBConnection 
     {
         protected NpgsqlConnection session;
+        
         private static string serverAddress;
         private static string port;
         private static string login;
