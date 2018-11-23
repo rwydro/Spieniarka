@@ -72,8 +72,7 @@ namespace SpieniarkaApplication.DataBase
             Console.WriteLine($"lines count: {lines.Length}, date: {date}");
             var stringDate = date.ToString("yyyy-MM-dd HH:mm:ss");
 
-            int i;
-            for (i = lines.Length - 1; i >= 0; i--)
+            for (int i = lines.Length - 1; i >= 0; i--)
             {
                 var line = $"\'{lines[i].Replace("\t", "','")}\'";
                 var matchDateAsString = dateRegEx.Match(line);
@@ -82,37 +81,30 @@ namespace SpieniarkaApplication.DataBase
                     CultureInfo provider = CultureInfo.CreateSpecificCulture("de-DE");
 
 
-                    var matchDate = DateTime.ParseExact(matchDateAsString.Value, "G", provider)
-                        .ToString("yyyy-MM-dd HH:mm:ss");
+                    var matchDate = DateTime.ParseExact(matchDateAsString.Value, "G", provider).ToString("yyyy-MM-dd HH:mm:ss");
                     Console.WriteLine("{0} converts to {1}.", matchDateAsString.Value, matchDate);
                     var correctLine = line.Replace(matchDateAsString.Value, matchDate);
-
-
+                  
+                   
                     if (matchDate.Contains(stringDate))
                     {
                         Console.WriteLine($"No more the new lines");
                         return;
                     }
 
-                    for (int j = 0; j < 200; j++)
-                    {
-                        var query = file == FileType.Batch
-                            ? "INSERT INTO public.spieniarka_probki(symbol, wersja, data_czas, nr_zlecenia, nr_wsadu, nawazka_zadana, nawazka_rzecz, licznik_regulacji, gestosc_zadana, gestosc_rzecz," +
-                              $" czas_pracowania, cisn_pary, temp_pary, temp_kotla, czas_cyklu, j_wagi, j_gest, j_cisn, j_temp) VALUES({correctLine})"
-                            : "INSERT INTO public.spieniarka_probki_summary(maszyna, data_poczatek, data_koniec, nr_zlecenia, nr_recepty, producent, typ, gestosc_zadana, gestosc_min," +
-                              " gestosc_srednia, gestosc_max, ilosc_zad_surowca, ilosc_rzecz_surowca, ilosc_rzecz_partii, operator, komora, nr_lot, material, czas_cyklu, silos_0, czas_pary, wyl_poziomu," +
-                              $" bajpas, wartosc_nawazki, cisn_pary, predkosc_mieszadla, predkosc_sluzy_lopatk, klapa_suszarki, klapa_transportu) VALUES({correctLine})";
+                    var query = file == FileType.Batch ? "INSERT INTO public.spieniarka_probki(symbol, wersja, data_czas, nr_zlecenia, nr_wsadu, nawazka_zadana, nawazka_rzecz, licznik_regulacji, gestosc_zadana, gestosc_rzecz," +
+                                                         $" czas_pracowania, cisn_pary, temp_pary, temp_kotla, czas_cyklu, j_wagi, j_gest, j_cisn, j_temp) VALUES({correctLine})": 
+                        "INSERT INTO public.spieniarka_probki_summary(maszyna, data_poczatek, data_koniec, nr_zlecenia, nr_recepty, producent, typ, gestosc_zadana, gestosc_min," +
+                          " gestosc_srednia, gestosc_max, ilosc_zad_surowca, ilosc_rzecz_surowca, ilosc_rzecz_partii, operator, komora, nr_lot, material, czas_cyklu, silos_0, czas_pary, wyl_poziomu," +
+                          $" bajpas, wartosc_nawazki, cisn_pary, predkosc_mieszadla, predkosc_sluzy_lopatk, klapa_suszarki, klapa_transportu) VALUES({correctLine})";
 
+                    var cmd = new NpgsqlCommand(query, dbConnection.session);
+                    Console.WriteLine($"Executed the query {query}");
 
-                        var cmd = new NpgsqlCommand(query, dbConnection.session);
-                        Console.WriteLine($"Executed the query {query}");
-
-                        cmd.ExecuteNonQuery();
-                        j++;
-                    }
+                    cmd.ExecuteNonQuery();
                 }
                 catch (FormatException e)
-                {
+                { 
                     Console.WriteLine(e);
 
                     Console.WriteLine("{0} is not in the correct format.", matchDateAsString.Value);

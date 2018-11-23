@@ -113,6 +113,7 @@
     <Compile Include="Logic\GenerateModelLogic.cs" />
     <Compile Include="Logic\MyLogger.cs" />
     <Compile Include="Logic\ShiftCalendarManager.cs" />
+    <Compile Include="Model\BlowingMachineCsvModel.cs" />
     <Compile Include="Model\BlowingMachineReportModel.cs" />
     <Compile Include="Model\FormDateReportDBModel.cs" />
     <Compile Include="Model\FormDateReportModel.cs" />
