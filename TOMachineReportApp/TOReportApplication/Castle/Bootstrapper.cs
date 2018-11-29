@@ -23,12 +23,10 @@ namespace TOReportApplication.Castle
         public void Install()
         {
 
-            /////////////////////////////////// viewModels
             container.RegisterType<IShell, Shell>();
             container.RegisterType<IFormViewModel, FormViewModel>();
             container.RegisterType<ISettingsAndFilterPanelViewModel, SettingsAndFilterPanelViewModel>();
             container.RegisterType<IBlowingMachineViewModel, BlowingMachineViewModel>();
-            ////////////////////////////////// different
             container.RegisterType<IApplicationRepository,ApplicationRepository>();
             container.RegisterType<IMyLogger, MyLogger>();
         }

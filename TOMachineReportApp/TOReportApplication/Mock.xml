@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40">
+  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  </DocumentProperties>
+  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+    <AllowPNG />
+  </OfficeDocumentSettings>
+  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+    <WindowHeight>11640</WindowHeight>
+    <WindowWidth>20940</WindowWidth>
+    <WindowTopX>360</WindowTopX>
+    <WindowTopY>105</WindowTopY>
+    <ProtectStructure>False</ProtectStructure>
+    <ProtectWindows>False</ProtectWindows>
+  </ExcelWorkbook>
+  <Styles>
+    <Style ss:ID="Default" ss:Name="Normal">
+      <Alignment ss:Vertical="Bottom" />
+      <Borders />
+      <Font ss:FontName="Calibri" x:CharSet="238" x:Family="Swiss" ss:Size="11" ss:Color="#000000" />
+      <Interior />
+      <NumberFormat />
+      <Protection />
+    </Style>
+    <Style ss:ID="s16">
+      <Alignment ss:Vertical="Bottom" ss:WrapText="1" />
+    </Style>
+    <Style ss:ID="s19">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1" />
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" />
+      </Borders>
+    </Style>
+    <Style ss:ID="s21">
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" />
+      </Borders>
+    </Style>
+    <Style ss:ID="s23">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Bottom" />
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" />
+      </Borders>
+    </Style>
+    <Style ss:ID="s25">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Bottom" />
+    </Style>
+    <Style ss:ID="s26">
+      <Alignment ss:Horizontal="Right" ss:Vertical="Bottom" />
+    </Style>
+    <Style ss:ID="s27">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Bottom" ss:WrapText="1" />
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" />
+      </Borders>
+    </Style>
+    <Style ss:ID="s28">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Bottom" />
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" />
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" />
+      </Borders>
+      <NumberFormat ss:Format="h:mm:ss;@" />
+    </Style>
+    <Style ss:ID="s30">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Bottom" />
+      <Font ss:FontName="Calibri" x:CharSet="238" x:Family="Swiss" ss:Size="11" ss:Color="#000000" ss:Bold="1" />
+    </Style>
+  </Styles>
+  <Worksheet ss:Name="Raport">
+    <Table x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="15">
+      <Column ss:StyleID="s25" ss:AutoFitWidth="0" ss:Width="28.5" />
+      <Column ss:AutoFitWidth="0" ss:Width="60.75" />
+      <Column ss:AutoFitWidth="0" ss:Width="62.25" />
+      <Column ss:AutoFitWidth="0" ss:Width="50.25" />
+      <Column ss:AutoFitWidth="0" ss:Width="43.5" />
+      <Column ss:AutoFitWidth="0" ss:Width="45.75" />
+      <Column ss:AutoFitWidth="0" ss:Width="53.25" />
+      <Column ss:AutoFitWidth="0" ss:Width="51" />
+      <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="39.75" />
+      <Row>
+        <Cell ss:MergeAcross="8" ss:StyleID="s30">
+          <Data ss:Type="String">RAPORT ZMIANOWY SPIENIANIA</Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell ss:Index="3" ss:StyleID="s26">
+          <Data ss:Type="String">DATA:</Data>
+        </Cell>
+        <Cell >
+          <Data ss:Type="String">_DATE_</Data>
+        </Cell>
+        <Cell ss:Index="6">
+          <Data ss:Type="String">ZMIANA:</Data>
+        </Cell>
+        <Cell ss:StyleID="s25">
+          <Data ss:Type="String">_ZMIANA_</Data>
+        </Cell>
+      </Row>
+      <Row ss:Index="4" ss:AutoFitHeight="0" ss:Height="30.75">
+        <Cell ss:StyleID="s27">
+          <Data ss:Type="String">Lp.</Data>
+        </Cell>
+        <Cell ss:StyleID="s19">
+          <Data ss:Type="String">Godzina rozpoczęcia</Data>
+        </Cell>
+        <Cell ss:StyleID="s19">
+          <Data ss:Type="String">Godzina zakończenia</Data>
+        </Cell>
+        <Cell ss:StyleID="s19">
+          <Data ss:Type="String">Silos/
+komora</Data>
+        </Cell>
+        <Cell ss:StyleID="s27">
+          <Data ss:Type="String">Gęstość zadana</Data>
+        </Cell>
+        <Cell ss:StyleID="s27">
+          <Data ss:Type="String">Gęstość średnia</Data>
+        </Cell>
+        <Cell ss:StyleID="s19">
+          <Data ss:Type="String">Surowiec</Data>
+        </Cell>
+        <Cell ss:StyleID="s19">
+          <Data ss:Type="String">Ilość spieniona</Data>
+        </Cell>
+        <Cell ss:StyleID="s19">
+          <Data ss:Type="String">Produkt</Data>
+        </Cell>
+        <Cell ss:StyleID="s19">
+          <Data ss:Type="String">PZ</Data>
+        </Cell>
+        <Cell ss:StyleID="s16" />
+      </Row>
+	 _MYROW_
+     _BUTTOM_
+    </Table>
+    <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+      <PageSetup>
+        <Header x:Margin="0.31496062992125984" />
+        <Footer x:Margin="0.31496062992125984" />
+        <PageMargins x:Bottom="0.74803149606299213" x:Left="0.70866141732283472" x:Right="0.31496062992125984" x:Top="0.74803149606299213" />
+      </PageSetup>
+      <Print>
+        <ValidPrinterInfo />
+        <PaperSizeIndex>9</PaperSizeIndex>
+        <HorizontalResolution>600</HorizontalResolution>
+        <VerticalResolution>600</VerticalResolution>
+      </Print>
+      <Selected />
+      <Panes>
+        <Pane>
+          <Number>3</Number>
+          <ActiveRow>25</ActiveRow>
+          <ActiveCol>1</ActiveCol>
+        </Pane>
+      </Panes>
+      <ProtectObjects>False</ProtectObjects>
+      <ProtectScenarios>False</ProtectScenarios>
+    </WorksheetOptions>
+  </Worksheet>
+</Workbook>

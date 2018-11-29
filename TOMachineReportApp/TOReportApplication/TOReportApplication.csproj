@@ -113,7 +113,7 @@
     <Compile Include="Logic\GenerateModelLogic.cs" />
     <Compile Include="Logic\MyLogger.cs" />
     <Compile Include="Logic\ShiftCalendarManager.cs" />
-    <Compile Include="Model\BlowingMachineCsvModel.cs" />
+    <Compile Include="Model\BlowingMachineReportDto.cs" />
     <Compile Include="Model\BlowingMachineReportModel.cs" />
     <Compile Include="Model\FormDateReportDBModel.cs" />
     <Compile Include="Model\FormDateReportModel.cs" />
@@ -122,6 +122,7 @@
     <Compile Include="Model\FormReportsDBModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BlowingMachineViewModel.cs" />
+    <Compile Include="ViewModels\interfaces\ISettingsAndFilterPanelViewModel.cs" />
     <Compile Include="ViewModels\SettingsAndFilterPanelViewModel.cs" />
     <Compile Include="ViewModels\FormViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IBlowingMachineViewModel.cs" />
@@ -131,11 +132,11 @@
     <Compile Include="Views\BlowingMachineView.xaml.cs">
       <DependentUpon>BlowingMachineView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SettingsAndFilterPanelView.xaml.cs">
-      <DependentUpon>SettingsAndFilterPanelView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\FormView.xaml.cs">
       <DependentUpon>FormView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsAndFilterPanelView.xaml.cs">
+      <DependentUpon>SettingsAndFilterPanelView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -155,15 +156,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SettingsAndFilterPanelView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\FormView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsAndFilterPanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -212,6 +213,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Mock.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

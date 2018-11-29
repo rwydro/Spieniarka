@@ -51,7 +51,7 @@ namespace TOReportApplication.ViewModels
 
         public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger) : base(container)
         {
-            this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository);
+            this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
             this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
 

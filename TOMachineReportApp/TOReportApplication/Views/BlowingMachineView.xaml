@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="TOReportApplication.Views.BlowingMachineView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TOReportApplication.Views"
+             xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0">
+            <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                        DataContext="{Binding Path=SettingsAndFilterPanelViewModel}"/>
+        </Border>
+        <Border Grid.Row="1" BorderThickness="5,5,5,5">
+            <UIElement.Effect>
+                <DropShadowEffect/>
+            </UIElement.Effect>
+            <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,0,5,10"
+                IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
+                ItemsSource="{Binding Path=BlowingMachineReportItems}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine}"/>
+                    <DataGridTextColumn Header="Data poczatek" Binding="{Binding DateTimeStart}"/>
+                    <DataGridTextColumn Header="Data koniec" Binding="{Binding DateTimeStop}"/>
+                    <DataGridTextColumn Header="Nr zlecenia" Binding="{Binding OrderNumber}"/>
+                    <DataGridTextColumn Header="Nr recepty" Binding="{Binding RecipeNumber}"/>
+                    <DataGridTextColumn Header="Producent" Binding="{Binding Manufacturer}"/>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}"/>
+                    <DataGridTextColumn Header="Gestosc zadana" Binding="{Binding DensitySet}"/>
+                    <DataGridTextColumn Header="Gestosc min" Binding="{Binding DensityMin}"/>
+                    <DataGridTextColumn Header="Gestosc srednia" Binding="{Binding DensityMean}"/>
+                    <DataGridTextColumn Header="Gestosc max" Binding="{Binding DensityMax}"/>
+                    <DataGridTextColumn Header="Ilosc zad Surowca" Binding="{Binding WeightSet}"/>
+                    <DataGridTextColumn Header="Ilosc rzecz Surowca" Binding="{Binding WeightActual}"/>
+                    <DataGridTextColumn Header="Ilosc rzecz partii" Binding="{Binding BatchesActual}"/>
+                    <DataGridTextColumn Header="Operator" Binding="{Binding Operator}"/>
+                    <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}"/>
+                    <DataGridTextColumn Header="Nr LOT" Binding="{Binding LotNumber}"/>
+                    <DataGridTextColumn Header="Material" Binding="{Binding Material}"/>
+                    <DataGridTextColumn Header="Czas cyklu" Binding="{Binding CycleTime}"/>
+                    <DataGridTextColumn Header="Silos 0" Binding="{Binding Silos0}"/>
+                    <DataGridTextColumn Header="Czas pary" Binding="{Binding TimeSteam}"/>
+                    <DataGridTextColumn Header="Wyl poziomu" Binding="{Binding LevelSwitch}"/>
+                    <DataGridTextColumn Header="Bajpas" Binding="{Binding Bypass}"/>
+                    <DataGridTextColumn Header="Wartosc nawazki" Binding="{Binding InputWeight}"/>
+                    <DataGridTextColumn Header="Cisn pary" Binding="{Binding SteamPressure}"/>
+                    <DataGridTextColumn Header="Predkosc mieszadla" Binding="{Binding SpeedAgitator}"/>
+                    <DataGridTextColumn Header="Predkosc sluzy lopatk" Binding="{Binding SpeedRotaryValve}"/>
+                    <DataGridTextColumn Header="Klapa suszarki" Binding="{Binding FlapFluidizedBed}"/>
+                    <DataGridTextColumn Header="Klapa transportu" Binding="{Binding FlapTransportUnit}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -88,5 +88,11 @@ namespace TOReportApplication.Logic
         {
             return (from sh in shiftInfoDictionary where sh.Value == shift select sh.Key).FirstOrDefault();
         }
+
+        public ShifTimeDefinition GetShiftInfo(string selectedShift)
+        {
+            var enumShift = shiftInfoDictionary.FirstOrDefault(s => s.Key == selectedShift).Value;
+            return shiftsDefinition.FirstOrDefault(s => s.NumberOfShift == enumShift);
+        }
     }
 }
