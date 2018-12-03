@@ -23,8 +23,8 @@
                 ItemsSource="{Binding Path=BlowingMachineReportItems}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine}"/>
-                    <DataGridTextColumn Header="Data poczatek" Binding="{Binding DateTimeStart}"/>
-                    <DataGridTextColumn Header="Data koniec" Binding="{Binding DateTimeStop}"/>
+                    <DataGridTextColumn Header="Data poczatek" Binding="{Binding DateTimeStart, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
+                    <DataGridTextColumn Header="Data koniec" Binding="{Binding DateTimeStop, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
                     <DataGridTextColumn Header="Nr zlecenia" Binding="{Binding OrderNumber}"/>
                     <DataGridTextColumn Header="Nr recepty" Binding="{Binding RecipeNumber}"/>
                     <DataGridTextColumn Header="Producent" Binding="{Binding Manufacturer}"/>

@@ -67,6 +67,9 @@
     <Reference Include="Prism, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.6.3.0\lib\net45\Prism.dll</HintPath>
     </Reference>
+    <Reference Include="Syncfusion.Licensing, Version=16.3460.0.36, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Licensing.16.3.0.36\lib\net46\Syncfusion.Licensing.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -111,7 +114,9 @@
     <Compile Include="DataBase\ApplicationRepository.cs" />
     <Compile Include="DataBase\DBConnection.cs" />
     <Compile Include="Logic\GenerateModelLogic.cs" />
+    <Compile Include="Logic\ModelDictionaries.cs" />
     <Compile Include="Logic\MyLogger.cs" />
+    <Compile Include="Logic\SaveReportInFileLogic.cs" />
     <Compile Include="Logic\ShiftCalendarManager.cs" />
     <Compile Include="Model\BlowingMachineReportDto.cs" />
     <Compile Include="Model\BlowingMachineReportModel.cs" />
@@ -215,7 +220,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Mock.xml" />
+    <Resource Include="Mock.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

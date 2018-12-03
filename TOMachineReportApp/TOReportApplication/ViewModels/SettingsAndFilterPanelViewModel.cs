@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Prism.Commands;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
@@ -17,6 +19,7 @@ namespace TOReportApplication.ViewModels
         FormViewModel,
         BlowingMachineVIewModel
     }
+  
 
     public class SettingsAndFilterPanelViewModel : ViewModelBase, ISettingsAndFilterPanelViewModel
     {
@@ -33,7 +36,7 @@ namespace TOReportApplication.ViewModels
             this.dbConnection = dbConnection;
             this.logger = logger;
             shiftCalendar = new ShiftCalendarManager();
-            GenerateReportCommand = new DelegateCommand(async () => await OnGenereteDateReport());
+            GenerateReportCommand = new DelegateCommand(() => OnGenereteDateReportAsync().InAsyncSafe());
             SaveInFileCommand = new DelegateCommand(OnSaveInFile);
             IsSaveInFileReportButtonEnabled = false;
             SelectedDate = DateTime.Now.Date;
@@ -113,7 +116,7 @@ namespace TOReportApplication.ViewModels
             SaveBlowingMachineReportsInFileAction(SelectedShift);
         }
 
-        private async Task OnGenereteDateReport()
+        private async Task OnGenereteDateReportAsync()
         {
             if (DataContextEnum == DataContextEnum.BlowingMachineVIewModel)
                 await GenereteBlowingMachineReport();
@@ -146,7 +149,7 @@ namespace TOReportApplication.ViewModels
         private async Task GenereteBlowingMachineReport()
         {
             var data = dbConnection.GetFormDateReportItems(GenerateBlowingMachineQuery());
-            var model = GenerateModelLogic.GenerateBlowingMachineReportModel(data);
+            var model = GenerateModelLogic<BlowingMachineReportModel>.GenerateBlowingMachineReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
             BlowingMachineReportsModelItemsAction(new BlowingMachineReportDto {Model = model});
         }
 
@@ -158,8 +161,14 @@ namespace TOReportApplication.ViewModels
                     "SELECT * FROM public.forma_blok2 where data_czas > '{0}' and data_czas < '{1}'",
                     SelectedDate.AddHours(4), SelectedDate.AddDays(1).AddHours(10));
                 var data = dbConnection.GetFormDateReportItems(query);
-                var dateReportDbModelList = GenerateModelLogic.GeneratFormDateReportModel(data);
-                var detailedReportDbModelList = GenerateModelLogic.GeneratFormDetailedReportModel(data);
+                //var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GenerateBlowingMachineReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
+                //var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GenerateBlowingMachineReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
+                var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GeneratFormDateReportModel(data);
+                var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GeneratFormDetailedReportModel(data);
+                if (detailedReportDbModelList == null || detailedReportDbModelList == null)
+                {
+                    logger.logger.ErrorFormat("Pusta kolekcja: dateReportDbModelList{0} detailedReportDbModelList{1}", dateReportDbModelList.Count, detailedReportDbModelList.Count);
+                }
                 FormReportsModelItemsAction(new FormReportsDBModel
                 {
                     DateReportDb = dateReportDbModelList,
@@ -168,9 +177,19 @@ namespace TOReportApplication.ViewModels
             }
             catch (Exception ex)
             {
-                logger.logger.Error("Pusta kolekcja", ex);
+                logger.logger.ErrorFormat("Failed during generating FormReport:  {0}", ex);
                 throw;
             }
+        }
+    }
+    public class DateExpiredRule : ValidationRule
+    {
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            DateTime orderDate = (DateTime)value;
+
+            return new ValidationResult(orderDate < DateTime.Now, "Please, enter date before Now()");
         }
     }
 }

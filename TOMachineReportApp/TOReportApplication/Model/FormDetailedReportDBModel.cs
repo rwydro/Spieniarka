@@ -14,6 +14,6 @@ namespace TOReportApplication.Model
         public double Blow { get; set; }
         public string Type { get; set; }
         public string Comments { get; set; }
-        public double AvgDensityOfPearls { get; set; }
+        public double? AvgDensityOfPearls { get; set; }
     }
 }

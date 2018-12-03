@@ -31,8 +31,8 @@
             <DataGrid  Margin="5" ItemsSource="{Binding Path=DateReportItems}" IsReadOnly="True" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Zmiana" Binding="{Binding Shift}"/>
-                    <DataGridTextColumn Header="Data od" Binding="{Binding TimeFrom}"/>
-                    <DataGridTextColumn Header="Data do" Binding="{Binding TimeTo}"/>
+                    <DataGridTextColumn Header="Data od" Binding="{Binding TimeFrom, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
+                    <DataGridTextColumn Header="Data do" Binding="{Binding TimeTo, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
                     <DataGridTextColumn Header="Ilość bloków" Binding="{Binding NumberOfBlocks}"/>
                     <DataGridTextColumn Header="Silos" Binding="{Binding Silos}"/>
                     <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}"/>
@@ -87,8 +87,8 @@
             </Border.Effect>
             <DataGrid  Margin="5,0,0,10" ItemsSource="{Binding Path=DetailedReportItems}" IsReadOnly="True" AutoGenerateColumns="False" AlternatingRowBackground="LightGreen">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Data organiki" Binding="{Binding OrganicDate}"/>
-                    <DataGridTextColumn Header="Data produkcji" Binding="{Binding ProductionDate}"/>
+                    <DataGridTextColumn Header="Data organiki" Binding="{Binding OrganicDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
+                    <DataGridTextColumn Header="Data produkcji" Binding="{Binding ProductionDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" />
                     <DataGridTextColumn Header="Waga [kg]" Binding="{Binding Weight}"/>
                     <DataGridTextColumn Header="Czas cyklu [s]" Binding="{Binding CycleTimeInSecond}"/>
                     <DataGridTextColumn Header="Operator" Binding="{Binding Operator}"/>

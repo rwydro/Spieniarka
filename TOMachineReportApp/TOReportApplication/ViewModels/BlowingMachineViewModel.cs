@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
@@ -25,8 +26,11 @@ namespace TOReportApplication.ViewModels
         private readonly string buttomDocumentMock =
             "<Row ss:Index=\"_OPERATORINDEX_\">\r\n  <Cell ss:Index=\"7\">\r\n    <Data ss:Type=\"String\">Operator:</Data>\r\n  </Cell>\r\n </Row>\r\n<Row ss:Index=\"_SIGNEDINDEX_\">\r\n  <Cell ss:Index=\"7\">\r\n    <Data ss:Type=\"String\">Podpis:</Data>\r\n  </Cell>\r\n  <Cell>\r\n    <Data ss:Type=\"String\">………………</Data>\r\n  </Cell>\r\n</Row>\r\n<Row ss:Index=\"_MATERIALTABLEINDEX_\">\r\n  <Cell ss:Index=\"2\" ss:StyleID=\"s21\">\r\n    <Data ss:Type=\"String\">BILANS SUROWCA:</Data>\r\n  </Cell>\r\n  <Cell ss:StyleID=\"s21\" />\r\n</Row>\r\n<Row>\r\n  <Cell ss:Index=\"2\" ss:StyleID=\"s21\">\r\n    <Data ss:Type=\"String\">FS0816</Data>\r\n  </Cell>\r\n  <Cell ss:StyleID=\"s21\" ss:Formula=\"=SUMIF(R[-11]C[4]:R[-8]C[4],RC[-1],R[-11]C[5]:R[-8]C[5])\">\r\n    <Data ss:Type=\"Number\">0</Data>\r\n  </Cell>\r\n</Row>";
 
-        private readonly string RowMock =
+        private readonly string rowMock =
             "<Row>\r\n    <Cell ss:StyleID=\"s23\">\r\n      <Data ss:Type=\"Number\">_NUMBER_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_STARTDATE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s28\" >\r\n      <Data ss:Type=\"String\">_STOPDATE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\">\r\n      <Data ss:Type=\"String\">_SILOS_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_DENSITYSET_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_DENSITYMEAN_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\" >\r\n      <Data ss:Type=\"String\">_TYPE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_WEIGHTSET_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\" >\r\n      <Data ss:Type=\"String\">_MATERIAL_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_LOTNUMBER_</Data>\r\n    </Cell>\r\n</Row>";
+
+        private readonly string rowMaterialTableMock =
+            "<Row>\r\n  <Cell ss:Index=\"2\" ss:StyleID=\"s21\">\r\n    <Data ss:Type=\"String\">_ROWMATERIAL_</Data>\r\n  </Cell>\r\n  <Cell ss:StyleID=\"s21\" ss:Formula=\"=SUMIF(R[-11]C[4]:R[-8]C[4],RC[-1],R[-11]C[5]:R[-8]C[5])\">\r\n    <Data ss:Type=\"Number\">_RWNUM_</Data>\r\n  </Cell>\r\n</Row>";
 
         public BlowingMachineViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger)
             : base(container)
@@ -56,35 +60,47 @@ namespace TOReportApplication.ViewModels
         {
             try
             {
-                var document = new XmlDocument();
-                document.Load("Mock.xml");
-                document.InnerXml = document.InnerXml.Replace("_OPERATOR_", BlowingMachineReportItems.First().Operator)
-                    .Replace("_DATE_", DateTime.Now.ToString("g")).Replace("_ZMIANA_", shift);
-                var stringBuilder = new StringBuilder();
-                var counter = 0;
-                foreach (var machineReportItem in BlowingMachineReportItems)
-                {
-                    ++counter;
-                    stringBuilder.Append(RowMock).Replace("_NUMBER_", counter.ToString())
-                        .Replace("_STARTDATE_", machineReportItem.DateTimeStart.ToString())
-                        .Replace("_STOPDATE_", machineReportItem.DateTimeStop.ToString())
-                        .Replace("_DENSITYSET_", machineReportItem.DensitySet.ToString())
-                        .Replace("_DENSITYMEAN_", machineReportItem.DensityMean.ToString())
-                        .Replace("_WEIGHTSET_", machineReportItem.WeightSet.ToString())
-                        .Replace("_SILOS_", machineReportItem.Silos0)
-                        .Replace("_TYPE_", machineReportItem.Type)
-                        .Replace("_MATERIAL_", machineReportItem.Material)
-                        .Replace("_LOTNUMBER_", machineReportItem.LotNumber);
-                }
+               // var document = new XmlDocument();
+               // document.Load("Mock.xml");
+               // document.InnerXml = document.InnerXml.Replace("_OPERATOR_", BlowingMachineReportItems.First().Operator)
+               //     .Replace("_DATE_", DateTime.Now.ToString("g")).Replace("_ZMIANA_", shift);
+               // var rowMaterialDictionary = new List<KeyValuePair<string, double>>();
+               // var stringBuilder = new StringBuilder();
+               // var stringBuilderRawMaterial = new StringBuilder();
+               // var counter = 0;
+               // double materialCounter = 0;
+               // var materialType = "";
 
-                var buttom = new StringBuilder();
+               // foreach (var machineReportItem in BlowingMachineReportItems)
+               // {
+               //     if (String.IsNullOrEmpty(materialType))
+               //         materialType = machineReportItem.Type;
+               //     ++counter;
+               //     stringBuilder.Append(rowMock).Replace("_NUMBER_", counter.ToString())
+               //         .Replace("_STARTDATE_", machineReportItem.DateTimeStart.ToString())
+               //         .Replace("_STOPDATE_", machineReportItem.DateTimeStop.ToString())
+               //         .Replace("_DENSITYSET_", machineReportItem.DensitySet.ToString())
+               //         .Replace("_DENSITYMEAN_", machineReportItem.DensityMean.ToString())
+               //         .Replace("_WEIGHTSET_", machineReportItem.WeightSet.ToString())
+               //         .Replace("_SILOS_", machineReportItem.Silos0)
+               //         .Replace("_TYPE_", machineReportItem.Type)
+               //         .Replace("_MATERIAL_", machineReportItem.Material)
+               //         .Replace("_LOTNUMBER_", machineReportItem.LotNumber);
+               //     materialCounter = materialCounter + machineReportItem.WeightSet;
+               //     rowMaterialDictionary.Add(new KeyValuePair<string, double>(machineReportItem.Type,
+               //         machineReportItem.WeightSet));
+               // }
 
-                buttom.Append(buttomDocumentMock).Replace("_OPERATORINDEX_", (counter + 6).ToString())
-                    .Replace("_SIGNEDINDEX_", (counter + 7).ToString())
-                    .Replace("_MATERIALTABLEINDEX_", (counter + 9).ToString()).ToString();
+               //// var sum = GetSum(rowMaterialDictionary);
+               // var buttom = new StringBuilder();
 
-                document.InnerXml = document.InnerXml.Replace("_MYROW_", stringBuilder.ToString())
-                    .Replace("_BUTTOM_", buttom.ToString());
+               // buttom.Append(buttomDocumentMock).Replace("_OPERATORINDEX_", (counter + 6).ToString())
+               //     .Replace("_SIGNEDINDEX_", (counter + 7).ToString())
+               //     .Replace("_MATERIALTABLEINDEX_", (counter + 9).ToString()).ToString();
+
+               // document.InnerXml = document.InnerXml.Replace("_MYROW_", stringBuilder.ToString())
+               //     .Replace("_BUTTOM_", buttom.ToString());
+                 var document = SaveReportInFileLogic.GenerateXml(shift, BlowingMachineReportItems.ToList());
                 SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
                     shift, document);
             }
@@ -99,6 +115,8 @@ namespace TOReportApplication.ViewModels
                 ShowMessageBox("Błąd podczas zapisu pliku spróbuj ponownie", MessageBoxIcon.Exclamation);
             }
         }
+
+      
 
         private void SaveInFileAndOpen(string path, string shift, XmlDocument document)
         {

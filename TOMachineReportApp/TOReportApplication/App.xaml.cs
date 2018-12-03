@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using log4net;
 using log4net.Config;
 using TOReportApplication.Castle;
-using TOReportApplication.Logic;
 using Unity;
 
 namespace TOReportApplication
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+
+    public static class AsyncHelper
+    {
+        public static Action<string, Exception> OnUnhandledException;
+        public static void InAsyncSafe(this Task task)
+        {
+
+            task.ContinueWith(
+                t => OnUnhandledException("Async", t.Exception),
+                TaskContinuationOptions.OnlyOnFaulted);
+        }
+    }
+
     public partial class App : Application
     {
         private IUnityContainer container;
@@ -25,9 +28,7 @@ namespace TOReportApplication
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-           
             XmlConfigurator.Configure();
-         //   MyLogger.log.Error("FirstMessage");
             container = new UnityContainer();
             bootstrapper=new Bootstrapper(container);
             bootstrapper.Install();

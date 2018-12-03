@@ -85,8 +85,8 @@
   <Worksheet ss:Name="Raport">
     <Table x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="15">
       <Column ss:StyleID="s25" ss:AutoFitWidth="0" ss:Width="28.5" />
-      <Column ss:AutoFitWidth="0" ss:Width="60.75" />
-      <Column ss:AutoFitWidth="0" ss:Width="62.25" />
+      <Column ss:AutoFitWidth="0" ss:Width="120.75" />
+      <Column ss:AutoFitWidth="0" ss:Width="120.25" />
       <Column ss:AutoFitWidth="0" ss:Width="50.25" />
       <Column ss:AutoFitWidth="0" ss:Width="43.5" />
       <Column ss:AutoFitWidth="0" ss:Width="45.75" />
@@ -146,8 +146,9 @@ komora</Data>
         </Cell>
         <Cell ss:StyleID="s16" />
       </Row>
-	 _MYROW_
+	    _MYROW_
      _BUTTOM_
+	   _TYPETABLE_
     </Table>
     <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
       <PageSetup>

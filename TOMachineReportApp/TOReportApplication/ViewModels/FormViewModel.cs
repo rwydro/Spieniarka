@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Prism.Commands;
 using TOReportApplication.DataBase;
@@ -77,15 +79,19 @@ namespace TOReportApplication.ViewModels
         }
 
         private void OnGetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
-        {    
+        {
             DateReportItems = new ObservableCollection<FormDateReportModel>(GenerateDateReport(formReportsDbModel.DateReportDb));
             ChamberReportItems = new List<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb where
                                                                      li.ProductionDate >= DateReportItems.First().TimeFrom &&
                                                                      li.ProductionDate <= DateReportItems.Last().TimeTo
                                                                      select li);
-            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb where
-                                                                                      li.ProductionDate>= DateReportItems.First().TimeFrom &&
-                                                                                      li.ProductionDate <= DateReportItems.Last().TimeTo select li);
+            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb
+                                                                                      where li.ProductionDate >= DateReportItems.First().TimeFrom && 
+                                                                                      li.ProductionDate <= DateReportItems.Last().TimeTo
+                                                                                      select li);
+            var res = DateTime.Compare(formReportsDbModel.DetailedReportDb.First().ProductionDate,
+                DateReportItems.First().TimeFrom);
+
             SetChambers();
             IsChamberReportPanelEnabled = true;
         }
@@ -100,18 +106,18 @@ namespace TOReportApplication.ViewModels
         {
             int counter = 0;
             int chamber=0;
-
+            bool isLastChamber = false;
             var list = new List<FormDateReportModel>();
             var shiftCalendarManager = new ShiftCalendarManager();
             for (int i = 0; i < obj.Count; i++)
             {
-                if (chamber == obj[i].Chamber || counter == 0)
+                if ((chamber == obj[i].Chamber || counter == 0) && obj.Count-1 != i)// ostatni warunek po to zeby wyswietlac nie zakonczone cykle
                 {
                     chamber = obj[i].Chamber;
                     counter++;
+                    continue;
                 }
-                else
-                {
+               
                     var dateFrom = obj[i - counter].ProductionDate;
                     var toDate = obj[i - 1].ProductionDate;
                     var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
@@ -131,7 +137,7 @@ namespace TOReportApplication.ViewModels
                     counter = 0;
                     counter++;
                     chamber = obj[i].Chamber;
-                }
+                
             }      
             return shiftCalendarManager.RemoveNastedRows(list); 
         }

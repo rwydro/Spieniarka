@@ -33,7 +33,7 @@
              HorizontalAlignment="Left"/>
             <wpfTool:DateTimePicker FrameworkElement.HorizontalAlignment="Stretch" FrameworkElement.VerticalAlignment="Bottom"
                               CalendarDisplayMode="Month" CalendarWidth="400" AutoCloseCalendar="true"
-                              Value="{Binding SelectedDate, Mode=TwoWay}"/>
+                              Value="{Binding SelectedDate, Mode=TwoWay}" Maximum="{Binding Source={x:Static System:DateTime.Now}, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0"
                 Margin="10,0,0,10"

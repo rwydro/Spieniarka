@@ -1,85 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using FluentNHibernate.Utils;
 using TOReportApplication.Model;
+using static System.Double;
 
 namespace TOReportApplication.Logic
-{
-    
-
-    public static class GenerateModelLogic
+{  
+    public static class GenerateModelLogic<T> where T : new()
     {
-        public static Dictionary<string, string> BlowingMachineDbColumnNameToModelPropertyNameDictionary =
-            new Dictionary<string, string>()
-            {
-                {"maszyna","Machine"},
-                {"data_poczatek","DateTimeStart"},
-                {"data_koniec","DateTimeStop"},
-                {"nr_zlecenia","OrderNumber"},
-                {"nr_recepty","RecipeNumber"},
-                {"producent","Manufacturer"},
-                {"typ","Type"},
-                {"gestosc_zadana","DensitySet"},
-                {"gestosc_min","DensityMin"},
-                {"gestosc_srednia","DensityMean"},
-                {"gestosc_max","DensityMax"},
-                {"ilosc_zad_surowca","WeightSet"},
-                {"ilosc_rzecz_surowca","WeightActual"},
-                {"ilosc_rzecz_partii","BatchesActual"},
-                {"operator","Operator"},
-                {"komora","Chamber"},
-                {"nr_lot","LotNumber"},
-                {"material","Material"},
-                {"czas_cyklu","CycleTime"},
-                {"silos_0","Silos0"},
-                {"czas_pary","TimeSteam"},
-                {"wyl_poziomu","LevelSwitch"},
-                {"bajpas","Bypass"},
-                {"wartosc_nawazki","InputWeight"},
-                {"cisn_pary","SteamPressure"},
-                {"predkosc_mieszadla","SpeedAgitator"},
-                {"predkosc_sluzy_lopatk","SpeedRotaryValve"},
-                {"klapa_suszarki","FlapFluidizedBed"},
-                {"klapa_transportu","FlapTransportUnit"}
-            };
-
-        public static List<BlowingMachineReportModel> GenerateBlowingMachineReportModel(DataTable obj)
+        public static List<T> GenerateBlowingMachineReportModel(DataTable obj, Dictionary<string, string> dict)
         {
-            var  list = new List<BlowingMachineReportModel>();
+            var newTable = obj;
+            var list = new List<T>();
 
-
-            foreach (DataRow row in obj.Rows)
+            foreach (DataRow row in newTable.Rows)
             {
-               var item = CreateItemFromRow<BlowingMachineReportModel>(row);
+               var item = CreateItemFromRow(row, dict);
                list.Add(item);
             }
 
             return list;
         }
 
-        private static T CreateItemFromRow<T>(DataRow row) where T : new()
+        private static T CreateItemFromRow(DataRow row, Dictionary<string, string> dict)
         {
             T item = new T();
             
-            SetItemFromRow(item, row);
+            SetItemFromRow(item, row, dict);
             return item;
         }
 
-        private static void SetItemFromRow<T>(T item, DataRow row) where T : new()
+        private static void SetItemFromRow(T item, DataRow row, Dictionary<string, string> dict) 
         {
+          
+
             foreach (DataColumn c in row.Table.Columns)
             {
-                string colName = item is BlowingMachineReportModel ? BlowingMachineDbColumnNameToModelPropertyNameDictionary.First(s => s.Key == c.ColumnName).Value : c.ColumnName;
-                PropertyInfo p = item.GetType().GetProperty(colName);
-
-                if (p != null && row[c] != DBNull.Value)
+                if (dict.ContainsKey(c.ColumnName))
                 {
-                    p.SetValue(item, row[c], null);
+                    string colName = dict.First(s => s.Key == c.ColumnName).Value;
+                    PropertyInfo p = item.GetType().GetProperty(colName);
+
+                    if (p != null && row[c] != DBNull.Value)
+                    {
+
+                        p.SetValue(item, row[c], null);
+                    }
                 }
+            }
+        }
+        public static T Convert<T>(string input) where T :  class 
+        {
+            try
+            {
+                var converter = TypeDescriptor.GetConverter(typeof(T));
+                if (converter != null)
+                {
+                    // Cast ConvertFromString(string text) : object to (T)
+                    return (T)converter.ConvertFromString(input);
+                }
+                return default(T);
+            }
+            catch (NotSupportedException)
+            {
+                return default(T);
             }
         }
 
@@ -94,8 +84,7 @@ namespace TOReportApplication.Logic
                     ProductionDate = (DateTime)item.ItemArray[1],
                     Chamber = Int32.Parse(item.ItemArray[35].ToString()),
                     Silos = Int32.Parse(item.ItemArray[34].ToString()),
-                    Operator = (string)item.ItemArray[47],
-
+                    Operator = !String.IsNullOrEmpty(item.ItemArray[47].ToString()) ? (string)item.ItemArray[47] : "",
                 });
             }
             return list;
@@ -105,22 +94,51 @@ namespace TOReportApplication.Logic
         {
 
             var list = new List<FormDetailedReportDBModel>();
+
+            DateTime organicDate;
+            double weight;
+            int cycleTimeInSecond;
+            double blow;
+            int silos;
+            int chamber;
+            double avgDensityOfPearls;
+            DateTime productionDate;
+            
+          
             foreach (DataRow item in obj.Rows)
             {
-                list.Add(new FormDetailedReportDBModel()
+                DateTime.TryParse(item.ItemArray[44].ToString(), out organicDate);
+                DateTime.TryParse(item.ItemArray[1].ToString(), out productionDate);
+                TryParse(item.ItemArray[6].ToString(),out weight);
+                int.TryParse(item.ItemArray[32].ToString(), out cycleTimeInSecond);
+                int.Parse(item.ItemArray[35].ToString());
+                TryParse(item.ItemArray[10].ToString(), out blow);
+                TryParse(item.ItemArray[46].ToString(),out avgDensityOfPearls);
+                int.TryParse(item.ItemArray[35].ToString(), out chamber);
+                int.TryParse(item.ItemArray[34].ToString(), out silos);
+
+                try
                 {
-                    OrganicDate = (DateTime)item.ItemArray[44],
-                    ProductionDate = (DateTime)item.ItemArray[1],
-                    Weight = Double.Parse(item.ItemArray[6].ToString()),
-                    CycleTimeInSecond = Int32.Parse(item.ItemArray[32].ToString()),
-                    Chamber = Int32.Parse(item.ItemArray[35].ToString()),
-                    Silos = Int32.Parse(item.ItemArray[34].ToString()),
-                    Operator = (string)item.ItemArray[47],
-                    Blow = Double.Parse(item.ItemArray[10].ToString()),
-                    Type = (string)item.ItemArray[38],
-                    Comments = (string)item.ItemArray[39],
-                    AvgDensityOfPearls = Double.Parse(item.ItemArray[46].ToString())
-                });
+                    list.Add(new FormDetailedReportDBModel()
+                    {
+                        OrganicDate =  organicDate,
+                        ProductionDate = (DateTime)item.ItemArray[1],
+                        Weight = weight,
+                        CycleTimeInSecond = cycleTimeInSecond,
+                        Chamber = chamber,
+                        Silos = silos,
+                        Operator = item.ItemArray[47].ToString(),
+                        Blow = blow,
+                        Type = !String.IsNullOrEmpty(item.ItemArray[38].ToString()) ? item.ItemArray[38].ToString() : "",
+                        Comments = !String.IsNullOrEmpty(item.ItemArray[39].ToString()) ? item.ItemArray[39].ToString() : "",
+                        AvgDensityOfPearls = avgDensityOfPearls
+                    });
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }               
             }
             return list;
         }
