@@ -25,52 +25,20 @@ namespace TOReportApplication.ViewModels
     {
         private readonly IApplicationRepository dbConnection;
         private readonly IMyLogger logger;
-
-        private string selectedShift;
-        private readonly ShiftCalendarManager shiftCalendar;
-
+        
         public SettingsAndFilterPanelViewModel(IUnityContainer unityContainer, IApplicationRepository dbConnection,
             IMyLogger logger)
             : base(unityContainer)
         {
             this.dbConnection = dbConnection;
             this.logger = logger;
-            shiftCalendar = new ShiftCalendarManager();
             GenerateReportCommand = new DelegateCommand(() => OnGenereteDateReportAsync().InAsyncSafe());
-            SaveInFileCommand = new DelegateCommand(OnSaveInFile);
             IsSaveInFileReportButtonEnabled = false;
             SelectedDate = DateTime.Now.Date;
-            ComboBoxValueCollection = new ObservableCollection<string>
-            {
-                "1",
-                "2",
-                "3"
-            };
-
-            SelectedShift = ComboBoxValueCollection.First();
             logger.logger.Debug($"SettingsAndFilterPanelViewModel with DataContext {DataContextEnum}");
         }
 
         public DelegateCommand GenerateReportCommand { get; set; }
-
-        public DelegateCommand SaveInFileCommand { get; set; }
-
-        public bool IsSaveInFileVisible => DataContextEnum == DataContextEnum.BlowingMachineVIewModel;
-
-        public ObservableCollection<string> ComboBoxValueCollection { get; set; }
-
-        public string SelectedShift
-        {
-            get => selectedShift;
-            set
-            {
-                if (selectedShift == value)
-                    return;
-                selectedShift = value;
-                IsSaveInFileReportButtonEnabled = false;
-                OnPropertyChanged("SelectedShift");
-            }
-        }
 
         private DateTime selectedDate { get; set; }
 
@@ -100,21 +68,11 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private DataTable BlowingMachineData { get; set; }
-
-
         public DataContextEnum DataContextEnum { get; set; }
 
         public Action<FormReportsDBModel> FormReportsModelItemsAction { get; set; }
 
         public Action<BlowingMachineReportDto> BlowingMachineReportsModelItemsAction { get; set; }
-
-        public Action<string> SaveBlowingMachineReportsInFileAction { get; set; }
-
-        private void OnSaveInFile()
-        {
-            SaveBlowingMachineReportsInFileAction(SelectedShift);
-        }
 
         private async Task OnGenereteDateReportAsync()
         {
@@ -125,32 +83,20 @@ namespace TOReportApplication.ViewModels
             IsSaveInFileReportButtonEnabled = true;
         }
 
+
         private string GenerateBlowingMachineQuery()
         {
-            var shiftInfo = shiftCalendar.GetShiftInfo(SelectedShift);
-            if (SelectedShift != "3")
                 return string.Format(
                     "SELECT * FROM public.spieniarka_probki_summary where data_koniec > '{0}' and data_koniec < '{1}'",
-                    new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,
-                        shiftInfo.BeginningShift.Hours,
-                        shiftInfo.BeginningShift.Minutes, shiftInfo.BeginningShift.Seconds),
-                    new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, shiftInfo.EndShift.Hours,
-                        shiftInfo.EndShift.Minutes, shiftInfo.EndShift.Seconds));
-
-            return string.Format(
-                "SELECT * FROM public.spieniarka_probki_summary where data_koniec > '{0}' and data_koniec < '{1}'",
-                new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, shiftInfo.BeginningShift.Hours,
-                    shiftInfo.BeginningShift.Minutes, shiftInfo.BeginningShift.Seconds),
-                new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.AddDays(1).Day,
-                    shiftInfo.EndShift.Hours,
-                    shiftInfo.EndShift.Minutes, shiftInfo.EndShift.Seconds));
-        }
+                    new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,7,0,0),
+                    new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.AddDays(1).Day,7,0,0));
+        }   
 
         private async Task GenereteBlowingMachineReport()
         {
             var data = dbConnection.GetFormDateReportItems(GenerateBlowingMachineQuery());
             var model = GenerateModelLogic<BlowingMachineReportModel>.GenerateBlowingMachineReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
-            BlowingMachineReportsModelItemsAction(new BlowingMachineReportDto {Model = model});
+            BlowingMachineReportsModelItemsAction(new BlowingMachineReportDto {Model = model,SelectedDate = SelectedDate});
         }
 
         private async Task GenereteDateFormReport()

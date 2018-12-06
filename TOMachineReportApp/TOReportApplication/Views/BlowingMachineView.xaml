@@ -5,10 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TOReportApplication.Views"
              xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit">
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="BlowingMachineButtonStyle">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="MinWidth" Value="20"/>
+            <Setter Property= "FontSize" Value="12"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="5*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0">
             <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center"
@@ -21,6 +30,76 @@
             <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,0,5,10"
                 IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
                 ItemsSource="{Binding Path=BlowingMachineReportItems}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine}"/>
+                    <DataGridTextColumn Header="Data poczatek" Binding="{Binding DateTimeStart, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
+                    <DataGridTextColumn Header="Data koniec" Binding="{Binding DateTimeStop, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
+                    <DataGridTextColumn Header="Nr zlecenia" Binding="{Binding OrderNumber}"/>
+                    <DataGridTextColumn Header="Nr recepty" Binding="{Binding RecipeNumber}"/>
+                    <DataGridTextColumn Header="Producent" Binding="{Binding Manufacturer}"/>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}"/>
+                    <DataGridTextColumn Header="Gestosc zadana" Binding="{Binding DensitySet}"/>
+                    <DataGridTextColumn Header="Gestosc min" Binding="{Binding DensityMin}"/>
+                    <DataGridTextColumn Header="Gestosc srednia" Binding="{Binding DensityMean}"/>
+                    <DataGridTextColumn Header="Gestosc max" Binding="{Binding DensityMax}"/>
+                    <DataGridTextColumn Header="Ilosc zad Surowca" Binding="{Binding WeightSet}"/>
+                    <DataGridTextColumn Header="Ilosc rzecz Surowca" Binding="{Binding WeightActual}"/>
+                    <DataGridTextColumn Header="Ilosc rzecz partii" Binding="{Binding BatchesActual}"/>
+                    <DataGridTextColumn Header="Operator" Binding="{Binding Operator}"/>
+                    <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}"/>
+                    <DataGridTextColumn Header="Nr LOT" Binding="{Binding LotNumber}"/>
+                    <DataGridTextColumn Header="Material" Binding="{Binding Material}"/>
+                    <DataGridTextColumn Header="Czas cyklu" Binding="{Binding CycleTime}"/>
+                    <DataGridTextColumn Header="Silos 0" Binding="{Binding Silos0}"/>
+                    <DataGridTextColumn Header="Czas pary" Binding="{Binding TimeSteam}"/>
+                    <DataGridTextColumn Header="Wyl poziomu" Binding="{Binding LevelSwitch}"/>
+                    <DataGridTextColumn Header="Bajpas" Binding="{Binding Bypass}"/>
+                    <DataGridTextColumn Header="Wartosc nawazki" Binding="{Binding InputWeight}"/>
+                    <DataGridTextColumn Header="Cisn pary" Binding="{Binding SteamPressure}"/>
+                    <DataGridTextColumn Header="Predkosc mieszadla" Binding="{Binding SpeedAgitator}"/>
+                    <DataGridTextColumn Header="Predkosc sluzy lopatk" Binding="{Binding SpeedRotaryValve}"/>
+                    <DataGridTextColumn Header="Klapa suszarki" Binding="{Binding FlapFluidizedBed}"/>
+                    <DataGridTextColumn Header="Klapa transportu" Binding="{Binding FlapTransportUnit}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"
+                    Margin="20,0,0,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Zmiana:" FontSize="12" FontWeight="Bold"/>
+                <ComboBox IsSelected="true" Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Center" FontSize="12"
+                          ItemsSource="{Binding Path = ComboBoxValueCollection, Mode=TwoWay}"
+                          SelectedItem="{Binding SelectedShift, Mode=TwoWay}" MaxHeight="25"/>
+            
+                <Button Grid.Column="1" Grid.Row="1" Content="Generuj raport zmianowy" HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom" Margin="20,0,0,10" HorizontalContentAlignment="Center"
+                        Style="{StaticResource BlowingMachineButtonStyle}"
+                        Command="{Binding Path=GenerateShiftReporCommand}"
+                        IsEnabled="{Binding IsGenerateShiftReportButtonEnabled, Mode=TwoWay}"/>
+                <Button Grid.Column="2" Grid.Row="1" Content="Zapisz w pliku" HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalContentAlignment="Center"
+                        Style="{StaticResource BlowingMachineButtonStyle}"
+                        Command="{Binding Path=SaveInFileCommand}"
+                        IsEnabled="{Binding IsSaveInFileReportButtonEnabled, Mode=TwoWay}"/>
+            </Grid>
+        </StackPanel>
+        <Border Grid.Row="3" BorderThickness="5,5,5,5">
+            <UIElement.Effect>
+                <DropShadowEffect/>
+            </UIElement.Effect>
+            <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,0,5,10"
+                IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
+                ItemsSource="{Binding Path=BlowingMachineShiftReportItems}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine}"/>
                     <DataGridTextColumn Header="Data poczatek" Binding="{Binding DateTimeStart, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>

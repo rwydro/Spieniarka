@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Prism.Commands;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
 using TOReportApplication.Model;
@@ -21,16 +20,65 @@ namespace TOReportApplication.ViewModels
     {
         private readonly IMyLogger logger;
         private Action _onControlLoaded;
-        private ObservableCollection<BlowingMachineReportModel> blowingMachineReportItems;
 
-        private readonly string buttomDocumentMock =
-            "<Row ss:Index=\"_OPERATORINDEX_\">\r\n  <Cell ss:Index=\"7\">\r\n    <Data ss:Type=\"String\">Operator:</Data>\r\n  </Cell>\r\n </Row>\r\n<Row ss:Index=\"_SIGNEDINDEX_\">\r\n  <Cell ss:Index=\"7\">\r\n    <Data ss:Type=\"String\">Podpis:</Data>\r\n  </Cell>\r\n  <Cell>\r\n    <Data ss:Type=\"String\">………………</Data>\r\n  </Cell>\r\n</Row>\r\n<Row ss:Index=\"_MATERIALTABLEINDEX_\">\r\n  <Cell ss:Index=\"2\" ss:StyleID=\"s21\">\r\n    <Data ss:Type=\"String\">BILANS SUROWCA:</Data>\r\n  </Cell>\r\n  <Cell ss:StyleID=\"s21\" />\r\n</Row>\r\n<Row>\r\n  <Cell ss:Index=\"2\" ss:StyleID=\"s21\">\r\n    <Data ss:Type=\"String\">FS0816</Data>\r\n  </Cell>\r\n  <Cell ss:StyleID=\"s21\" ss:Formula=\"=SUMIF(R[-11]C[4]:R[-8]C[4],RC[-1],R[-11]C[5]:R[-8]C[5])\">\r\n    <Data ss:Type=\"Number\">0</Data>\r\n  </Cell>\r\n</Row>";
+        private bool isSaveReportInFileButtonEnabled { get; set; }
 
-        private readonly string rowMock =
-            "<Row>\r\n    <Cell ss:StyleID=\"s23\">\r\n      <Data ss:Type=\"Number\">_NUMBER_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_STARTDATE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s28\" >\r\n      <Data ss:Type=\"String\">_STOPDATE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\">\r\n      <Data ss:Type=\"String\">_SILOS_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_DENSITYSET_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_DENSITYMEAN_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\" >\r\n      <Data ss:Type=\"String\">_TYPE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_WEIGHTSET_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\" >\r\n      <Data ss:Type=\"String\">_MATERIAL_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_LOTNUMBER_</Data>\r\n    </Cell>\r\n</Row>";
+        public bool IsSaveInFileReportButtonEnabled
+        {
+            get => isSaveReportInFileButtonEnabled;
+            set
+            {
+                if (isSaveReportInFileButtonEnabled == value)
+                    return;
+                isSaveReportInFileButtonEnabled = value;
+                OnPropertyChanged("IsSaveInFileReportButtonEnabled");
+            }
+        }
 
-        private readonly string rowMaterialTableMock =
-            "<Row>\r\n  <Cell ss:Index=\"2\" ss:StyleID=\"s21\">\r\n    <Data ss:Type=\"String\">_ROWMATERIAL_</Data>\r\n  </Cell>\r\n  <Cell ss:StyleID=\"s21\" ss:Formula=\"=SUMIF(R[-11]C[4]:R[-8]C[4],RC[-1],R[-11]C[5]:R[-8]C[5])\">\r\n    <Data ss:Type=\"Number\">_RWNUM_</Data>\r\n  </Cell>\r\n</Row>";
+        private bool isGenerateShiftReportButtonEnabled { get; set; }
+
+        public bool IsGenerateShiftReportButtonEnabled
+        {
+            get => isGenerateShiftReportButtonEnabled;
+            set
+            {
+                if (isGenerateShiftReportButtonEnabled == value)
+                    return;
+                isGenerateShiftReportButtonEnabled = value;
+                OnPropertyChanged("IsGenerateShiftReportButtonEnabled");
+            }
+        }
+
+        public ObservableCollection<string> ComboBoxValueCollection { get; set; }
+
+        private string selectedShift;
+        public string SelectedShift
+        {
+            get => selectedShift;
+            set
+            {
+                if (selectedShift == value)
+                    return;
+                selectedShift = value;
+                IsSaveInFileReportButtonEnabled = false;
+                OnPropertyChanged("SelectedShift");
+            }
+        }
+
+        private DateTime selectedDate;
+        public DateTime SelectedDate
+        {
+            get { return selectedDate;}
+            set
+            {
+                if (value == selectedDate) return;
+                selectedDate = value;
+                OnPropertyChanged("SelectedDate");
+            }
+        }
+
+        public DelegateCommand SaveInFileCommand { get; set; }
+        public DelegateCommand GenerateShiftReporCommand { get; set; }
 
         public BlowingMachineViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger)
             : base(container)
@@ -38,71 +86,54 @@ namespace TOReportApplication.ViewModels
             this.logger = logger;
             SettingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
             SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.BlowingMachineVIewModel;
-            SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction +=
-                OnGetBlowingMachineReportsModelItems;
-            SettingsAndFilterPanelViewModel.SaveBlowingMachineReportsInFileAction += SaveReportInFile;
+            SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction += OnGetBlowingMachineReportsModelItems;
             BlowingMachineReportItems = new ObservableCollection<BlowingMachineReportModel>();
+            ComboBoxValueCollection = new ObservableCollection<string>
+            {
+                "1",
+                "2",
+                "3"
+            };
+            SelectedShift = ComboBoxValueCollection.First();
+            SaveInFileCommand = new DelegateCommand(SaveReportInFile);
+            GenerateShiftReporCommand = new DelegateCommand(GenerateShiftReport);
+            IsSaveInFileReportButtonEnabled = false;
+            IsGenerateShiftReportButtonEnabled = false;
         }
 
+        private ObservableCollection<BlowingMachineReportModel> blowingMachineReportItems;
         public ObservableCollection<BlowingMachineReportModel> BlowingMachineReportItems
         {
             get => blowingMachineReportItems;
             set
             {
+                if (blowingMachineReportItems == value) return;
                 blowingMachineReportItems = value;
                 OnPropertyChanged(nameof(BlowingMachineReportItems));
             }
         }
 
+        private ObservableCollection<BlowingMachineReportModel> blowingMachineShiftReportItems;
+        public ObservableCollection<BlowingMachineReportModel> BlowingMachineShiftReportItems
+        {
+            get => blowingMachineShiftReportItems;
+            set
+            {
+                if(blowingMachineShiftReportItems == value) return;
+                blowingMachineShiftReportItems = value;
+                OnPropertyChanged(nameof(BlowingMachineShiftReportItems));
+            }
+        }
+
         public ISettingsAndFilterPanelViewModel SettingsAndFilterPanelViewModel { get; }
 
-        private void SaveReportInFile(string shift)
+        private void SaveReportInFile()
         {
             try
             {
-               // var document = new XmlDocument();
-               // document.Load("Mock.xml");
-               // document.InnerXml = document.InnerXml.Replace("_OPERATOR_", BlowingMachineReportItems.First().Operator)
-               //     .Replace("_DATE_", DateTime.Now.ToString("g")).Replace("_ZMIANA_", shift);
-               // var rowMaterialDictionary = new List<KeyValuePair<string, double>>();
-               // var stringBuilder = new StringBuilder();
-               // var stringBuilderRawMaterial = new StringBuilder();
-               // var counter = 0;
-               // double materialCounter = 0;
-               // var materialType = "";
-
-               // foreach (var machineReportItem in BlowingMachineReportItems)
-               // {
-               //     if (String.IsNullOrEmpty(materialType))
-               //         materialType = machineReportItem.Type;
-               //     ++counter;
-               //     stringBuilder.Append(rowMock).Replace("_NUMBER_", counter.ToString())
-               //         .Replace("_STARTDATE_", machineReportItem.DateTimeStart.ToString())
-               //         .Replace("_STOPDATE_", machineReportItem.DateTimeStop.ToString())
-               //         .Replace("_DENSITYSET_", machineReportItem.DensitySet.ToString())
-               //         .Replace("_DENSITYMEAN_", machineReportItem.DensityMean.ToString())
-               //         .Replace("_WEIGHTSET_", machineReportItem.WeightSet.ToString())
-               //         .Replace("_SILOS_", machineReportItem.Silos0)
-               //         .Replace("_TYPE_", machineReportItem.Type)
-               //         .Replace("_MATERIAL_", machineReportItem.Material)
-               //         .Replace("_LOTNUMBER_", machineReportItem.LotNumber);
-               //     materialCounter = materialCounter + machineReportItem.WeightSet;
-               //     rowMaterialDictionary.Add(new KeyValuePair<string, double>(machineReportItem.Type,
-               //         machineReportItem.WeightSet));
-               // }
-
-               //// var sum = GetSum(rowMaterialDictionary);
-               // var buttom = new StringBuilder();
-
-               // buttom.Append(buttomDocumentMock).Replace("_OPERATORINDEX_", (counter + 6).ToString())
-               //     .Replace("_SIGNEDINDEX_", (counter + 7).ToString())
-               //     .Replace("_MATERIALTABLEINDEX_", (counter + 9).ToString()).ToString();
-
-               // document.InnerXml = document.InnerXml.Replace("_MYROW_", stringBuilder.ToString())
-               //     .Replace("_BUTTOM_", buttom.ToString());
-                 var document = SaveReportInFileLogic.GenerateXml(shift, BlowingMachineReportItems.ToList());
+                var document = SaveReportInFileLogic.GenerateXml(SelectedShift, BlowingMachineShiftReportItems.ToList());
                 SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
-                    shift, document);
+                    SelectedShift, document);
             }
             catch (InvalidOperationException ex)
             {
@@ -116,7 +147,20 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-      
+        private void GenerateShiftReport()
+        {
+            var shiftCalendarManager = new ShiftCalendarManager();
+            var shiftInfo = shiftCalendarManager.GetShiftInfo(selectedShift);
+
+            BlowingMachineShiftReportItems = new ObservableCollection<BlowingMachineReportModel>((from item in BlowingMachineReportItems
+                where
+                    item.DateTimeStop >= new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,
+                        shiftInfo.BeginningShift.Hours, shiftInfo.BeginningShift.Minutes, shiftInfo.BeginningShift.Seconds) &&
+                    item.DateTimeStop <= new DateTime(SelectedDate.Year, SelectedDate.Month, shiftInfo.NumberOfShift == ShiftInfoEnum.ThirdShift ? SelectedDate.AddDays(1).Day: SelectedDate.Day,
+                        shiftInfo.EndShift.Hours, shiftInfo.EndShift.Minutes, shiftInfo.EndShift.Seconds)
+                select item).ToList());
+            IsSaveInFileReportButtonEnabled = true;
+        }
 
         private void SaveInFileAndOpen(string path, string shift, XmlDocument document)
         {
@@ -170,13 +214,13 @@ namespace TOReportApplication.ViewModels
         {
             BlowingMachineReportItems.Clear();
             obj.Model.ForEach(x => BlowingMachineReportItems.Add(x));
+            SelectedDate = obj.SelectedDate;
+            IsGenerateShiftReportButtonEnabled = true;
         }
 
         public void Dispose()
         {
-            SettingsAndFilterPanelViewModel.SaveBlowingMachineReportsInFileAction -= SaveReportInFile;
-            SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction -=
-                OnGetBlowingMachineReportsModelItems;
+            SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction -= OnGetBlowingMachineReportsModelItems;
         }
 
         private void ShowMessageBox(string info, MessageBoxIcon icon)

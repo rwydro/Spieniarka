@@ -25,7 +25,6 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto" MinWidth="150">
@@ -35,35 +34,9 @@
                               CalendarDisplayMode="Month" CalendarWidth="400" AutoCloseCalendar="true"
                               Value="{Binding SelectedDate, Mode=TwoWay}" Maximum="{Binding Source={x:Static System:DateTime.Now}, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0"
-                Margin="10,0,0,10"
-                Visibility="{Binding IsSaveInFileVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Row="0" Content="Zmiana:" FontSize="12" FontWeight="Bold"/>
-                <ComboBox IsSelected="true" Grid.Row="1" VerticalContentAlignment="Center"
-                  HorizontalContentAlignment="Center" FontSize="12"
-                  ItemsSource="{Binding Path=ComboBoxValueCollection, Mode=TwoWay}"
-                  SelectedItem="{Binding SelectedShift, Mode=TwoWay}"/>
-            </Grid>
-        </StackPanel>
-        <Button Grid.Column="1" Grid.Row="0" Content="Pokaż bloki" Margin="10,0,10,10" HorizontalAlignment="Center"
-            VerticalAlignment="Bottom" Style="{StaticResource SettingsAndFilterPanelButtonStyle}"/>
-        <Button Grid.Column="2" Grid.Row="0" Content="Odśwież bloki" HorizontalAlignment="Left"
-            VerticalAlignment="Bottom" Style="{StaticResource SettingsAndFilterPanelButtonStyle}"
-            Margin="10,0,10,10"/>
-        <Button Grid.Column="1" Grid.Row="1" Content="Generuj raport" HorizontalAlignment="Left"
+        <Button Grid.Column="1" Grid.Row="0" Content="Generuj raport" HorizontalAlignment="Left"
             VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalContentAlignment="Center"
             Style="{StaticResource SettingsAndFilterPanelButtonStyle}"
             Command="{Binding Path=GenerateReportCommand}"/>
-        <Button Grid.Column="2" Grid.Row="1" Content="Zapisz w pliku" HorizontalAlignment="Left"
-            VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalContentAlignment="Center"
-            Style="{StaticResource SettingsAndFilterPanelButtonStyle}"
-            Command="{Binding Path=SaveInFileCommand}"
-            Visibility="{Binding IsSaveInFileVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-            IsEnabled="{Binding IsSaveInFileReportButtonEnabled, Mode=TwoWay}"/>
     </Grid>
 </UserControl>

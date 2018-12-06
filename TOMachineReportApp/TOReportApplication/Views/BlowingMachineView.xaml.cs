@@ -22,7 +22,7 @@ namespace TOReportApplication.Views
     {
         public BlowingMachineView()
         {
-            InitializeComponent();
+                InitializeComponent();
         }
     }
 }

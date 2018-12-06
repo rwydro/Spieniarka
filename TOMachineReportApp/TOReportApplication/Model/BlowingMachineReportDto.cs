@@ -9,5 +9,6 @@ namespace TOReportApplication.Model
     public class BlowingMachineReportDto
     {
         public List<BlowingMachineReportModel> Model { get; set; }
+        public DateTime SelectedDate { get; set; }
     }
 }
