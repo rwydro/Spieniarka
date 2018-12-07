@@ -9,7 +9,16 @@
         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="BlowingMachineButtonStyle">
             <Setter Property="MinHeight" Value="30"/>
             <Setter Property="MinWidth" Value="20"/>
-            <Setter Property= "FontSize" Value="12"/>
+            <Setter Property= "FontSize" Value="13"/>
+        </Style>
+        <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}" x:Key="BlowingMachineDataGridStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGrid}">
+                        <Border x:Name="Border" BorderBrush="#282828" BorderThickness="2" CornerRadius="13" SnapsToDevicePixels="True"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -20,14 +29,11 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0">
-            <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center"
+            <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                                         DataContext="{Binding Path=SettingsAndFilterPanelViewModel}"/>
         </Border>
-        <Border Grid.Row="1" BorderThickness="5,5,5,5">
-            <UIElement.Effect>
-                <DropShadowEffect/>
-            </UIElement.Effect>
-            <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,0,5,10"
+        <Border  BorderBrush="Black " CornerRadius="15" Grid.Row="1" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0">
+            <DataGrid   HeadersVisibility="Column" BorderBrush="{x:Null}"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
                 IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
                 ItemsSource="{Binding Path=BlowingMachineReportItems}">
                 <DataGrid.Columns>
@@ -80,7 +86,7 @@
                           HorizontalContentAlignment="Center" FontSize="12"
                           ItemsSource="{Binding Path = ComboBoxValueCollection, Mode=TwoWay}"
                           SelectedItem="{Binding SelectedShift, Mode=TwoWay}" MaxHeight="25"/>
-            
+
                 <Button Grid.Column="1" Grid.Row="1" Content="Generuj raport zmianowy" HorizontalAlignment="Center"
                         VerticalAlignment="Bottom" Margin="20,0,0,10" HorizontalContentAlignment="Center"
                         Style="{StaticResource BlowingMachineButtonStyle}"
@@ -93,11 +99,20 @@
                         IsEnabled="{Binding IsSaveInFileReportButtonEnabled, Mode=TwoWay}"/>
             </Grid>
         </StackPanel>
-        <Border Grid.Row="3" BorderThickness="5,5,5,5">
-            <UIElement.Effect>
-                <DropShadowEffect/>
-            </UIElement.Effect>
-            <DataGrid HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,0,5,10"
+        <Grid Grid.Row="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MaxWidth="400"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Expander  ExpandDirection="Right" Grid.Column="0" Margin="5,5,0,10">
+                    <local:BlowingMachineSetShiftReportDataView DataContext="{Binding Path=ShiftReportDataViewModel}"/>
+                </Expander>
+                <Border  BorderBrush="Black " CornerRadius="15" Grid.Column="1" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0">
+                    <UIElement.Effect>
+                        <DropShadowEffect/>
+                    </UIElement.Effect>
+                    <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
                 IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
                 ItemsSource="{Binding Path=BlowingMachineShiftReportItems}">
                 <DataGrid.Columns>
@@ -132,6 +147,8 @@
                     <DataGridTextColumn Header="Klapa transportu" Binding="{Binding FlapTransportUnit}"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </Border>
+         </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

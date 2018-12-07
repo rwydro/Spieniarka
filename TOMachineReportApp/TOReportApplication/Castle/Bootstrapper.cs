@@ -7,6 +7,7 @@ using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
 using TOReportApplication.ViewModels;
 using TOReportApplication.ViewModels.interfaces;
+using TOReportApplication.Views;
 using Unity;
 
 namespace TOReportApplication.Castle
@@ -27,6 +28,7 @@ namespace TOReportApplication.Castle
             container.RegisterType<IFormViewModel, FormViewModel>();
             container.RegisterType<ISettingsAndFilterPanelViewModel, SettingsAndFilterPanelViewModel>();
             container.RegisterType<IBlowingMachineViewModel, BlowingMachineViewModel>();
+            container.RegisterType<IBlowingMachineSetShiftReportDataViewModel, BlowingMachineSetShiftReportDataViewModel>();
             container.RegisterType<IApplicationRepository,ApplicationRepository>();
             container.RegisterType<IMyLogger, MyLogger>();
         }
