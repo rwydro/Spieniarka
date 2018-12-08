@@ -9,12 +9,12 @@
         <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}" x:Key="MaterialTypeLabelStyle">
             <Setter Property="HorizontalAlignment" Value="Right"/>
             <Setter Property="Margin" Value="5"/>
-            <Setter Property= "FontSize" Value="12"/>
+            <Setter Property= "FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="MaterialTypeButtonStyle">
             <Setter Property="MinHeight" Value="30"/>
-            <Setter Property="MinWidth" Value="20"/>
+            <Setter Property="MinWidth" Value="40"/>
             <Setter Property= "FontSize" Value="13"/>
         </Style>
     </UserControl.Resources>
@@ -32,9 +32,10 @@
                 <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
 
-            <Label  Content="Gatunek Menu" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Grid  Grid.Row="1" >
+            <Label  Content="Gatunek Menu" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Grid  Grid.Row="1" Margin="5,0,0,0" >
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -42,17 +43,23 @@
                 </Grid.RowDefinitions>
                 <WrapPanel Grid.Row="0" VerticalAlignment="Center">
                     <Label Style="{StaticResource MaterialTypeLabelStyle}" Content="Gatunek"/>
-                    <ComboBox VerticalAlignment="Center"  ItemsSource="{Binding Path = MaterialType, Mode=TwoWay}"/>
+                    <ComboBox VerticalAlignment="Center" MinWidth="50" FontSize="15" 
+                              ItemsSource="{Binding Path = MaterialType, Mode=TwoWay}" SelectedItem="{Binding SelectedMaterialType, Mode=TwoWay}"/>
                 </WrapPanel>
                 <WrapPanel Grid.Row="1" VerticalAlignment="Center">
-                    <Label  Content="Śr. gęstość perełek" Style="{StaticResource MaterialTypeLabelStyle}" Margin="5"/>
-                    <TextBox MinWidth="20" VerticalAlignment="Center"/>
+                    <Label  Content="Śr. gęstość perełek" Style="{StaticResource MaterialTypeLabelStyle}" />
+                    <TextBox MinWidth="50" MinHeight="26" FontSize="15" VerticalAlignment="Center" Text="{Binding Path=AvgDensityOfPearls, UpdateSourceTrigger=Default}"/>
                 </WrapPanel>
                 <WrapPanel Grid.Row="2" VerticalAlignment="Center">
-                    <Label Style="{StaticResource MaterialTypeLabelStyle}"  Content="Numeruj bloki od" />
-                    <TextBox MinWidth="20" VerticalAlignment="Center"/>
+                    <Label  Content="Uwagi" Style="{StaticResource MaterialTypeLabelStyle}" />
+                    <TextBox MinWidth="100" MinHeight="26" HorizontalAlignment="Stretch" FontSize="15" VerticalAlignment="Center" Text="{Binding Path=Comments, UpdateSourceTrigger=Default}"/>
                 </WrapPanel>
-                <Button Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,2,50,10"  Style="{StaticResource MaterialTypeButtonStyle}" FontSize="8" Foreground="Black" Content="Ok" Background="LightGreen" Height="20" Width="40" />
+                <WrapPanel Grid.Row="3" VerticalAlignment="Center">
+                    <Label Style="{StaticResource MaterialTypeLabelStyle}"  Content="Numeruj bloki od" />
+                    <TextBox VerticalAlignment="Center" MinHeight="26" MinWidth="50" FontSize="15" Text="{Binding Path=NumberOfBlock, UpdateSourceTrigger=Default}"/>
+                </WrapPanel>
+                <Button Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,30,10"  Style="{StaticResource MaterialTypeButtonStyle}" FontSize="14"  Content="Ok" Background="LightGreen" 
+                        Height="40" Width="100" Command="{Binding SaveCommand}"/>
             </Grid>
         </Grid>
     </Border>

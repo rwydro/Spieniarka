@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Prism.Commands;
 using TOReportApplication.Model;
 using TOReportApplication.ViewModels.interfaces;
 using Unity;
@@ -25,9 +27,74 @@ namespace TOReportApplication.ViewModels
             }
         }
 
+        private string avgDensityOfPearls { get; set; }
+
+        public string AvgDensityOfPearls
+        {
+            get { return avgDensityOfPearls; }
+            set
+            {
+                if (avgDensityOfPearls == value) return;
+                avgDensityOfPearls = value;
+                OnPropertyChanged("AvgDensityOfPearls");
+            }
+        }
+
+        private string comments { get; set; }
+
+        public string Comments
+        {
+            get { return comments; }
+            set
+            {
+                if (comments == value) return;
+                comments = value;
+                OnPropertyChanged("Comments");
+            }
+        }
+
+        private string numberOfBlock { get; set; }
+
+        public string NumberOfBlock
+        {
+            get { return numberOfBlock; }
+            set
+            {
+                if (numberOfBlock == value) return;
+                numberOfBlock = value;
+                OnPropertyChanged("NumberOfBlock");
+            }
+        }
+
+        private string selectedMaterialType { get; set; }
+
+        public string SelectedMaterialType
+        {
+            get { return selectedMaterialType; }
+            set
+            {
+                if(selectedMaterialType == value)return;
+                selectedMaterialType = value;
+                OnPropertyChanged("SelectedMaterialType");
+            }
+        }
+
+        public DelegateCommand SaveCommand { get; set; }
         public BlowingMachineSetShiftReportDataViewModel(IUnityContainer container) : base(container)
         {
             SetMaterialType();
+            SaveCommand = new DelegateCommand(OnSave);
+        }
+
+        private void OnSave()
+        {
+            OnSendMaterialTypeInfo(new MaterialTypeMenuModel()
+            {
+                AvgDensityOfPearls = this.AvgDensityOfPearls,
+                Comments = this.Comments,
+                NumberOfBlock = this.NumberOfBlock,
+                SelectedMaterialType = this.SelectedMaterialType
+            });
         }
 
         private void SetMaterialType()
@@ -46,5 +113,7 @@ namespace TOReportApplication.ViewModels
                return items.Type.Select(s => s.Name).ToList();
             }
         }
+
+        public Action<MaterialTypeMenuModel> OnSendMaterialTypeInfo { get; set; }
     }
 }

@@ -80,13 +80,11 @@ namespace TOReportApplication.ViewModels
         public DelegateCommand SaveInFileCommand { get; set; }
         public DelegateCommand GenerateShiftReporCommand { get; set; }
 
-        public BlowingMachineViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger,
-            IBlowingMachineSetShiftReportDataViewModel shiftReportDataViewModel)
+        public BlowingMachineViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger)
             : base(container)
         {
             this.logger = logger;
             SettingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
-            this.ShiftReportDataViewModel = shiftReportDataViewModel;
             SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.BlowingMachineVIewModel;
             SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction += OnGetBlowingMachineReportsModelItems;
             BlowingMachineReportItems = new ObservableCollection<BlowingMachineReportModel>();
@@ -128,7 +126,7 @@ namespace TOReportApplication.ViewModels
         }
 
         public ISettingsAndFilterPanelViewModel SettingsAndFilterPanelViewModel { get; }
-        public IBlowingMachineSetShiftReportDataViewModel ShiftReportDataViewModel { get; }
+
 
         private void SaveReportInFile()
         {

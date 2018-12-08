@@ -50,15 +50,24 @@ namespace TOReportApplication.ViewModels
             get { return this.settingsAndFilterPanelViewModel; }
         }
 
-        public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger) : base(container)
+        public IBlowingMachineSetShiftReportDataViewModel ShiftReportDataViewModel { get; }
+
+        public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger, IBlowingMachineSetShiftReportDataViewModel shiftReportDataViewModel)
+            : base(container)
         {
             this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
+            this.ShiftReportDataViewModel = shiftReportDataViewModel;
             this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
-
+            this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData; 
             GenereteReportCommand = new DelegateCommand(OnGenerateReportForChamber);
             GenereteAllReportCommand = new DelegateCommand(OnGenerateAllReportForChambers);
             IsChamberReportPanelEnabled = false;
+        }
+
+        private void OnGetMaterialTypeData(MaterialTypeMenuModel obj)
+        {
+            
         }
 
         private void OnGenerateAllReportForChambers()

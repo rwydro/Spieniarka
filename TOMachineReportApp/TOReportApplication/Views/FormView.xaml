@@ -81,7 +81,17 @@
                 </Grid>
         </StackPanel>
         </Border>
-        <Border BorderBrush="Black " CornerRadius="15"  BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Row="3" >
+        <Grid Grid.Row="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MaxWidth="400"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Expander  ExpandDirection="Right" Grid.Column="0" Margin="5,5,0,10">
+                    <local:BlowingMachineSetShiftReportDataView DataContext="{Binding Path=ShiftReportDataViewModel}"/>
+                </Expander>
+
+        <Border BorderBrush="Black " CornerRadius="15"  BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Column="1" >
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
@@ -100,7 +110,9 @@
                     <DataGridTextColumn Header="Sr.g. perełek" Binding="{Binding AvgDensityOfPearls}"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </Border>
+            </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>
 

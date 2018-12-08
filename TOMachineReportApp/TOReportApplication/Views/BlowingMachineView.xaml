@@ -99,20 +99,11 @@
                         IsEnabled="{Binding IsSaveInFileReportButtonEnabled, Mode=TwoWay}"/>
             </Grid>
         </StackPanel>
-        <Grid Grid.Row="3">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MaxWidth="400"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Expander  ExpandDirection="Right" Grid.Column="0" Margin="5,5,0,10">
-                    <local:BlowingMachineSetShiftReportDataView DataContext="{Binding Path=ShiftReportDataViewModel}"/>
-                </Expander>
-                <Border  BorderBrush="Black " CornerRadius="15" Grid.Column="1" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0">
-                    <UIElement.Effect>
-                        <DropShadowEffect/>
-                    </UIElement.Effect>
-                    <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
+        <Border  BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0" Grid.Row="3">
+            <UIElement.Effect>
+                <DropShadowEffect/>
+            </UIElement.Effect>
+            <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
                 IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
                 ItemsSource="{Binding Path=BlowingMachineShiftReportItems}">
                 <DataGrid.Columns>
@@ -147,8 +138,6 @@
                     <DataGridTextColumn Header="Klapa transportu" Binding="{Binding FlapTransportUnit}"/>
                 </DataGrid.Columns>
             </DataGrid>
-         </Border>
-            </Grid>
-        </Grid>
+        </Border>
     </Grid>
 </UserControl>

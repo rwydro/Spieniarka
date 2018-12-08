@@ -125,6 +125,7 @@
     <Compile Include="Model\FormDetailedReportModel.cs" />
     <Compile Include="Model\FormReportsDBModel.cs" />
     <Compile Include="Model\MaterialTypeDto.cs" />
+    <Compile Include="Model\MaterialTypeMenuModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BlowingMachineSetShiftReportDataViewModel.cs" />
     <Compile Include="ViewModels\BlowingMachineViewModel.cs" />
