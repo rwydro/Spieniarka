@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace TOReportApplication.Views
 {
     /// <summary>
-    /// Interaction logic for BlowingMachineSetShiftReportDataView.xaml
+    /// Interaction logic for FormSetShiftReportDataView.xaml
     /// </summary>
-    public partial class BlowingMachineSetShiftReportDataView : UserControl
+    public partial class FormSetShiftReportDataView : UserControl
     {
-        public BlowingMachineSetShiftReportDataView()
+        public FormSetShiftReportDataView()
         {
             InitializeComponent();
         }

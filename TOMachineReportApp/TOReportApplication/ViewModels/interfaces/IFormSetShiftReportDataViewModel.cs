@@ -7,7 +7,7 @@ using TOReportApplication.Model;
 
 namespace TOReportApplication.ViewModels.interfaces
 {
-    public interface IBlowingMachineSetShiftReportDataViewModel
+    public interface IFormSetShiftReportDataViewModel
     {
         Action<MaterialTypeMenuModel> OnSendMaterialTypeInfo { get; set; }
     }

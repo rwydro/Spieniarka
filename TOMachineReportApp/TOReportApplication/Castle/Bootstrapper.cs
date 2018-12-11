@@ -28,7 +28,7 @@ namespace TOReportApplication.Castle
             container.RegisterType<IFormViewModel, FormViewModel>();
             container.RegisterType<ISettingsAndFilterPanelViewModel, SettingsAndFilterPanelViewModel>();
             container.RegisterType<IBlowingMachineViewModel, BlowingMachineViewModel>();
-            container.RegisterType<IBlowingMachineSetShiftReportDataViewModel, BlowingMachineSetShiftReportDataViewModel>();
+            container.RegisterType<IFormSetShiftReportDataViewModel, FormSetShiftReportDataViewModel>();
             container.RegisterType<IApplicationRepository,ApplicationRepository>();
             container.RegisterType<IMyLogger, MyLogger>();
         }

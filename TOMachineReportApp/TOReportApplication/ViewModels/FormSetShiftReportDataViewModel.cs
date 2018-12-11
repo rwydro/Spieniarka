@@ -12,7 +12,7 @@ using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace TOReportApplication.ViewModels
 {
-    public class BlowingMachineSetShiftReportDataViewModel : ViewModelBase, IBlowingMachineSetShiftReportDataViewModel
+    public class FormSetShiftReportDataViewModel : ViewModelBase, IFormSetShiftReportDataViewModel
     {
         private ObservableCollection<string> materialType { get; set; }
 
@@ -93,7 +93,7 @@ namespace TOReportApplication.ViewModels
         }
 
         public DelegateCommand SaveCommand { get; set; }
-        public BlowingMachineSetShiftReportDataViewModel(IUnityContainer container) : base(container)
+        public FormSetShiftReportDataViewModel(IUnityContainer container) : base(container)
         {
             SetMaterialType();
             SaveCommand = new DelegateCommand(OnSave);

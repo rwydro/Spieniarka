@@ -124,9 +124,9 @@ namespace TOReportApplication.ViewModels
             get { return this.settingsAndFilterPanelViewModel; }
         }
 
-        public IBlowingMachineSetShiftReportDataViewModel ShiftReportDataViewModel { get; }
+        public IFormSetShiftReportDataViewModel ShiftReportDataViewModel { get; }
 
-        public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger, IBlowingMachineSetShiftReportDataViewModel shiftReportDataViewModel)
+        public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger, IFormSetShiftReportDataViewModel shiftReportDataViewModel)
             : base(container)
         {
             this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
