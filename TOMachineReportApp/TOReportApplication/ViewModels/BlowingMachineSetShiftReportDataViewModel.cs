@@ -66,6 +66,19 @@ namespace TOReportApplication.ViewModels
             }
         }
 
+        private int assignedNumber { get; set; }
+
+        public int AssignedNumber
+        {
+            get { return assignedNumber; }
+            set
+            {
+                if (assignedNumber == value) return;
+                assignedNumber = value;
+                OnPropertyChanged("AssignedNumber");
+            }
+        }
+
         private string selectedMaterialType { get; set; }
 
         public string SelectedMaterialType
@@ -88,12 +101,15 @@ namespace TOReportApplication.ViewModels
 
         private void OnSave()
         {
+            double density;
+            Double.TryParse(this.AvgDensityOfPearls, out density);
             OnSendMaterialTypeInfo(new MaterialTypeMenuModel()
             {
-                AvgDensityOfPearls = this.AvgDensityOfPearls,
+                AvgDensityOfPearls = density,
                 Comments = this.Comments,
                 NumberOfBlock = this.NumberOfBlock,
-                SelectedMaterialType = this.SelectedMaterialType
+                SelectedMaterialType = this.SelectedMaterialType,
+                AssignedNumber = this.AssignedNumber
             });
         }
 

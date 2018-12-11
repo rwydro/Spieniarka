@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TOReportApplication.ViewModels.interfaces;
 
 namespace TOReportApplication.Views
 {
@@ -23,6 +24,11 @@ namespace TOReportApplication.Views
         public BlowingMachineView()
         {
                 InitializeComponent();
+        }
+
+        private void BlowingMachineView_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            ((IBlowingMachineViewModel)this.DataContext).Dispose();
         }
     }
 }

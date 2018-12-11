@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TOReportApplication.Views"
+             xmlns:viewsLogic="clr-namespace:TOReportApplication.Views.ViewsLogic"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" MinWidth="300" Margin="5,0,0,0" >
     <UserControl.Resources>
         <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}" x:Key="MaterialTypeLabelStyle">
@@ -16,7 +18,19 @@
             <Setter Property="MinHeight" Value="30"/>
             <Setter Property="MinWidth" Value="40"/>
             <Setter Property= "FontSize" Value="13"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=(Validation.HasError), ElementName=PearlsDensityTextBox}" Value="False"/>
+                        <Condition Binding="{Binding Path=(Validation.HasError), ElementName=AssignedNumberTextBox}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="IsEnabled" Value="True"/>
+                    <Setter Property="Background" Value="LightGreen"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
         </Style>
+        <viewsLogic:NumericValidationRule x:Key="NumericValidationRule"/>
     </UserControl.Resources>
     <Border 
             Background="DarkOrange" 
@@ -48,7 +62,16 @@
                 </WrapPanel>
                 <WrapPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label  Content="Śr. gęstość perełek" Style="{StaticResource MaterialTypeLabelStyle}" />
-                    <TextBox MinWidth="50" MinHeight="26" FontSize="15" VerticalAlignment="Center" Text="{Binding Path=AvgDensityOfPearls, UpdateSourceTrigger=Default}"/>
+                    <TextBox MinWidth="50" MinHeight="26" FontSize="15" VerticalAlignment="Center" Name="PearlsDensityTextBox" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
+                        <TextBox.Text>
+                            <Binding Path="AvgDensityOfPearls" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <viewsLogic:NumericValidationRule ValidationType="{x:Type system:Double}"
+                                                                      ValidatesOnTargetUpdated="True" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox >
                 </WrapPanel>
                 <WrapPanel Grid.Row="2" VerticalAlignment="Center">
                     <Label  Content="Uwagi" Style="{StaticResource MaterialTypeLabelStyle}" />
@@ -56,10 +79,21 @@
                 </WrapPanel>
                 <WrapPanel Grid.Row="3" VerticalAlignment="Center">
                     <Label Style="{StaticResource MaterialTypeLabelStyle}"  Content="Numeruj bloki od" />
-                    <TextBox VerticalAlignment="Center" MinHeight="26" MinWidth="50" FontSize="15" Text="{Binding Path=NumberOfBlock, UpdateSourceTrigger=Default}"/>
+                    <TextBox Name="AssignedNumberTextBox" VerticalAlignment="Center" MinHeight="26" MinWidth="50" FontSize="15" >
+
+                        <TextBox.Text>
+                            <Binding Path="AssignedNumber" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <viewsLogic:NumericValidationRule ValidationType="{x:Type system:Double}"
+                                                                      ValidatesOnTargetUpdated="True"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </WrapPanel>
-                <Button Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,30,10"  Style="{StaticResource MaterialTypeButtonStyle}" FontSize="14"  Content="Ok" Background="LightGreen" 
-                        Height="40" Width="100" Command="{Binding SaveCommand}"/>
+                <Button Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,30,10"  Style="{StaticResource MaterialTypeButtonStyle}" FontSize="14"  Content="Ok" 
+                        Height="40" Width="100" Command="{Binding SaveCommand}" >
+                </Button>
             </Grid>
         </Grid>
     </Border>

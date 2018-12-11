@@ -44,112 +44,6 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private readonly ISettingsAndFilterPanelViewModel settingsAndFilterPanelViewModel;
-        public ISettingsAndFilterPanelViewModel SettingsAndFilterPanelViewModel
-        {
-            get { return this.settingsAndFilterPanelViewModel; }
-        }
-
-        public IBlowingMachineSetShiftReportDataViewModel ShiftReportDataViewModel { get; }
-
-        public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger, IBlowingMachineSetShiftReportDataViewModel shiftReportDataViewModel)
-            : base(container)
-        {
-            this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
-            this.ShiftReportDataViewModel = shiftReportDataViewModel;
-            this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
-            this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
-            this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData; 
-            GenereteReportCommand = new DelegateCommand(OnGenerateReportForChamber);
-            GenereteAllReportCommand = new DelegateCommand(OnGenerateAllReportForChambers);
-            IsChamberReportPanelEnabled = false;
-        }
-
-        private void OnGetMaterialTypeData(MaterialTypeMenuModel obj)
-        {
-            
-        }
-
-        private void OnGenerateAllReportForChambers()
-        {
-            DetailedReportItems.Clear();
-            foreach (var item in ChamberReportItems)
-                DetailedReportItems.Add(item);
-            
-        }
-
-        private void OnGenerateReportForChamber()
-        {
-            DetailedReportItems.Clear();
-            var specificChamberItems = ChamberReportItems.Where(s => s.Chamber == SelectedChamberItem);
-            foreach (var formDetailedReportDbModel in specificChamberItems)
-                DetailedReportItems.Add(formDetailedReportDbModel);
-        }
-
-        private void OnGetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
-        {
-            DateReportItems = new ObservableCollection<FormDateReportModel>(GenerateDateReport(formReportsDbModel.DateReportDb));
-            ChamberReportItems = new List<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb where
-                                                                     li.ProductionDate >= DateReportItems.First().TimeFrom &&
-                                                                     li.ProductionDate <= DateReportItems.Last().TimeTo
-                                                                     select li);
-            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb
-                                                                                      where li.ProductionDate >= DateReportItems.First().TimeFrom && 
-                                                                                      li.ProductionDate <= DateReportItems.Last().TimeTo
-                                                                                      select li);
-            var res = DateTime.Compare(formReportsDbModel.DetailedReportDb.First().ProductionDate,
-                DateReportItems.First().TimeFrom);
-
-            SetChambers();
-            IsChamberReportPanelEnabled = true;
-        }
-
-        private void SetChambers()
-        {
-            var item = ChamberReportItems.Select(ch => ch.Chamber).Distinct();
-            ChamberItems = new ObservableCollection<int>(item);
-        }
-
-        private List<FormDateReportModel> GenerateDateReport(List<FormDateReportDBModel> obj)
-        {
-            int counter = 0;
-            int chamber=0;
-            bool isLastChamber = false;
-            var list = new List<FormDateReportModel>();
-            var shiftCalendarManager = new ShiftCalendarManager();
-            for (int i = 0; i < obj.Count; i++)
-            {
-                if ((chamber == obj[i].Chamber || counter == 0) && obj.Count-1 != i)// ostatni warunek po to zeby wyswietlac nie zakonczone cykle
-                {
-                    chamber = obj[i].Chamber;
-                    counter++;
-                    continue;
-                }
-               
-                    var dateFrom = obj[i - counter].ProductionDate;
-                    var toDate = obj[i - 1].ProductionDate;
-                    var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
-                        new TimeSpan(dateFrom.Hour, dateFrom.Minute, dateFrom.Second),
-                        new TimeSpan(toDate.Hour, toDate.Minute, toDate.Second)));
-                    list.Add(new FormDateReportModel()
-                    {
-                        Shift = shift,
-                        TimeFrom = dateFrom,
-                        TimeTo = toDate,
-                        Chamber = obj[i-1].Chamber,
-                        Silos = obj[i-1].Silos,
-                        NumberOfBlocks = counter,
-                        Operator = obj[i-counter].Operator
-                    });
-                    ShiftProperty = shift;
-                    counter = 0;
-                    counter++;
-                    chamber = obj[i].Chamber;
-                
-            }      
-            return shiftCalendarManager.RemoveNastedRows(list); 
-        }
-
         private ObservableCollection<FormDetailedReportDBModel> detailedReportItems;
 
         public ObservableCollection<FormDetailedReportDBModel> DetailedReportItems
@@ -157,6 +51,7 @@ namespace TOReportApplication.ViewModels
             get { return detailedReportItems; }
             set
             {
+                if(detailedReportItems == value) return;
                 detailedReportItems = value;
                 OnPropertyChanged("DetailedReportItems");
             }
@@ -209,6 +104,136 @@ namespace TOReportApplication.ViewModels
             }
         }
 
+        private FormDateReportModel selectedDatedReportRow { get; set; }
+
+        public FormDateReportModel SelectedDatedReportRow
+        {
+            get { return selectedDatedReportRow; }
+            set
+            {
+                if (selectedDatedReportRow == value) return;
+                selectedDatedReportRow = value;
+                SetFormDetailedReport();
+                OnPropertyChanged("SelectedDatedReportRow");
+            }
+        }
+
+        private readonly ISettingsAndFilterPanelViewModel settingsAndFilterPanelViewModel;
+        public ISettingsAndFilterPanelViewModel SettingsAndFilterPanelViewModel
+        {
+            get { return this.settingsAndFilterPanelViewModel; }
+        }
+
+        public IBlowingMachineSetShiftReportDataViewModel ShiftReportDataViewModel { get; }
+
+        public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger, IBlowingMachineSetShiftReportDataViewModel shiftReportDataViewModel)
+            : base(container)
+        {
+            this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
+            this.ShiftReportDataViewModel = shiftReportDataViewModel;
+            this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
+            this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
+            this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData; 
+            GenereteReportCommand = new DelegateCommand(OnGenerateReportForChamber);
+            GenereteAllReportCommand = new DelegateCommand(OnGenerateAllReportForChambers);
+            IsChamberReportPanelEnabled = false;
+        }
+    
+        private void OnGetMaterialTypeData(MaterialTypeMenuModel obj)
+        {
+            int counter = obj.AssignedNumber;
+            foreach (var item in DetailedReportItems)
+            {
+                item.AvgDensityOfPearls = obj.AvgDensityOfPearls;
+                item.Comments = obj.Comments;
+                item.Type = obj.SelectedMaterialType;
+                item.AssignedNumber = counter;
+                counter++;
+            }
+
+            OnGenerateReportForChamber();
+       }
+
+        private void OnGenerateAllReportForChambers()
+        {
+            DetailedReportItems.Clear();
+            foreach (var item in ChamberReportItems)
+                DetailedReportItems.Add(item);
+            
+        }
+
+        private void OnGenerateReportForChamber()
+        {
+            DetailedReportItems.Clear();
+            var specificChamberItems = ChamberReportItems.Where(s => s.Chamber == SelectedChamberItem);
+            foreach (var formDetailedReportDbModel in specificChamberItems)
+                DetailedReportItems.Add(formDetailedReportDbModel);
+        }
+
+        private void OnGetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
+        {
+            DateReportItems = new ObservableCollection<FormDateReportModel>(GenerateDateReport(formReportsDbModel.DateReportDb));
+            ChamberReportItems = new List<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb
+                                                                     where li.ProductionDate >= DateReportItems.First().TimeFrom && li.ProductionDate <= DateReportItems.Last().TimeTo
+                                                                     select li);
+            SetChambers();
+            IsChamberReportPanelEnabled = true;
+        }
+
+
+        private void SetChambers()
+        {
+            var item = ChamberReportItems.Select(ch => ch.Chamber).Distinct();
+            ChamberItems = new ObservableCollection<int>(item);
+        }
+
+        private void SetFormDetailedReport()
+        {          
+            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(from it in ChamberReportItems where it.Chamber == SelectedDatedReportRow.Chamber select it);
+            SelectedChamberItem = DetailedReportItems.FirstOrDefault().Chamber;
+        }
+       
+        private List<FormDateReportModel> GenerateDateReport(List<FormDateReportDBModel> obj)
+        {
+            int counter = 0;
+            int chamber=0;
+            bool isLastChamber = false;
+            var list = new List<FormDateReportModel>();
+            var shiftCalendarManager = new ShiftCalendarManager();
+            for (int i = 0; i < obj.Count; i++)
+            {
+                if ((chamber == obj[i].Chamber || counter == 0) && obj.Count-1 != i)// ostatni warunek po to zeby wyswietlac nie zakonczone cykle
+                {
+                    chamber = obj[i].Chamber;
+                    counter++;
+                    continue;
+                }
+               
+                    var dateFrom = obj[i - counter].ProductionDate;
+                    var toDate = obj[i - 1].ProductionDate;
+                    var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
+                        new TimeSpan(dateFrom.Hour, dateFrom.Minute, dateFrom.Second),
+                        new TimeSpan(toDate.Hour, toDate.Minute, toDate.Second)));
+                    list.Add(new FormDateReportModel()
+                    {
+                        Shift = shift,
+                        TimeFrom = dateFrom,
+                        TimeTo = toDate,
+                        Chamber = obj[i-1].Chamber,
+                        Silos = obj[i-1].Silos,
+                        NumberOfBlocks = counter,
+                        Operator = obj[i-counter].Operator
+                    });
+                    ShiftProperty = shift;
+                    counter = 0;
+                    counter++;
+                    chamber = obj[i].Chamber;
+                
+            }      
+            return shiftCalendarManager.RemoveNastedRows(list); 
+        }
+
+     
         public void Dispose()
         {
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction -= OnGetFormReportsModelItems;

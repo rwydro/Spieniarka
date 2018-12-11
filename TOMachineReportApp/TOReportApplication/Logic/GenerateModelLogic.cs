@@ -103,6 +103,7 @@ namespace TOReportApplication.Logic
             int chamber;
             double avgDensityOfPearls;
             DateTime productionDate;
+            int assignedNumber;
             
           
             foreach (DataRow item in obj.Rows)
@@ -116,6 +117,7 @@ namespace TOReportApplication.Logic
                 TryParse(item.ItemArray[46].ToString(),out avgDensityOfPearls);
                 int.TryParse(item.ItemArray[35].ToString(), out chamber);
                 int.TryParse(item.ItemArray[34].ToString(), out silos);
+                int.TryParse(item.ItemArray[43].ToString(), out assignedNumber);
 
                 try
                 {
@@ -131,7 +133,8 @@ namespace TOReportApplication.Logic
                         Blow = blow,
                         Type = !String.IsNullOrEmpty(item.ItemArray[38].ToString()) ? item.ItemArray[38].ToString() : "",
                         Comments = !String.IsNullOrEmpty(item.ItemArray[39].ToString()) ? item.ItemArray[39].ToString() : "",
-                        AvgDensityOfPearls = avgDensityOfPearls
+                        AvgDensityOfPearls = avgDensityOfPearls,
+                        AssignedNumber = assignedNumber
                     });
 
                 }

@@ -7,7 +7,14 @@
 
     <Application.Resources>
         <Style TargetType="Button" >
-            <Setter Property="Background" Value="DarkOrange" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Background" Value="DarkOrange"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="DarkGray"/>
+                </Trigger>
+            </Style.Triggers>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="MinHeight" Value="50"/>
             <Setter Property="MinWidth" Value="100"/>

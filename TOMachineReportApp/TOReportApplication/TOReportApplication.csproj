@@ -122,7 +122,6 @@
     <Compile Include="Model\FormDateReportDBModel.cs" />
     <Compile Include="Model\FormDateReportModel.cs" />
     <Compile Include="Model\FormDetailedReportDBModel.cs" />
-    <Compile Include="Model\FormDetailedReportModel.cs" />
     <Compile Include="Model\FormReportsDBModel.cs" />
     <Compile Include="Model\MaterialTypeDto.cs" />
     <Compile Include="Model\MaterialTypeMenuModel.cs" />
@@ -149,6 +148,7 @@
     <Compile Include="Views\SettingsAndFilterPanelView.xaml.cs">
       <DependentUpon>SettingsAndFilterPanelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ViewsLogic\NumericValidationRule.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

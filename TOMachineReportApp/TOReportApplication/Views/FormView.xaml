@@ -28,7 +28,8 @@
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}" Margin="5" ItemsSource="{Binding Path=DateReportItems}" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}" Margin="5" ItemsSource="{Binding Path=DateReportItems}" IsReadOnly="True" AutoGenerateColumns="False"
+                      SelectedItem="{Binding Path=SelectedDatedReportRow, Mode=TwoWay}" SelectionMode="Single">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Zmiana" Binding="{Binding Shift}"/>
                     <DataGridTextColumn Header="Data od" Binding="{Binding TimeFrom, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
@@ -87,27 +88,29 @@
                     <ColumnDefinition Width="Auto" MaxWidth="400"/>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Expander  ExpandDirection="Right" Grid.Column="0" Margin="5,5,0,10">
-                    <local:BlowingMachineSetShiftReportDataView DataContext="{Binding Path=ShiftReportDataViewModel}"/>
+                <Expander  IsEnabled="{Binding IsChamberReportPanelEnabled}" ExpandDirection="Right" Grid.Column="0" Margin="5,5,0,10">
+                    <local:BlowingMachineSetShiftReportDataView DataContext="{Binding Path=ShiftReportDataViewModel}" />
                 </Expander>
 
-        <Border BorderBrush="Black " CornerRadius="15"  BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Column="1" >
+                <Border BorderBrush="Black " CornerRadius="15"  BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Column="1" >
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <DataGrid  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" ItemsSource="{Binding Path=DetailedReportItems}" IsReadOnly="True" AutoGenerateColumns="False" AlternatingRowBackground="LightGreen">
+            <DataGrid  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" ItemsSource="{Binding Path=DetailedReportItems}" AutoGenerateColumns="False" 
+                       AlternatingRowBackground="LightGreen" >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Data organiki" Binding="{Binding OrganicDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
-                    <DataGridTextColumn Header="Data produkcji" Binding="{Binding ProductionDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" />
-                    <DataGridTextColumn Header="Waga [kg]" Binding="{Binding Weight}"/>
-                    <DataGridTextColumn Header="Czas cyklu [s]" Binding="{Binding CycleTimeInSecond}"/>
-                    <DataGridTextColumn Header="Operator" Binding="{Binding Operator}"/>
-                    <DataGridTextColumn Header="Silos" Binding="{Binding Silos}"/>
-                    <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}"/>
-                    <DataGridTextColumn Header="Ragranulat" Binding="{Binding Blow}"/>
-                    <DataGridTextColumn Header="Gatunek" Binding="{Binding Type}"/>
-                    <DataGridTextColumn Header="Uwagi" Binding="{Binding Comments}"/>
-                    <DataGridTextColumn Header="Sr.g. perełek" Binding="{Binding AvgDensityOfPearls}"/>
+                    <DataGridTextColumn Header="Nr nadany" Binding="{Binding AssignedNumber}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Data organiki" Binding="{Binding OrganicDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Data produkcji" Binding="{Binding ProductionDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Waga [kg]" Binding="{Binding Weight}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Czas cyklu [s]" Binding="{Binding CycleTimeInSecond}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Operator" Binding="{Binding Operator}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Silos" Binding="{Binding Silos}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Ragranulat" Binding="{Binding Blow}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Gatunek" Binding="{Binding Type}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Uwagi" Binding="{Binding Comments}" IsReadOnly="False"/>
+                            <DataGridTextColumn Header="Sr.g. perełek" Binding="{Binding AvgDensityOfPearls}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
             </Border>

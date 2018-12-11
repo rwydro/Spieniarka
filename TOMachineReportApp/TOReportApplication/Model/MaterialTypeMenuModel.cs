@@ -11,6 +11,7 @@ namespace TOReportApplication.Model
         public string SelectedMaterialType { get; set; }
         public string NumberOfBlock { get; set; }
         public string Comments { get; set; }
-        public string AvgDensityOfPearls { get; set; }
+        public double AvgDensityOfPearls { get; set; }
+        public int AssignedNumber { get; set; }
     }
 }
