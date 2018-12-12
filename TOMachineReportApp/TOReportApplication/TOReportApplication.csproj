@@ -234,7 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Mock.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>

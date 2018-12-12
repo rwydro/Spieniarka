@@ -7,8 +7,8 @@
     <AllowPNG />
   </OfficeDocumentSettings>
   <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-    <WindowHeight>11640</WindowHeight>
-    <WindowWidth>20940</WindowWidth>
+    <WindowHeight>1164</WindowHeight>
+    <WindowWidth>209</WindowWidth>
     <WindowTopX>360</WindowTopX>
     <WindowTopY>105</WindowTopY>
     <ProtectStructure>False</ProtectStructure>
@@ -18,7 +18,7 @@
     <Style ss:ID="Default" ss:Name="Normal">
       <Alignment ss:Vertical="Bottom" />
       <Borders />
-      <Font ss:FontName="Calibri" x:CharSet="238" x:Family="Swiss" ss:Size="11" ss:Color="#000000" />
+      <Font ss:FontName="Calibri" x:CharSet="238" x:Family="Swiss" ss:Size="10" ss:Color="#000000" />
       <Interior />
       <NumberFormat />
       <Protection />
@@ -84,14 +84,14 @@
   </Styles>
   <Worksheet ss:Name="Raport">
     <Table x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="15">
-      <Column ss:StyleID="s25" ss:AutoFitWidth="0" ss:Width="28.5" />
-      <Column ss:AutoFitWidth="0" ss:Width="120.75" />
-      <Column ss:AutoFitWidth="0" ss:Width="120.25" />
-      <Column ss:AutoFitWidth="0" ss:Width="50.25" />
-      <Column ss:AutoFitWidth="0" ss:Width="43.5" />
-      <Column ss:AutoFitWidth="0" ss:Width="45.75" />
-      <Column ss:AutoFitWidth="0" ss:Width="53.25" />
-      <Column ss:AutoFitWidth="0" ss:Width="51" />
+      <Column ss:StyleID="s25" ss:AutoFitWidth="0" ss:Width="28" />
+      <Column ss:AutoFitWidth="0" ss:Width="100" />
+      <Column ss:AutoFitWidth="0" ss:Width="100" />
+      <Column ss:AutoFitWidth="0" ss:Width="45" />
+      <Column ss:AutoFitWidth="0" ss:Width="40" />
+      <Column ss:AutoFitWidth="0" ss:Width="42" />
+      <Column ss:AutoFitWidth="0" ss:Width="50" />
+      <Column ss:AutoFitWidth="0" ss:Width="49" />
       <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="39.75" />
       <Row>
         <Cell ss:MergeAcross="8" ss:StyleID="s30">
@@ -146,15 +146,21 @@ komora</Data>
         </Cell>
         <Cell ss:StyleID="s16" />
       </Row>
-	    _MYROW_
+	 _MYROW_
      _BUTTOM_
-	   _TYPETABLE_
+	 <Row ss:Index="_MATERIALTABLEINDEX_">
+		<Cell ss:Index="2" ss:StyleID="s27">
+			<Data ss:Type="String">BILANS SUROWCA:</Data>
+		</Cell>
+		<Cell ss:StyleID="s27" />
+	</Row>
+	 _TYPETABLE_
     </Table>
     <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
       <PageSetup>
-        <Header x:Margin="0.31496062992125984" />
-        <Footer x:Margin="0.31496062992125984" />
-        <PageMargins x:Bottom="0.74803149606299213" x:Left="0.70866141732283472" x:Right="0.31496062992125984" x:Top="0.74803149606299213" />
+        <Header x:Margin="0.3" />
+        <Footer x:Margin="0.3" />
+        <PageMargins x:Bottom="0.74803149606299213" x:Left="0.5" x:Right="0.25" x:Top="0.6" />
       </PageSetup>
       <Print>
         <ValidPrinterInfo />
