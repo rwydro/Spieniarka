@@ -25,17 +25,27 @@ namespace TOReportApplication.ViewModels
     {
         private readonly IApplicationRepository dbConnection;
         private readonly IMyLogger logger;
-        
-        public SettingsAndFilterPanelViewModel(IUnityContainer unityContainer, IApplicationRepository dbConnection,
-            IMyLogger logger)
-            : base(unityContainer)
+        private MyTimer timer = new MyTimer();
+
+       
+
+        public Action<FormReportsDBModel> FormReportsModelItemsAction { get; set; }
+
+        public Action<BlowingMachineReportDto> BlowingMachineReportsModelItemsAction { get; set; }
+
+        private DataContextEnum dataContextEnum { get; set; }
+
+        public DataContextEnum DataContextEnum
         {
-            this.dbConnection = dbConnection;
-            this.logger = logger;
-            GenerateReportCommand = new DelegateCommand(() => OnGenereteDateReportAsync().InAsyncSafe());
-            IsSaveInFileReportButtonEnabled = false;
-            SelectedDate = DateTime.Now.Date;
-            logger.logger.Debug($"SettingsAndFilterPanelViewModel with DataContext {DataContextEnum}");
+            get => dataContextEnum;
+            set
+            {
+                if(dataContextEnum == value) return;
+                if(value == DataContextEnum.BlowingMachineVIewModel)
+                    timer.Dispose();
+                dataContextEnum = value;
+                OnPropertyChanged("DataContextEnum");
+            }
         }
 
         public DelegateCommand GenerateReportCommand { get; set; }
@@ -68,18 +78,38 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        public DataContextEnum DataContextEnum { get; set; }
+        public SettingsAndFilterPanelViewModel(IUnityContainer unityContainer, IApplicationRepository dbConnection,
+            IMyLogger logger)
+            : base(unityContainer)
+        {
+            this.dbConnection = dbConnection;
+            this.logger = logger;
+            GenerateReportCommand = new DelegateCommand(() => OnGenereteDateReportAsync().InAsyncSafe());
+            IsSaveInFileReportButtonEnabled = false;
+            SelectedDate = DateTime.Now.Date;
+            timer.Elapsed += OnTimerElapsed;
+            logger.logger.Debug($"SettingsAndFilterPanelViewModel with DataContext {DataContextEnum}");
+        }
 
-        public Action<FormReportsDBModel> FormReportsModelItemsAction { get; set; }
+        private async void OnTimerElapsed(object sender, EventArgs e)
+        {
+            await OnGenereteDateReportAsync();
+        }
 
-        public Action<BlowingMachineReportDto> BlowingMachineReportsModelItemsAction { get; set; }
-
+        public void SetTimer()
+        {
+            this.timer.SetTimer();
+        }
+     
         private async Task OnGenereteDateReportAsync()
         {
             if (DataContextEnum == DataContextEnum.BlowingMachineVIewModel)
                 await GenereteBlowingMachineReport();
             if (DataContextEnum == DataContextEnum.FormViewModel)
+            {
                 await GenereteDateFormReport();
+                this.timer.ResetTimer();
+            }
             IsSaveInFileReportButtonEnabled = true;
         }
 
@@ -130,7 +160,6 @@ namespace TOReportApplication.ViewModels
     }
     public class DateExpiredRule : ValidationRule
     {
-
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             DateTime orderDate = (DateTime)value;

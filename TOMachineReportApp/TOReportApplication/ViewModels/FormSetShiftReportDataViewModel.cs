@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -101,8 +102,8 @@ namespace TOReportApplication.ViewModels
 
         private void OnSave()
         {
-            double density;
-            Double.TryParse(this.AvgDensityOfPearls, out density);
+            //double density;
+            var density = Double.Parse(this.AvgDensityOfPearls, CultureInfo.InvariantCulture);
             OnSendMaterialTypeInfo(new MaterialTypeMenuModel()
             {
                 AvgDensityOfPearls = density,

@@ -31,5 +31,10 @@ namespace TOReportApplication.Views
         {
             ((IFormViewModel) this.DataContext).Dispose();
         }
+
+        private void DataGrid_OnCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {   
+            ((IFormViewModel)this.DataContext).OnCommandCellEnded();
+        }
     }
 }

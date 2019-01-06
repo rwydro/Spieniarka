@@ -104,25 +104,27 @@ namespace TOReportApplication.Logic
             double avgDensityOfPearls;
             DateTime productionDate;
             int assignedNumber;
-            
+            int id;
           
             foreach (DataRow item in obj.Rows)
             {
                 DateTime.TryParse(item.ItemArray[44].ToString(), out organicDate);
                 DateTime.TryParse(item.ItemArray[1].ToString(), out productionDate);
-                TryParse(item.ItemArray[6].ToString(),out weight);
+                TryParse(item.ItemArray[5].ToString(),out weight);
                 int.TryParse(item.ItemArray[32].ToString(), out cycleTimeInSecond);
                 int.Parse(item.ItemArray[35].ToString());
-                TryParse(item.ItemArray[10].ToString(), out blow);
+                TryParse(item.ItemArray[9].ToString(), out blow);
                 TryParse(item.ItemArray[46].ToString(),out avgDensityOfPearls);
                 int.TryParse(item.ItemArray[35].ToString(), out chamber);
                 int.TryParse(item.ItemArray[34].ToString(), out silos);
                 int.TryParse(item.ItemArray[43].ToString(), out assignedNumber);
+                int.TryParse(item.ItemArray[0].ToString(), out id);
 
                 try
                 {
                     list.Add(new FormDetailedReportDBModel()
                     {
+                        Id = id,
                         OrganicDate =  organicDate,
                         ProductionDate = (DateTime)item.ItemArray[1],
                         Weight = weight,

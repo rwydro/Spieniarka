@@ -12,5 +12,6 @@ namespace TOReportApplication.ViewModels.interfaces
         DataContextEnum DataContextEnum { get; set; }
         Action<FormReportsDBModel> FormReportsModelItemsAction { get; set; }
         Action<BlowingMachineReportDto> BlowingMachineReportsModelItemsAction { get; set; }
+        void SetTimer();
     }
 }

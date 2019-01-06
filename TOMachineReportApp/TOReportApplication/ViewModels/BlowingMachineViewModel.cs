@@ -139,12 +139,12 @@ namespace TOReportApplication.ViewModels
             catch (InvalidOperationException ex)
             {
                 logger.logger.Error("Pusta kolekcja", ex);
-                ShowMessageBox("Brak wartości dla wybranej daty", MessageBoxIcon.Asterisk);
+                MessageBoxHelper.ShowMessageBox("Brak wartości dla wybranej daty", MessageBoxIcon.Asterisk);
             }
             catch (Exception ex)
             {
                 logger.logger.Error("Błąd zapisu pliku", ex);
-                ShowMessageBox("Błąd podczas zapisu pliku spróbuj ponownie", MessageBoxIcon.Exclamation);
+                MessageBoxHelper.ShowMessageBox("Błąd podczas zapisu pliku spróbuj ponownie", MessageBoxIcon.Exclamation);
             }
         }
 
@@ -177,12 +177,12 @@ namespace TOReportApplication.ViewModels
             catch (UnauthorizedAccessException ex)
             {
                 logger.logger.Error("Błąd zapisu pliku", ex);
-                ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
+                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
             }
             catch (Exception ex)
             {
                 logger.logger.Error("Błąd zapisu pliku", ex);
-                ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
+                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
             }
         }
 
@@ -200,12 +200,12 @@ namespace TOReportApplication.ViewModels
             catch (DirectoryNotFoundException ex)
             {
                 logger.logger.Error("Failed during creating directory", ex);
-                ShowMessageBox("Błąd podczas tworzenia katalogów sprawdź uprawnienia", MessageBoxIcon.Exclamation);
+                MessageBoxHelper.ShowMessageBox("Błąd podczas tworzenia katalogów sprawdź uprawnienia", MessageBoxIcon.Exclamation);
             }
             catch (Exception ex)
             {
                 logger.logger.Error("Failed during creating directory", ex);
-                ShowMessageBox("Błąd podczas tworzenia katalogów sprawdź uprawnienia", MessageBoxIcon.Exclamation);
+                MessageBoxHelper.ShowMessageBox("Błąd podczas tworzenia katalogów sprawdź uprawnienia", MessageBoxIcon.Exclamation);
             }
 
             return path;
@@ -222,12 +222,6 @@ namespace TOReportApplication.ViewModels
         public void Dispose()
         {
             SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction -= OnGetBlowingMachineReportsModelItems;
-        }
-
-        private void ShowMessageBox(string info, MessageBoxIcon icon)
-        {
-            MessageBox.Show(info, "Error", MessageBoxButtons.OK,
-                icon);
         }
     }
 }

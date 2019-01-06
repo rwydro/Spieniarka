@@ -96,9 +96,9 @@
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <DataGrid  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" ItemsSource="{Binding Path=DetailedReportItems}" AutoGenerateColumns="False" 
-                       AlternatingRowBackground="LightGreen" >
-                <DataGrid.Columns>
+                    <DataGrid  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" ItemsSource="{Binding Path=DetailedReportItems}" AutoGenerateColumns="False" 
+                       AlternatingRowBackground="LightGreen" CellEditEnding="DataGrid_OnCellEditEnding"   SelectedItem="{Binding Path=SelectedDatailedReportRow, Mode=TwoWay}">
+                        <DataGrid.Columns>  
                     <DataGridTextColumn Header="Nr nadany" Binding="{Binding AssignedNumber}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Data organiki" Binding="{Binding OrganicDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Data produkcji" Binding="{Binding ProductionDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" IsReadOnly="True"/>
@@ -109,7 +109,7 @@
                             <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Ragranulat" Binding="{Binding Blow}" IsReadOnly="True" />
                             <DataGridTextColumn Header="Gatunek" Binding="{Binding Type}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Uwagi" Binding="{Binding Comments}" IsReadOnly="False"/>
+                            <DataGridTextColumn Header="Uwagi" Binding="{Binding Comments, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                             <DataGridTextColumn Header="Sr.g. perełek" Binding="{Binding AvgDensityOfPearls}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>

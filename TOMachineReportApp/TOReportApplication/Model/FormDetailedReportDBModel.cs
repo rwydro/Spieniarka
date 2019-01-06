@@ -8,6 +8,7 @@ namespace TOReportApplication.Model
 {
     public class FormDetailedReportDBModel: FormDateReportDBModel
     {
+        public int Id { get; set; }
         public DateTime OrganicDate { get; set; }
         public double Weight { get; set; }
         public int CycleTimeInSecond { get; set; }

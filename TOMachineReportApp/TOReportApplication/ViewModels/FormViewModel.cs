@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Forms;
+using Castle.Core.Internal;
+using FluentNHibernate.Conventions;
 using Prism.Commands;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
@@ -104,6 +105,19 @@ namespace TOReportApplication.ViewModels
             }
         }
 
+        private FormDetailedReportDBModel selectedDatailedReportRow { get; set; }
+
+        public FormDetailedReportDBModel SelectedDatailedReportRow
+        {
+            get { return selectedDatailedReportRow; }
+            set
+            {
+                if (selectedDatailedReportRow == value) return;
+                selectedDatailedReportRow = value;
+                OnPropertyChanged("SelectedDatailedReportRow");
+            }
+        }
+
         private FormDateReportModel selectedDatedReportRow { get; set; }
 
         public FormDateReportModel SelectedDatedReportRow
@@ -113,7 +127,15 @@ namespace TOReportApplication.ViewModels
             {
                 if (selectedDatedReportRow == value) return;
                 selectedDatedReportRow = value;
-                SetFormDetailedReport();
+                try
+                {
+                    SetFormDetailedReport();
+                }
+                catch (Exception e)
+                {
+                    logger.logger.ErrorFormat("No selected chamber in application: ", e);
+                    MessageBoxHelper.ShowMessageBox("Wybierz komore i sprobuj wygenerowac raport ponownie", MessageBoxIcon.Exclamation);
+                }
                 OnPropertyChanged("SelectedDatedReportRow");
             }
         }
@@ -125,20 +147,32 @@ namespace TOReportApplication.ViewModels
         }
 
         public IFormSetShiftReportDataViewModel ShiftReportDataViewModel { get; }
+        private IMyLogger logger;
+        private IApplicationRepository applicationRepository;
 
         public FormViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger, IFormSetShiftReportDataViewModel shiftReportDataViewModel)
             : base(container)
         {
+            this.logger = logger;
+            this.applicationRepository = repository;
             this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
             this.ShiftReportDataViewModel = shiftReportDataViewModel;
             this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
+            this.SettingsAndFilterPanelViewModel.SetTimer();
             this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData; 
             GenereteReportCommand = new DelegateCommand(OnGenerateReportForChamber);
             GenereteAllReportCommand = new DelegateCommand(OnGenerateAllReportForChambers);
             IsChamberReportPanelEnabled = false;
+            
         }
-    
+
+
+        public void OnCommandCellEnded()
+        {
+            UpdateDataBase(SelectedDatailedReportRow);
+        }
+
         private void OnGetMaterialTypeData(MaterialTypeMenuModel obj)
         {
             int counter = obj.AssignedNumber;
@@ -149,10 +183,20 @@ namespace TOReportApplication.ViewModels
                 item.Type = obj.SelectedMaterialType;
                 item.AssignedNumber = counter;
                 counter++;
+                UpdateDataBase(item);
             }
 
             OnGenerateReportForChamber();
        }
+
+        private void UpdateDataBase(FormDetailedReportDBModel item)
+        {
+            var query = String.Format(CultureInfo.InvariantCulture,
+                "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3} " +
+                "where id_blok = {4}",item.Comments,item.Type,item.AvgDensityOfPearls,item.AssignedNumber,item.Id);
+            logger.logger.DebugFormat("Updata data query: {0}", query);
+            applicationRepository.UpdateData(query);
+        }
 
         private void OnGenerateAllReportForChambers()
         {
@@ -161,23 +205,44 @@ namespace TOReportApplication.ViewModels
                 DetailedReportItems.Add(item);
             
         }
-
+      
         private void OnGenerateReportForChamber()
         {
-            DetailedReportItems.Clear();
-            var specificChamberItems = ChamberReportItems.Where(s => s.Chamber == SelectedChamberItem);
-            foreach (var formDetailedReportDbModel in specificChamberItems)
-                DetailedReportItems.Add(formDetailedReportDbModel);
+            try
+            {
+                if (DetailedReportItems.IsNullOrEmpty())
+                {
+                    SetFormDetailedReport();
+                }
+                DetailedReportItems.Clear();
+                var specificChamberItems = ChamberReportItems.Where(s => s.Chamber == SelectedChamberItem);
+                foreach (var formDetailedReportDbModel in specificChamberItems)
+                    DetailedReportItems.Add(formDetailedReportDbModel);
+            }
+            catch (Exception e)
+            {
+                logger.logger.ErrorFormat("No selected chamber in application: ", e);
+                MessageBoxHelper.ShowMessageBox("Wybierz komore i sprobuj wygenerowac raport ponownie", MessageBoxIcon.Exclamation);
+            }
+           
         }
 
         private void OnGetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
         {
+            
             DateReportItems = new ObservableCollection<FormDateReportModel>(GenerateDateReport(formReportsDbModel.DateReportDb));
             ChamberReportItems = new List<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb
                                                                      where li.ProductionDate >= DateReportItems.First().TimeFrom && li.ProductionDate <= DateReportItems.Last().TimeTo
                                                                      select li);
             SetChambers();
             IsChamberReportPanelEnabled = true;
+            UpdateChamberReport();
+        }
+
+        private void UpdateChamberReport()
+        {
+            if (SelectedChamberItem != 0)
+                SetFormDetailedReport();
         }
 
 
@@ -188,8 +253,13 @@ namespace TOReportApplication.ViewModels
         }
 
         private void SetFormDetailedReport()
-        {          
-            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(from it in ChamberReportItems where it.Chamber == SelectedDatedReportRow.Chamber select it);
+        {
+            if (SelectedDatedReportRow != null)
+            {
+                SelectedChamberItem = SelectedDatedReportRow.Chamber;
+            }
+            
+            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(from it in ChamberReportItems where it.Chamber == SelectedChamberItem select it);
             SelectedChamberItem = DetailedReportItems.FirstOrDefault().Chamber;
         }
        
@@ -233,7 +303,6 @@ namespace TOReportApplication.ViewModels
             return shiftCalendarManager.RemoveNastedRows(list); 
         }
 
-     
         public void Dispose()
         {
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction -= OnGetFormReportsModelItems;
