@@ -28,11 +28,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" Grid.Row="0" Name="backButton" Content="Back" Click="BackButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="1" Name="formButton" Content="Forma" Click="FormButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="2" Name="blowingMachineButton" Content="Spieniarka" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="0" Name="formButton" Content="Forma" Click="FormButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="1" Name="blowingMachineButton" Content="Spieniarka" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <ContentControl Content="{Binding}" Grid.Column="1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>

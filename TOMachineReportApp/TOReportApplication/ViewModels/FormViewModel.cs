@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Castle.Core.Internal;
 using FluentNHibernate.Conventions;
 using Prism.Commands;
@@ -13,13 +14,13 @@ using TOReportApplication.Logic;
 using TOReportApplication.Model;
 using TOReportApplication.ViewModels.interfaces;
 using Unity;
+using Application = System.Windows.Application;
 
 namespace TOReportApplication.ViewModels
 {
-    public class FormViewModel: ViewModelBase, IFormViewModel
-    {      
-        public DelegateCommand GenereteReportCommand { get; set; }
-        public DelegateCommand GenereteAllReportCommand { get; set; }
+    public class FormViewModel : ViewModelBase, IFormViewModel
+    {
+        public DelegateCommand SaveReportInFileCommand { get; set; }
 
         private string shiftProperty { get; set; }
 
@@ -30,6 +31,17 @@ namespace TOReportApplication.ViewModels
             {
                 shiftProperty = value;
                 OnPropertyChanged("ShiftProperty");
+            }
+        }
+
+        private int selectedChamberItem;
+        public int SelectedChamberItem
+        {
+            get { return selectedChamberItem; }
+            set
+            {
+                selectedChamberItem = value;
+                OnPropertyChanged("SelectedChamberItem");
             }
         }
 
@@ -52,7 +64,7 @@ namespace TOReportApplication.ViewModels
             get { return detailedReportItems; }
             set
             {
-                if(detailedReportItems == value) return;
+                if (detailedReportItems == value) return;
                 detailedReportItems = value;
                 OnPropertyChanged("DetailedReportItems");
             }
@@ -82,26 +94,27 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private int selectedChamberItem;
-        public int SelectedChamberItem
+        private string selectedShiftItem;
+        public string SelectedShiftItem
         {
-            get { return selectedChamberItem; }
+            get { return selectedShiftItem; }
             set
             {
-                selectedChamberItem = value;
-                OnPropertyChanged("SelectedChamberItem");
+                if(selectedShiftItem == value) return;
+                selectedShiftItem = value;
+                OnPropertyChanged("SelectedShiftItem");
             }
         }
 
-        private ObservableCollection<int> chamberItems;
-
-        public ObservableCollection<int> ChamberItems
+        private ObservableCollection<string> shiftItems;
+        public ObservableCollection<string> ShiftItems
         {
-            get { return chamberItems; }
+            get { return shiftItems; }
             set
             {
-                chamberItems = value;
-                OnPropertyChanged("ChamberItems");
+                if (shiftItems == value) return;
+                shiftItems = value;
+                OnPropertyChanged("ShiftItems");
             }
         }
 
@@ -125,10 +138,11 @@ namespace TOReportApplication.ViewModels
             get { return selectedDatedReportRow; }
             set
             {
-                if (selectedDatedReportRow == value) return;
+                if (selectedDatedReportRow == value || value == null) return;
                 selectedDatedReportRow = value;
                 try
                 {
+                    ActualDatedReportRow = value;
                     SetFormDetailedReport();
                 }
                 catch (Exception e)
@@ -137,6 +151,19 @@ namespace TOReportApplication.ViewModels
                     MessageBoxHelper.ShowMessageBox("Wybierz komore i sprobuj wygenerowac raport ponownie", MessageBoxIcon.Exclamation);
                 }
                 OnPropertyChanged("SelectedDatedReportRow");
+            }
+        }
+
+        private FormDateReportModel actualdDatedReportRow { get; set; }
+
+        public FormDateReportModel ActualDatedReportRow
+        {
+            get { return actualdDatedReportRow; }
+            set
+            {
+                if (actualdDatedReportRow == value) return;
+                actualdDatedReportRow = value;
+                OnPropertyChanged("ActualDatedReportRow");
             }
         }
 
@@ -160,13 +187,26 @@ namespace TOReportApplication.ViewModels
             this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
             this.SettingsAndFilterPanelViewModel.SetTimer();
-            this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData; 
-            GenereteReportCommand = new DelegateCommand(OnGenerateReportForChamber);
-            GenereteAllReportCommand = new DelegateCommand(OnGenerateAllReportForChambers);
+            this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData;
+            SaveReportInFileCommand = new DelegateCommand(OnSaveReportInFile);
             IsChamberReportPanelEnabled = false;
+        }
+
+        private void OnSaveReportInFile()
+        {
             
         }
 
+        private void SetAvailableShifts()
+        {
+            ShiftItems = new ObservableCollection<string>();
+            foreach (var item in DateReportItems)
+            {
+                if(!string.IsNullOrEmpty(ShiftItems.FirstOrDefault(s => s.Contains(item.Shift))))// tu poprawic
+                    ShiftItems.Add(item.Shift);
+            }
+                        
+        }
 
         public void OnCommandCellEnded()
         {
@@ -175,6 +215,11 @@ namespace TOReportApplication.ViewModels
 
         private void OnGetMaterialTypeData(MaterialTypeMenuModel obj)
         {
+            if (DetailedReportItems.IsNullOrEmpty())
+            {
+                MessageBoxHelper.ShowMessageBox("Wybierz komore i sprobuj wygenerowac raport ponownie", MessageBoxIcon.Exclamation);
+                return;
+            }
             int counter = obj.AssignedNumber;
             foreach (var item in DetailedReportItems)
             {
@@ -185,15 +230,14 @@ namespace TOReportApplication.ViewModels
                 counter++;
                 UpdateDataBase(item);
             }
-
-            OnGenerateReportForChamber();
-       }
+            SetFormDetailedReport();
+        }
 
         private void UpdateDataBase(FormDetailedReportDBModel item)
         {
             var query = String.Format(CultureInfo.InvariantCulture,
                 "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3} " +
-                "where id_blok = {4}",item.Comments,item.Type,item.AvgDensityOfPearls,item.AssignedNumber,item.Id);
+                "where id_blok = {4}", item.Comments, item.Type, item.AvgDensityOfPearls, item.AssignedNumber, item.Id);
             logger.logger.DebugFormat("Updata data query: {0}", query);
             applicationRepository.UpdateData(query);
         }
@@ -203,104 +247,103 @@ namespace TOReportApplication.ViewModels
             DetailedReportItems.Clear();
             foreach (var item in ChamberReportItems)
                 DetailedReportItems.Add(item);
-            
-        }
-      
-        private void OnGenerateReportForChamber()
-        {
-            try
-            {
-                if (DetailedReportItems.IsNullOrEmpty())
-                {
-                    SetFormDetailedReport();
-                }
-                DetailedReportItems.Clear();
-                var specificChamberItems = ChamberReportItems.Where(s => s.Chamber == SelectedChamberItem);
-                foreach (var formDetailedReportDbModel in specificChamberItems)
-                    DetailedReportItems.Add(formDetailedReportDbModel);
-            }
-            catch (Exception e)
-            {
-                logger.logger.ErrorFormat("No selected chamber in application: ", e);
-                MessageBoxHelper.ShowMessageBox("Wybierz komore i sprobuj wygenerowac raport ponownie", MessageBoxIcon.Exclamation);
-            }
-           
+
         }
 
         private void OnGetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
         {
-            
-            DateReportItems = new ObservableCollection<FormDateReportModel>(GenerateDateReport(formReportsDbModel.DateReportDb));
+            Application.Current.Dispatcher.InvokeAsync(() => GetFormReportsModelItems(formReportsDbModel));
+        }
+
+        private void GetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
+        {
+            DateReportItems = DateReportItems = new ObservableCollection<FormDateReportModel>();
+            GenerateDateReport(formReportsDbModel.DateReportDb).ForEach(DateReportItems.Add);
+
             ChamberReportItems = new List<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb
-                                                                     where li.ProductionDate >= DateReportItems.First().TimeFrom && li.ProductionDate <= DateReportItems.Last().TimeTo
-                                                                     select li);
-            SetChambers();
+                    where li.ProductionDate >= DateReportItems.First().TimeFrom && li.ProductionDate <= DateReportItems.Last().TimeTo
+                    select li);
+            SetAvailableShifts();
             IsChamberReportPanelEnabled = true;
-            UpdateChamberReport();
-        }
-
-        private void UpdateChamberReport()
-        {
-            if (SelectedChamberItem != 0)
-                SetFormDetailedReport();
-        }
-
-
-        private void SetChambers()
-        {
-            var item = ChamberReportItems.Select(ch => ch.Chamber).Distinct();
-            ChamberItems = new ObservableCollection<int>(item);
+            SetFormDetailedReport();
         }
 
         private void SetFormDetailedReport()
         {
-            if (SelectedDatedReportRow != null)
+
+            if (SelectedDatedReportRow != null && SelectedChamberItem !=  SelectedDatedReportRow.Chamber)
             {
                 SelectedChamberItem = SelectedDatedReportRow.Chamber;
             }
-            
-            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(from it in ChamberReportItems where it.Chamber == SelectedChamberItem select it);
-            SelectedChamberItem = DetailedReportItems.FirstOrDefault().Chamber;
+
+            logger.logger.ErrorFormat("Method SetFormDetailedReport");
+            if (ActualDatedReportRow == null ) return; // to jest jak przyjdzie timer i nie wybrano zadnej komory zeby sie nie wywalilo
+            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(
+                from it in ChamberReportItems
+                where it.Chamber == SelectedDatedReportRow.Chamber && it.Silos == SelectedDatedReportRow.Silos &&
+                      SelectedDatedReportRow.TimeFrom<= it.ProductionDate && it.ProductionDate <= SelectedDatedReportRow.TimeTo
+                select it);
+            logger.logger.ErrorFormat("End method SetFormDetailedReport");
         }
-       
+
         private List<FormDateReportModel> GenerateDateReport(List<FormDateReportDBModel> obj)
-        {
+        {   
             int counter = 0;
-            int chamber=0;
+            int chamber = 0;
             bool isLastChamber = false;
             var list = new List<FormDateReportModel>();
             var shiftCalendarManager = new ShiftCalendarManager();
+
             for (int i = 0; i < obj.Count; i++)
             {
-                if ((chamber == obj[i].Chamber || counter == 0) && obj.Count-1 != i)// ostatni warunek po to zeby wyswietlac nie zakonczone cykle
+                if ((i + 1) == obj.Count)
                 {
-                    chamber = obj[i].Chamber;
-                    counter++;
-                    continue;
-                }
-               
                     var dateFrom = obj[i - counter].ProductionDate;
-                    var toDate = obj[i - 1].ProductionDate;
+                    var toDate = obj[i].ProductionDate;
                     var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
                         new TimeSpan(dateFrom.Hour, dateFrom.Minute, dateFrom.Second),
                         new TimeSpan(toDate.Hour, toDate.Minute, toDate.Second)));
                     list.Add(new FormDateReportModel()
                     {
                         Shift = shift,
-                        TimeFrom = dateFrom,
-                        TimeTo = toDate,
-                        Chamber = obj[i-1].Chamber,
-                        Silos = obj[i-1].Silos,
-                        NumberOfBlocks = counter,
-                        Operator = obj[i-counter].Operator
+                        TimeFrom = obj[i - counter].ProductionDate,
+                        TimeTo = obj[i].ProductionDate,
+                        Chamber = obj[i].Chamber,
+                        Silos = obj[i].Silos,
+                        NumberOfBlocks = counter + 1,
+                        Operator = obj[i - counter].Operator
                     });
                     ShiftProperty = shift;
                     counter = 0;
-                    counter++;
-                    chamber = obj[i].Chamber;
-                
-            }      
-            return shiftCalendarManager.RemoveNastedRows(list); 
+                    continue;
+                }
+                if (chamber != obj[i+1].Chamber && counter != 0 )// ostatni warunek po to zeby wyswietlac nie zakonczone cykle
+                {
+                    var dateFrom = obj[i - counter].ProductionDate;
+                    var toDate = obj[i].ProductionDate;
+                    var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
+                        new TimeSpan(dateFrom.Hour, dateFrom.Minute, dateFrom.Second),
+                        new TimeSpan(toDate.Hour, toDate.Minute, toDate.Second)));
+                    list.Add(new FormDateReportModel()
+                    {
+                        Shift = shift,
+                        TimeFrom = obj[i - counter].ProductionDate,
+                        TimeTo = obj[i].ProductionDate,
+                        Chamber = obj[i].Chamber,
+                        Silos = obj[i].Silos,
+                        NumberOfBlocks = counter + 1,
+                        Operator = obj[i - counter].Operator
+                    });
+                    ShiftProperty = shift;
+                    counter = 0;
+                    continue;
+                }
+
+                chamber = obj[i].Chamber;
+                counter++;              
+            }
+
+            return shiftCalendarManager.RemoveNastedRows(list);
         }
 
         public void Dispose()

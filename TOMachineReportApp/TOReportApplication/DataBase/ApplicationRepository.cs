@@ -11,7 +11,7 @@ namespace TOReportApplication.DataBase
 {
     public interface IApplicationRepository
     {
-        DataTable GetFormDateReportItems(string query);
+        DataTable GetDataFromDB(string query);
         void UpdateData(string query);
     }
 
@@ -23,19 +23,20 @@ namespace TOReportApplication.DataBase
             this.OpenSession();
         }
 
-        public DataTable GetFormDateReportItems(string query)
+        public DataTable GetDataFromDB(string query)
         {
             DataSet dataSet = new DataSet();
             DataTable dataTable = new DataTable();
             try
             {
-                this.myLogger.logger.Debug((object)("query " + query));
+                this.myLogger.logger.Debug((object) ("query " + query));
                 new NpgsqlDataAdapter(query, this.session).Fill(dataSet);
                 dataTable = dataSet.Tables[0];
             }
             catch (Exception ex)
             {
-                this.myLogger.logger.ErrorFormat("Error during execute query: {0}   message: {1}", (object)query, (object)ex.Message);
+                this.myLogger.logger.ErrorFormat("Error during execute query: {0}   message: {1}", (object) query,
+                    (object) ex.Message);
             }
             return dataTable;
         }

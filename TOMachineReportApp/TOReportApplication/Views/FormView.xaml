@@ -71,16 +71,13 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Content="Raport z komory numer" FontWeight="Bold" FontSize="12" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                    <ComboBox Grid.Column="1" ItemsSource="{Binding Path=ChamberItems}" SelectedItem="{Binding Path=SelectedChamberItem}" Margin="10,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <Button Grid.Column="2" Command="{Binding Path=GenereteReportCommand}" Content="Generuj raport" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource FormMidPanelButtonStyle}" />
-                    <Button Grid.Column="3" Command="{Binding Path=GenereteAllReportCommand}" Content="Raport-wszystkie komory" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Style="{StaticResource FormMidPanelButtonStyle}"/>
+                    <Label Grid.Column="0" Content="Raport z komory numer:"  FontSize="14" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Path=SelectedChamberItem}" FontWeight="Bold" FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.75"/>
+                    <!--<ComboBox Grid.Column="2" ItemsSource="{Binding Path=ShiftItems}" SelectedItem="{Binding Path=SelectedShiftItems}" Margin="10,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Button Grid.Column="3" Command="{Binding Path=SaveReportInFileCommand}" Content="Zapisz raport zmianowy w pliku" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource FormMidPanelButtonStyle}" />-->
                 </Grid>
-        </StackPanel>
+            </StackPanel>
         </Border>
         <Grid Grid.Row="3">
             <Grid>

@@ -29,11 +29,6 @@ namespace TOReportApplication
             this.DataContext = container.Resolve<IFormViewModel>();
         }
 
-        private void BackButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = null;
-        }
-
         private void BlowingMachineButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.DataContext = container.Resolve<IBlowingMachineViewModel>();

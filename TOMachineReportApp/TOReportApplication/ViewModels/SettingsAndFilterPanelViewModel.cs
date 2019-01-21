@@ -84,16 +84,17 @@ namespace TOReportApplication.ViewModels
         {
             this.dbConnection = dbConnection;
             this.logger = logger;
-            GenerateReportCommand = new DelegateCommand(() => OnGenereteDateReportAsync().InAsyncSafe());
+            GenerateReportCommand = new DelegateCommand(OnGenereteDateReportAsync);
             IsSaveInFileReportButtonEnabled = false;
             SelectedDate = DateTime.Now.Date;
             timer.Elapsed += OnTimerElapsed;
             logger.logger.Debug($"SettingsAndFilterPanelViewModel with DataContext {DataContextEnum}");
         }
 
-        private async void OnTimerElapsed(object sender, EventArgs e)
+        private void OnTimerElapsed(object sender, EventArgs e)
         {
-            await OnGenereteDateReportAsync();
+            logger.logger.DebugFormat("On timer Elapsed");
+            OnGenereteDateReportAsync();
         }
 
         public void SetTimer()
@@ -101,13 +102,13 @@ namespace TOReportApplication.ViewModels
             this.timer.SetTimer();
         }
      
-        private async Task OnGenereteDateReportAsync()
+        private void OnGenereteDateReportAsync()
         {
             if (DataContextEnum == DataContextEnum.BlowingMachineVIewModel)
-                await GenereteBlowingMachineReport();
+                GenereteBlowingMachineReport();
             if (DataContextEnum == DataContextEnum.FormViewModel)
             {
-                await GenereteDateFormReport();
+                GenereteDateFormReport();
                 this.timer.ResetTimer();
             }
             IsSaveInFileReportButtonEnabled = true;
@@ -122,26 +123,24 @@ namespace TOReportApplication.ViewModels
                     new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.AddDays(1).Day,7,0,0));
         }   
 
-        private async Task GenereteBlowingMachineReport()
+        private void GenereteBlowingMachineReport()
         {
-            var data = dbConnection.GetFormDateReportItems(GenerateBlowingMachineQuery());
+            var data = dbConnection.GetDataFromDB(GenerateBlowingMachineQuery());
             var model = GenerateModelLogic<BlowingMachineReportModel>.GenerateBlowingMachineReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
             BlowingMachineReportsModelItemsAction(new BlowingMachineReportDto {Model = model,SelectedDate = SelectedDate});
         }
 
-        private async Task GenereteDateFormReport()
+        private void GenereteDateFormReport()
         {
             try
             {
                 var query = string.Format(
                     "SELECT * FROM public.forma_blok2 where data_czas > '{0}' and data_czas < '{1}'",
                     SelectedDate.AddHours(4), SelectedDate.AddDays(1).AddHours(10));
-                var data = dbConnection.GetFormDateReportItems(query);
-                //var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GenerateBlowingMachineReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
-                //var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GenerateBlowingMachineReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
+                var data = dbConnection.GetDataFromDB(query);
                 var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GeneratFormDateReportModel(data);
                 var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GeneratFormDetailedReportModel(data);
-                if (detailedReportDbModelList == null || detailedReportDbModelList == null)
+                if (detailedReportDbModelList == null || dateReportDbModelList == null)
                 {
                     logger.logger.ErrorFormat("Pusta kolekcja: dateReportDbModelList{0} detailedReportDbModelList{1}", dateReportDbModelList.Count, detailedReportDbModelList.Count);
                 }
@@ -154,7 +153,6 @@ namespace TOReportApplication.ViewModels
             catch (Exception ex)
             {
                 logger.logger.ErrorFormat("Failed during generating FormReport:  {0}", ex);
-                throw;
             }
         }
     }
