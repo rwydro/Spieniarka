@@ -9,8 +9,8 @@ namespace TOReportApplication.Logic
         public event EventHandler Elapsed;
 
         public void SetTimer()
-        {
-            timer = new Timer(90*000);
+        { 
+            timer = new Timer(90*1000);
             timer.Elapsed += new ElapsedEventHandler(OnTimerElapsed);
         }
 

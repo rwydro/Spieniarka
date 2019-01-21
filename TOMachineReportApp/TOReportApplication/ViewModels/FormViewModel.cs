@@ -204,12 +204,11 @@ namespace TOReportApplication.ViewModels
             {
                 if(!string.IsNullOrEmpty(ShiftItems.FirstOrDefault(s => s.Contains(item.Shift))))// tu poprawic
                     ShiftItems.Add(item.Shift);
-            }
-                        
+            }                        
         }
 
         public void OnCommandCellEnded()
-        {
+        { 
             UpdateDataBase(SelectedDatailedReportRow);
         }
 
@@ -227,27 +226,21 @@ namespace TOReportApplication.ViewModels
                 item.Comments = obj.Comments;
                 item.Type = obj.SelectedMaterialType;
                 item.AssignedNumber = counter;
+                item.OrganicDate = obj.OrganicDate;
+                item.PzNumber = obj.PzNumber;
                 counter++;
                 UpdateDataBase(item);
             }
             SetFormDetailedReport();
-        }
+        }   
 
         private void UpdateDataBase(FormDetailedReportDBModel item)
         {
             var query = String.Format(CultureInfo.InvariantCulture,
-                "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3} " +
-                "where id_blok = {4}", item.Comments, item.Type, item.AvgDensityOfPearls, item.AssignedNumber, item.Id);
+                "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3}, silos = {4}, komora = {5}, data_organiki = '{6}', pz = '{7}' " +
+                "where id_blok = {8}", item.Comments, item.Type, item.AvgDensityOfPearls, item.AssignedNumber, item.Silos, item.Chamber, item.OrganicDate.ToString("yyyy-MM-dd"), item.PzNumber, item.Id);
             logger.logger.DebugFormat("Updata data query: {0}", query);
             applicationRepository.UpdateData(query);
-        }
-
-        private void OnGenerateAllReportForChambers()
-        {
-            DetailedReportItems.Clear();
-            foreach (var item in ChamberReportItems)
-                DetailedReportItems.Add(item);
-
         }
 
         private void OnGetFormReportsModelItems(FormReportsDBModel formReportsDbModel)

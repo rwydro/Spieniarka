@@ -33,7 +33,7 @@ namespace TOReportApplication.Views
         }
 
         private void DataGrid_OnCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {   
+        {
             ((IFormViewModel)this.DataContext).OnCommandCellEnded();
         }
     }

@@ -24,6 +24,7 @@
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding Path=(Validation.HasError), ElementName=PearlsDensityTextBox}" Value="False"/>
                         <Condition Binding="{Binding Path=(Validation.HasError), ElementName=AssignedNumberTextBox}" Value="False"/>
+                        <Condition Binding="{Binding Path=(Validation.HasError), ElementName=PzNumber}" Value="False"/>
                     </MultiDataTrigger.Conditions>
                     <Setter Property="IsEnabled" Value="True"/>
                     <Setter Property="Background" Value="LightGreen"/>
@@ -31,6 +32,7 @@
             </Style.Triggers>
         </Style>
         <viewsLogic:NumericValidationRule x:Key="NumericValidationRule"/>
+        <viewsLogic:InverseAndBooleansToBooleanConverter x:Key="InverseAndBooleansToBooleanConverter"/>
     </UserControl.Resources>
     <Border 
             Background="DarkOrange" 
@@ -49,6 +51,7 @@
             <Label  Content="Gatunek Menu" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Grid  Grid.Row="1" Margin="5,0,0,0" >
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -80,7 +83,6 @@
                 <WrapPanel Grid.Row="3" VerticalAlignment="Center">
                     <Label Style="{StaticResource MaterialTypeLabelStyle}"  Content="Numeruj bloki od" />
                     <TextBox Name="AssignedNumberTextBox" VerticalAlignment="Center" MinHeight="26" MinWidth="50" FontSize="15" >
-
                         <TextBox.Text>
                             <Binding Path="AssignedNumber" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
@@ -91,8 +93,28 @@
                         </TextBox.Text>
                     </TextBox>
                 </WrapPanel>
-                <Button Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,30,10"  Style="{StaticResource MaterialTypeButtonStyle}" FontSize="14"  Content="Ok" 
+                <WrapPanel Grid.Row="4" VerticalAlignment="Center">
+                    <Label Style="{StaticResource MaterialTypeLabelStyle}"  Content="Numer Pz" />
+                    <TextBox Name="PzNumber" VerticalAlignment="Center" MinHeight="26" MinWidth="50" FontSize="15" >
+                        <TextBox.Text>
+                            <Binding Path="PzNumber" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <viewsLogic:NumericValidationRule ValidationType="{x:Type system:Int32}"
+                                                                      ValidatesOnTargetUpdated="True"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text> 
+                    </TextBox>
+                </WrapPanel>
+                <Button Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,30,10"  Style="{StaticResource MaterialTypeButtonStyle}" FontSize="14"  Content="Ok" 
                         Height="40" Width="100" Command="{Binding SaveCommand}" >
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource InverseAndBooleansToBooleanConverter}" Mode="TwoWay">
+                            <Binding ElementName="PearlsDensityTextBox" Path="(Validation.HasError)" />
+                            <Binding ElementName="AssignedNumberTextBox" Path="(Validation.HasError)" />
+                            <Binding ElementName="PzNumber" Path="(Validation.HasError)" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
                 </Button>
             </Grid>
         </Grid>

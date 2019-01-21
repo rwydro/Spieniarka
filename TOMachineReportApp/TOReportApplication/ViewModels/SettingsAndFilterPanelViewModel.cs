@@ -27,7 +27,23 @@ namespace TOReportApplication.ViewModels
         private readonly IMyLogger logger;
         private MyTimer timer = new MyTimer();
 
-       
+        private DateTime currentDateTime;
+
+        public DateTime CurrentDateTime
+        {
+            get { return currentDateTime; }
+            set
+            {
+                if (value.Equals(currentDateTime))
+                {
+                    return;
+                }
+                currentDateTime = value;
+                OnPropertyChanged("CurrentDateTime");
+
+                GenerateReportCommand.RaiseCanExecuteChanged();
+            }
+        }
 
         public Action<FormReportsDBModel> FormReportsModelItemsAction { get; set; }
 
@@ -87,6 +103,7 @@ namespace TOReportApplication.ViewModels
             GenerateReportCommand = new DelegateCommand(OnGenereteDateReportAsync);
             IsSaveInFileReportButtonEnabled = false;
             SelectedDate = DateTime.Now.Date;
+            CurrentDateTime = DateTime.Now;
             timer.Elapsed += OnTimerElapsed;
             logger.logger.Debug($"SettingsAndFilterPanelViewModel with DataContext {DataContextEnum}");
         }
@@ -128,6 +145,7 @@ namespace TOReportApplication.ViewModels
             var data = dbConnection.GetDataFromDB(GenerateBlowingMachineQuery());
             var model = GenerateModelLogic<BlowingMachineReportModel>.GenerateBlowingMachineReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
             BlowingMachineReportsModelItemsAction(new BlowingMachineReportDto {Model = model,SelectedDate = SelectedDate});
+            CurrentDateTime = DateTime.Now;
         }
 
         private void GenereteDateFormReport()
@@ -149,6 +167,7 @@ namespace TOReportApplication.ViewModels
                     DateReportDb = dateReportDbModelList,
                     DetailedReportDb = detailedReportDbModelList
                 });
+                CurrentDateTime = DateTime.Now;
             }
             catch (Exception ex)
             {

@@ -80,6 +80,19 @@ namespace TOReportApplication.ViewModels
             }
         }
 
+        private int pzNumber { get; set; }
+
+        public int PzNumber
+        {
+            get { return pzNumber; }
+            set
+            {
+                if (pzNumber == value) return;
+                pzNumber = value;
+                OnPropertyChanged("PzNumber");
+            }
+        }
+
         private string selectedMaterialType { get; set; }
 
         public string SelectedMaterialType
@@ -110,7 +123,9 @@ namespace TOReportApplication.ViewModels
                 Comments = this.Comments,
                 NumberOfBlock = this.NumberOfBlock,
                 SelectedMaterialType = this.SelectedMaterialType,
-                AssignedNumber = this.AssignedNumber
+                AssignedNumber = this.AssignedNumber,
+                PzNumber = this.PzNumber,
+                OrganicDate = DateTime.Now.Hour > 7 ? DateTime.Now.Date : new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(-1).Day)
             });
         }
 

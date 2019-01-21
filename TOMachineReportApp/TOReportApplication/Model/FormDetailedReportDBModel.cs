@@ -17,5 +17,6 @@ namespace TOReportApplication.Model
         public string Comments { get; set; }
         public double? AvgDensityOfPearls { get; set; }
         public int AssignedNumber { get; set; }
+        public int PzNumber { get; set; }
     }
 }

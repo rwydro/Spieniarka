@@ -163,6 +163,7 @@
     <Compile Include="Views\SettingsAndFilterPanelView.xaml.cs">
       <DependentUpon>SettingsAndFilterPanelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ViewsLogic\InverseAndBooleansToBooleanConverter.cs" />
     <Compile Include="Views\ViewsLogic\NumericValidationRule.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

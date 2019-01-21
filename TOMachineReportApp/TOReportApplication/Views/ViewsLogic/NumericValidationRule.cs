@@ -32,6 +32,10 @@ namespace TOReportApplication.Views.ViewsLogic
                     double doubleVal = 0;
                     canConvert = Double.TryParse(strValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture,out doubleVal);
                     return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input should be type of Double");
+                case "Int32":
+                    int intValue = 0;
+                    canConvert = Int32.TryParse(strValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue);
+                    return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input should be type of Double");
                 default:
                     throw new InvalidCastException($"{ValidationType.Name} is not supported");
             }
