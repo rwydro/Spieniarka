@@ -105,7 +105,7 @@
                             <DataGridTextColumn Header="Silos" Binding="{Binding Silos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                             <DataGridTextColumn Header="Komora" Binding="{Binding Chamber, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                             <DataGridTextColumn Header="Ragranulat" Binding="{Binding Blow}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Gatunek" Binding="{Binding Type}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Gatunek" Binding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                             <DataGridTextColumn Header="Uwagi" Binding="{Binding Comments, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                             <DataGridTextColumn Header="Sr.g. perełek" Binding="{Binding AvgDensityOfPearls}" IsReadOnly="True"/>
                 </DataGrid.Columns>
