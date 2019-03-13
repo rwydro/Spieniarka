@@ -143,7 +143,7 @@ namespace TOReportApplication.ViewModels
         private void GenereteBlowingMachineReport()
         {
             var data = dbConnection.GetDataFromDB(GenerateBlowingMachineQuery());
-            var model = GenerateModelLogic<BlowingMachineReportModel>.GenerateBlowingMachineReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
+            var model = GenerateModelLogic<BlowingMachineReportModel>.GenerateReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
             BlowingMachineReportsModelItemsAction(new BlowingMachineReportDto {Model = model,SelectedDate = SelectedDate});
             CurrentDateTime = DateTime.Now;
         }
@@ -156,16 +156,18 @@ namespace TOReportApplication.ViewModels
                     "SELECT * FROM public.forma_blok2 where data_czas > '{0}' and data_czas < '{1}'",
                     SelectedDate.AddHours(4), SelectedDate.AddDays(1).AddHours(10));
                 var data = dbConnection.GetDataFromDB(query);
-                var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GeneratFormDateReportModel(data);
-                var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GeneratFormDetailedReportModel(data);
-                if (detailedReportDbModelList == null || dateReportDbModelList == null)
+                //var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GeneratFormDateReportModel(data);
+                //var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GeneratFormDetailedReportModel(data);
+                var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GenerateReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
+                //var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GenerateReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
+
+                if (dateReportDbModelList == null)
                 {
-                    logger.logger.ErrorFormat("Pusta kolekcja: dateReportDbModelList{0} detailedReportDbModelList{1}", dateReportDbModelList.Count, detailedReportDbModelList.Count);
+                    logger.logger.ErrorFormat("Pusta kolekcja: dateReportDbModelList{0} detailedReportDbModelList{1}", dateReportDbModelList.Count);
                 }
                 FormReportsModelItemsAction(new FormReportsDBModel
                 {
                     DateReportDb = dateReportDbModelList,
-                    DetailedReportDb = detailedReportDbModelList
                 });
                 CurrentDateTime = DateTime.Now;
             }

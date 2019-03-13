@@ -2,6 +2,7 @@
 using System.Configuration;
 using Npgsql;
 using TOReportApplication.Logic;
+using TOReportApplication.Model;
 
 
 namespace TOReportApplication.DataBase

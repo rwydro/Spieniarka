@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq;  
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,20 +8,74 @@ namespace TOReportApplication.Logic
 {
     public static class ModelDictionaries
     {
+        public static List<string> FormShortDetailedReportVersionListField =
+            new List<string>()
+            {
+                "Nr nadany" ,
+                "Data organiki" ,
+                "Data produkcji",
+                "Waga [kg]" ,
+                "Czas cyklu [s]",
+                "Operator" ,
+                "Silos" ,
+                "Komora" ,
+                "Ragranulat" ,
+                "Gatunek",
+                "Uwagi",
+                "Sr.g. perełek"
+            }; 
+
         public static Dictionary<string, string> FormDetailedReportDbModelPropertyNameDictionary =
             new Dictionary<string, string>()
             {
-                {"data_organiki", "OrganicDate"},
-                {"waga", "Weight"},
-                {"cykl_sec", "CycleTimeInSecond"},
-                {"wsk_proznia", "Blow"},
+                {"id_blok", "Id"},
+                {"data_czas", "ProductionDate"},
+                {"nr_bloku" , "BlockNumber"},
+                {"cykl_min", "CycleMin"},
+                {"cykl_sek" ,"CycleSec"},
+                {"masa_blok",  "Weight"},
+                {"cisnienie_eps1", "PreassureEPS1"},
+                {"cisnienie_eps2" ,"PreassureEPS2"},
+                {"cisnienie_eps3" ,"PreassureEPS3"},
+                {"regranulat" , "Blow"},
+                {"wst_proznia",  "Vacuum"},
+                {"czas_proznia", "VacuumTime"},
+                {"czas_plukania1", "RinsingTime1"},
+                {"czas_plukania2" ,"RinsingTime2"},
+                {"czas_plukania3" ,"RinsingTime3"},
+                {"czas_plukania4" ,"RinsingTime4"},
+                {"klapa1" , "Flap1"},
+                {"klapa2" , "Flap2"},
+                {"klapa3" , "Flap3"},
+                {"klapa4" , "Flap4"},
+                {"autoklw_proc_us", "AutoKlwProcUs"},
+                {"autoklw_cis_us" , "AutoKlwCisUs"},
+                {"autoklw_proc_ls", "AutoKlwProcLs"},
+                {"autoklw_cis_ls" , "AutoKlwCisLs"},
+                {"autoklw_proc_fs", "AutoKlwProcFs"},
+                {"autoklw_cis_fs" , "AutoKlwCisFs"},
+                {"autoklw_proc_ms", "AutoKlwProcMs"},
+                {"autoklw_cis_ms" , "AutoKlwCisMs"},
+                {"autoklw_czas" , "AutoKlwCzas"},
+                {"stabilizacja" , "Stabilization"},
+                {"chlodzenie_czas", "CoolingTime"},
+                {"gestosc_bloku" , "DensityBlockNumber"},
+                {"czas_cyklu", "CycleTimeInSecond"},
+                {"pz" , "PzNumber"},
+                {"silos", "Silos"},
+                {"komora", "Chamber"},
+                {"data_mod", "ModificationDate"},
+                {"uzytkownik", "User"},
                 {"gatunek", "Type"},
-                {"uwaga", "Comments"},
+                {"uwaga" , "Comments"},
+                {"odpad" , "Waste"},
+                {"usuniety", "Removed"},
+                {"pz_rok" , "PzYear"},
+                {"nrnadany", "AssignedNumber"},
+                {"data_organiki", "OrganicDate"},
+                {"pociety", "Pociety"},
                 {"getosc_perelek", "AvgDensityOfPearls"},
-                {"data_czas"," ProductionDate"},
-                {"silos","Silos"},  
-                {"komora","Chamber"} ,
-                {"operator","Operator"}
+                {"operator" , "Operator"},
     };
 
         public static Dictionary<string, string> BlowingMachineDbColumnNameToModelPropertyNameDictionary =

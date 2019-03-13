@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Npgsql;
 using TOReportApplication.Logic;
+using TOReportApplication.Model;
 
 namespace TOReportApplication.DataBase
 {

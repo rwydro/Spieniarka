@@ -21,6 +21,7 @@ namespace TOReportApplication.ViewModels
     public class FormViewModel : ViewModelBase, IFormViewModel
     {
         public DelegateCommand SaveReportInFileCommand { get; set; }
+        public DelegateCommand<string> GenerateDetailsReportForChamberCommand { get; set; }
 
         private string shiftProperty { get; set; }
 
@@ -57,9 +58,9 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private ObservableCollection<FormDetailedReportDBModel> detailedReportItems;
+        private ObservableCollection<FormDatailedReportModel> detailedReportItems;
 
-        public ObservableCollection<FormDetailedReportDBModel> DetailedReportItems
+        public ObservableCollection<FormDatailedReportModel> DetailedReportItems //todo moze by tu zrobil jakies stata ktory by trzyaml obecny stan widoku(na jakim raorcie jestes co wybrales itp)
         {
             get { return detailedReportItems; }
             set
@@ -70,9 +71,22 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private List<FormDetailedReportDBModel> chamberReportItems;
+        private ObservableCollection<FormDateReportDBModel> detailedFullVersionReportItems;
 
-        public List<FormDetailedReportDBModel> ChamberReportItems
+        public ObservableCollection<FormDateReportDBModel> DetailedFullVersionReportItems //todo moze by tu zrobil jakies stata ktory by trzyaml obecny stan widoku(na jakim raorcie jestes co wybrales itp)
+        {
+            get { return detailedFullVersionReportItems; }
+            set
+            {
+                if (detailedFullVersionReportItems == value) return;
+                detailedFullVersionReportItems = value;
+                OnPropertyChanged("DetailedFullVersionReportItems");
+            }
+        }
+
+        private List<FormDateReportDBModel> chamberReportItems;
+
+        public List<FormDateReportDBModel> ChamberReportItems
         {
             get { return chamberReportItems; }
             set
@@ -118,9 +132,9 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private FormDetailedReportDBModel selectedDatailedReportRow { get; set; }
+        private FormDateReportDBModel selectedDatailedReportRow { get; set; }
 
-        public FormDetailedReportDBModel SelectedDatailedReportRow
+        public FormDateReportDBModel SelectedDatailedReportRow
         {
             get { return selectedDatailedReportRow; }
             set
@@ -138,12 +152,15 @@ namespace TOReportApplication.ViewModels
             get { return selectedDatedReportRow; }
             set
             {
-                if (selectedDatedReportRow == value || value == null) return;
-                selectedDatedReportRow = value;
+                if ((selectedDatedReportRow == value) ||
+                    value == null) return;      
                 try
                 {
+                    selectedDatedReportRow = value;
                     ActualDatedReportRow = value;
-                    SetFormDetailedReport();
+                    if(selectedDatedReportRow != null)
+                        OnGenerateDetailsReportForChamber("false");
+                    //SetFormDetailedReport();
                 }
                 catch (Exception e)
                 {
@@ -164,6 +181,18 @@ namespace TOReportApplication.ViewModels
                 if (actualdDatedReportRow == value) return;
                 actualdDatedReportRow = value;
                 OnPropertyChanged("ActualDatedReportRow");
+            }
+        } //to chyba mozna zzastapic SelectedDatedReportRow
+
+        private bool isSetFullVersionDetailedReport { get; set; }
+        public bool IsSetFullVersionDetailedReport
+        {
+            get { return isSetFullVersionDetailedReport; }
+            set
+            {
+                if (isSetFullVersionDetailedReport == value) return;
+                isSetFullVersionDetailedReport = value;
+                OnPropertyChanged("IsSetFullVersionDetailedReport");
             }
         }
 
@@ -189,7 +218,25 @@ namespace TOReportApplication.ViewModels
             this.SettingsAndFilterPanelViewModel.SetTimer();
             this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData;
             SaveReportInFileCommand = new DelegateCommand(OnSaveReportInFile);
+            GenerateDetailsReportForChamberCommand = new DelegateCommand<string>(OnGenerateDetailsReportForChamber);
             IsChamberReportPanelEnabled = false;
+            IsSetFullVersionDetailedReport = false;
+        }
+
+        private void OnGenerateDetailsReportForChamber(string isFullReport)
+        {
+            if (isFullReport == "true")
+            {
+                IsSetFullVersionDetailedReport = true;
+                IsChamberReportPanelEnabled = false;
+            }
+            else
+            {
+                IsSetFullVersionDetailedReport = false;
+                IsChamberReportPanelEnabled = true;
+            }
+
+            SetFormDetailedReport();
         }
 
         private void OnSaveReportInFile()
@@ -234,7 +281,7 @@ namespace TOReportApplication.ViewModels
             SetFormDetailedReport();
         }   
 
-        private void UpdateDataBase(FormDetailedReportDBModel item)
+        private void UpdateDataBase(FormDatailedReportModel item)
         {
             var query = String.Format(CultureInfo.InvariantCulture,
                 "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3}, silos = {4}, komora = {5}, data_organiki = '{6}', pz = '{7}' " +
@@ -253,7 +300,7 @@ namespace TOReportApplication.ViewModels
             DateReportItems = DateReportItems = new ObservableCollection<FormDateReportModel>();
             GenerateDateReport(formReportsDbModel.DateReportDb).ForEach(DateReportItems.Add);
 
-            ChamberReportItems = new List<FormDetailedReportDBModel>(from li in formReportsDbModel.DetailedReportDb
+            ChamberReportItems = new List<FormDateReportDBModel>(from li in formReportsDbModel.DateReportDb
                     where li.ProductionDate >= DateReportItems.First().TimeFrom && li.ProductionDate <= DateReportItems.Last().TimeTo
                     select li);
             SetAvailableShifts();
@@ -270,12 +317,26 @@ namespace TOReportApplication.ViewModels
             }
 
             logger.logger.ErrorFormat("Method SetFormDetailedReport");
-            if (ActualDatedReportRow == null ) return; // to jest jak przyjdzie timer i nie wybrano zadnej komory zeby sie nie wywalilo
-            DetailedReportItems = new ObservableCollection<FormDetailedReportDBModel>(
-                from it in ChamberReportItems
-                where it.Chamber == SelectedDatedReportRow.Chamber && it.Silos == SelectedDatedReportRow.Silos &&
-                      SelectedDatedReportRow.TimeFrom<= it.ProductionDate && it.ProductionDate <= SelectedDatedReportRow.TimeTo
-                select it);
+            if (ActualDatedReportRow == null) return; // 2 warunek jak przyjdzie timer i nie wybrano zadnej komory zeby sie nie wywalilo
+            if (!IsSetFullVersionDetailedReport)
+            {
+                DetailedReportItems = new ObservableCollection<FormDatailedReportModel>(
+                    from it in ChamberReportItems
+                    where it.Chamber == SelectedDatedReportRow.Chamber && it.Silos == SelectedDatedReportRow.Silos &&
+                          SelectedDatedReportRow.TimeFrom <= it.ProductionDate &&
+                          it.ProductionDate <= SelectedDatedReportRow.TimeTo
+                    select it);
+            }
+            else
+            {
+                DetailedFullVersionReportItems= new ObservableCollection<FormDateReportDBModel>(
+                    from it in ChamberReportItems
+                    where it.Chamber == SelectedDatedReportRow.Chamber && it.Silos == SelectedDatedReportRow.Silos &&
+                          SelectedDatedReportRow.TimeFrom <= it.ProductionDate &&
+                          it.ProductionDate <= SelectedDatedReportRow.TimeTo
+                    select it);
+            }
+
             logger.logger.ErrorFormat("End method SetFormDetailedReport");
         }
 

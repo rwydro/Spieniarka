@@ -8,7 +8,6 @@ namespace TOReportApplication.Model
 {
     public class FormReportsDBModel
     {
-        public List<FormDetailedReportDBModel> DetailedReportDb { get; set; }
         public List<FormDateReportDBModel> DateReportDb { get; set; }
     }
 }
