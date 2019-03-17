@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Timers;
+using TOReportApplication.Logic.Enums;
+using TOReportApplication.ViewModels.interfaces;
 
 namespace TOReportApplication.Logic
 {
@@ -8,13 +10,34 @@ namespace TOReportApplication.Logic
         private Timer timer;
         public event EventHandler Elapsed;
 
-        public void SetTimer()
+        private void SetTimer()
         { 
-            timer = new Timer(90*1000);
+            timer = new Timer(20*1000);
             timer.Elapsed += new ElapsedEventHandler(OnTimerElapsed);
         }
 
-        public void ResetTimer()
+        public void SetTimerAction(TimerActionEnum action)
+        {
+            switch (action)
+            {
+                case TimerActionEnum.Reset:
+                    this.ResetTimer();
+                    break;
+                case TimerActionEnum.Start:
+                    this.timer.Stop();        
+                    break;
+                case TimerActionEnum.Stop:
+                    this.timer.Stop();
+                    break;
+                case TimerActionEnum.Set:
+                    SetTimer();
+                    break;                   
+                default:
+                    return;
+            }
+        }
+
+        private void ResetTimer()
         {
             if (timer.Enabled)
             {

@@ -3,20 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TOReportApplication.Logic.Enums;
 using TOReportApplication.Model;
 
 namespace TOReportApplication.Logic
 {
-
-    public enum ShiftInfoEnum
-    {
-        FirstShift,
-        SecondShift,
-        ThirdShift,
-        FirstToSecondShitf,
-        SecondToThirdShift,
-        ThirdToFirstShift
-    }
     public class ShifTimeDefinition
     {
         public TimeSpan BeginningShift { get; set; }

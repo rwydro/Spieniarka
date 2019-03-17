@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace TOReportApplication.Model
 {
+
     public class FormDateReportModel
     {
         public string Shift { get; set; }
@@ -15,5 +17,6 @@ namespace TOReportApplication.Model
         public int Silos { get; set; }
         public int Chamber { get; set; }
         public string Operator { get; set; }
+        public List<FormDateReportDBModel> DetailedReportForChamber { get; set; }
     }
 }

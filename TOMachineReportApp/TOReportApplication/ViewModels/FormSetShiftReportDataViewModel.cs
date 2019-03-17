@@ -116,10 +116,10 @@ namespace TOReportApplication.ViewModels
         private void OnSave()
         {
             //double density;
-            var density = Double.Parse(this.AvgDensityOfPearls, CultureInfo.InvariantCulture);
+            //var density = Double.Parse(this.AvgDensityOfPearls, CultureInfo.InvariantCulture);
             OnSendMaterialTypeInfo(new MaterialTypeMenuModel()
             {
-                AvgDensityOfPearls = density,
+                AvgDensityOfPearls = AvgDensityOfPearls,
                 Comments = this.Comments,
                 NumberOfBlock = this.NumberOfBlock,
                 SelectedMaterialType = this.SelectedMaterialType,

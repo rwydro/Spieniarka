@@ -8,18 +8,13 @@ using System.Windows.Controls;
 using Prism.Commands;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
+using TOReportApplication.Logic.Enums;
 using TOReportApplication.Model;
 using TOReportApplication.ViewModels.interfaces;
 using Unity;
 
 namespace TOReportApplication.ViewModels
 {
-    public enum DataContextEnum
-    {
-        FormViewModel,
-        BlowingMachineVIewModel
-    }
-  
 
     public class SettingsAndFilterPanelViewModel : ViewModelBase, ISettingsAndFilterPanelViewModel
     {
@@ -114,9 +109,9 @@ namespace TOReportApplication.ViewModels
             OnGenereteDateReportAsync();
         }
 
-        public void SetTimer()
+        public void SetTimer(TimerActionEnum action)
         {
-            this.timer.SetTimer();
+            this.timer.SetTimerAction(action);
         }
      
         private void OnGenereteDateReportAsync()
@@ -126,7 +121,7 @@ namespace TOReportApplication.ViewModels
             if (DataContextEnum == DataContextEnum.FormViewModel)
             {
                 GenereteDateFormReport();
-                this.timer.ResetTimer();
+                //this.timer.SetTimerAction(TimerActionEnum.Reset);
             }
             IsSaveInFileReportButtonEnabled = true;
         }
@@ -156,10 +151,7 @@ namespace TOReportApplication.ViewModels
                     "SELECT * FROM public.forma_blok2 where data_czas > '{0}' and data_czas < '{1}'",
                     SelectedDate.AddHours(4), SelectedDate.AddDays(1).AddHours(10));
                 var data = dbConnection.GetDataFromDB(query);
-                //var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GeneratFormDateReportModel(data);
-                //var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GeneratFormDetailedReportModel(data);
                 var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GenerateReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
-                //var detailedReportDbModelList = GenerateModelLogic<FormDetailedReportDBModel>.GenerateReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
 
                 if (dateReportDbModelList == null)
                 {

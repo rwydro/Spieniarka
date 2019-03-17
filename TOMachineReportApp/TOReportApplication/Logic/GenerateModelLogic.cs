@@ -41,7 +41,6 @@ namespace TOReportApplication.Logic
                     string colName = dict.First(s => s.Key == c.ColumnName).Value;
                     PropertyInfo p = item.GetType().GetProperty(colName);
 
-
                     if (p != null && row[c] != DBNull.Value)
                     {
 
@@ -64,6 +63,13 @@ namespace TOReportApplication.Logic
                             case TypeCode.Char:
                                 var strVal = Convert<string>(row[c].ToString());
                                 p.SetValue(item, strVal, null);
+                                break;
+                            default:
+                                if (row[0] != null)
+                                {
+                                    var nullableDouble = Convert<double>(row[c].ToString());
+                                    p.SetValue(item, nullableDouble, null);
+                                }
                                 break;
                         }
                     }

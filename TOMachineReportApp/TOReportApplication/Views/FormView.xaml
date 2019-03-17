@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:TOReportApplication.Views"
              mc:Ignorable="d" 
              xmlns:views="clr-namespace:TOReportApplication.Views"
+             xmlns:enums="clr-namespace:TOReportApplication.Logic.Enums"
+             xmlns:viewsLogic="clr-namespace:TOReportApplication.Views.ViewsLogic"
              Unloaded="FormView_OnUnloaded">
     <UserControl.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="FormMidPanelButtonStyle">
@@ -13,7 +15,7 @@
             <Setter Property="MinWidth" Value="20"/>
             <Setter Property= "FontSize" Value="12"/>
         </Style>
-        
+        <viewsLogic:EnumConverter x:Key="EnumConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -79,8 +81,8 @@
                     <TextBlock Grid.Column="1" Text="{Binding Path=SelectedChamberItem}" FontWeight="Bold" FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.75"/>
                     <Button Grid.Column="2" Content="Pokaż szczegółowy raport" Cursor="Hand"  FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Center"
                             VerticalAlignment="Center" Command="{Binding GenerateDetailsReportForChamberCommand}" CommandParameter="true" />
-                    <Button Grid.Column="3" Content="Pokaż szczegółowy raport" Cursor="Hand"  FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Center"
-                            VerticalAlignment="Center" Command="{Binding GenerateDetailsReportForChamberCommand}" CommandParameter="false" />
+                    <Button Grid.Column="3" Content="Zapisz raport do pliku" Cursor="Hand"  FontSize="14" Margin="5,0,0,0" HorizontalAlignment="Center"
+                            VerticalAlignment="Center" Command="{Binding SaveReportInFileCommand}"  />
 
                     <!--<ComboBox Grid.Column="2" ItemsSource="{Binding Path=ShiftItems}" SelectedItem="{Binding Path=SelectedShiftItems}" Margin="10,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <Button Grid.Column="3" Command="{Binding Path=SaveReportInFileCommand}" Content="Zapisz raport zmianowy w pliku" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource FormMidPanelButtonStyle}" />-->
@@ -106,11 +108,13 @@
                         <DataGrid.Style>
                             <Style TargetType="DataGrid">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSetFullVersionDetailedReport, Mode=TwoWay}" Value="false">
+                                    <DataTrigger Binding="{Binding DetailedReportType, Mode=TwoWay,Converter={StaticResource EnumConverter},
+                                        ConverterParameter={x:Static enums:FormDetailedReportTypeEnum.ShortVersionDetailedReport}}" Value="{x:Static enums:FormDetailedReportTypeEnum.ShortVersionDetailedReport}">
                                         <Setter Property="ItemsSource" Value="{Binding  Path=DetailedReportItems}"/>
                                         <Setter Property="SelectedItem" Value="{Binding Path=SelectedDatailedReportRow, Mode=TwoWay}"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsSetFullVersionDetailedReport, Mode=TwoWay}" Value="true">
+                                    <DataTrigger Binding="{Binding DetailedReportType, Mode=TwoWay, Converter={StaticResource EnumConverter},
+                                        ConverterParameter={x:Static enums:FormDetailedReportTypeEnum.FullVersionDetailedReport}}" Value="{x:Static enums:FormDetailedReportTypeEnum.FullVersionDetailedReport}">
                                         <Setter Property="ItemsSource" Value="{Binding  Path=DetailedFullVersionReportItems}"/>
                                     </DataTrigger>
                                 </Style.Triggers>

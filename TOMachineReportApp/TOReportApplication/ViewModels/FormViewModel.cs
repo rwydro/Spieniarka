@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Timers;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using System.Xml;
+using System.Xml.Serialization;
 using Castle.Core.Internal;
 using FluentNHibernate.Conventions;
 using Prism.Commands;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
+using TOReportApplication.Logic.Enums;
 using TOReportApplication.Model;
 using TOReportApplication.ViewModels.interfaces;
 using Unity;
@@ -73,7 +78,8 @@ namespace TOReportApplication.ViewModels
 
         private ObservableCollection<FormDateReportDBModel> detailedFullVersionReportItems;
 
-        public ObservableCollection<FormDateReportDBModel> DetailedFullVersionReportItems //todo moze by tu zrobil jakies stata ktory by trzyaml obecny stan widoku(na jakim raorcie jestes co wybrales itp)
+        public ObservableCollection<FormDateReportDBModel>
+            DetailedFullVersionReportItems //todo moze by tu zrobil jakies stata ktory by trzyaml obecny stan widoku(na jakim raorcie jestes co wybrales itp)
         {
             get { return detailedFullVersionReportItems; }
             set
@@ -81,18 +87,6 @@ namespace TOReportApplication.ViewModels
                 if (detailedFullVersionReportItems == value) return;
                 detailedFullVersionReportItems = value;
                 OnPropertyChanged("DetailedFullVersionReportItems");
-            }
-        }
-
-        private List<FormDateReportDBModel> chamberReportItems;
-
-        public List<FormDateReportDBModel> ChamberReportItems
-        {
-            get { return chamberReportItems; }
-            set
-            {
-                chamberReportItems = value;
-                OnPropertyChanged("ChamberReportItems");
             }
         }
 
@@ -152,13 +146,12 @@ namespace TOReportApplication.ViewModels
             get { return selectedDatedReportRow; }
             set
             {
-                if ((selectedDatedReportRow == value) ||
-                    value == null) return;      
+                if (selectedDatedReportRow == value) return;      
                 try
                 {
                     selectedDatedReportRow = value;
-                    ActualDatedReportRow = value;
-                    if(selectedDatedReportRow != null)
+                    ActualDatedReportRow = selectedDatedReportRow;
+                    if (selectedDatedReportRow != null)
                         OnGenerateDetailsReportForChamber("false");
                     //SetFormDetailedReport();
                 }
@@ -167,32 +160,35 @@ namespace TOReportApplication.ViewModels
                     logger.logger.ErrorFormat("No selected chamber in application: ", e);
                     MessageBoxHelper.ShowMessageBox("Wybierz komore i sprobuj wygenerowac raport ponownie", MessageBoxIcon.Exclamation);
                 }
+
+               
                 OnPropertyChanged("SelectedDatedReportRow");
             }
         }
 
-        private FormDateReportModel actualdDatedReportRow { get; set; }
+        private FormDateReportModel actualDatedReportRow { get; set; }
 
-        public FormDateReportModel ActualDatedReportRow
+        public FormDateReportModel ActualDatedReportRow // to nie bedzie bindowane, nie pozwalamy na nulla. Null do widoku jest po to by odczepic na widoku zapamietnaie wybranego wiersza
         {
-            get { return actualdDatedReportRow; }
+            get { return actualDatedReportRow; }
             set
             {
-                if (actualdDatedReportRow == value) return;
-                actualdDatedReportRow = value;
+                if (actualDatedReportRow == value || value == null) return;
+                actualDatedReportRow = value;
                 OnPropertyChanged("ActualDatedReportRow");
             }
-        } //to chyba mozna zzastapic SelectedDatedReportRow
+        }
 
-        private bool isSetFullVersionDetailedReport { get; set; }
-        public bool IsSetFullVersionDetailedReport
+
+        private FormDetailedReportTypeEnum detailedReportType { get; set; }
+        public FormDetailedReportTypeEnum DetailedReportType
         {
-            get { return isSetFullVersionDetailedReport; }
+            get { return detailedReportType; }
             set
             {
-                if (isSetFullVersionDetailedReport == value) return;
-                isSetFullVersionDetailedReport = value;
-                OnPropertyChanged("IsSetFullVersionDetailedReport");
+                if (detailedReportType == value) return;
+                detailedReportType = value;
+                OnPropertyChanged("DetailedReportType");
             }
         }
 
@@ -215,24 +211,24 @@ namespace TOReportApplication.ViewModels
             this.ShiftReportDataViewModel = shiftReportDataViewModel;
             this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
-            this.SettingsAndFilterPanelViewModel.SetTimer();
+            this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Set);
             this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData;
             SaveReportInFileCommand = new DelegateCommand(OnSaveReportInFile);
             GenerateDetailsReportForChamberCommand = new DelegateCommand<string>(OnGenerateDetailsReportForChamber);
             IsChamberReportPanelEnabled = false;
-            IsSetFullVersionDetailedReport = false;
+            DetailedReportType = FormDetailedReportTypeEnum.Any;
         }
 
         private void OnGenerateDetailsReportForChamber(string isFullReport)
         {
             if (isFullReport == "true")
             {
-                IsSetFullVersionDetailedReport = true;
+                DetailedReportType = FormDetailedReportTypeEnum.FullVersionDetailedReport;
                 IsChamberReportPanelEnabled = false;
             }
             else
             {
-                IsSetFullVersionDetailedReport = false;
+                DetailedReportType = FormDetailedReportTypeEnum.ShortVersionDetailedReport;
                 IsChamberReportPanelEnabled = true;
             }
 
@@ -241,7 +237,25 @@ namespace TOReportApplication.ViewModels
 
         private void OnSaveReportInFile()
         {
-            
+            var reportObject = new List<FormReportFileModel>();
+            foreach (var data in DateReportItems)
+            {
+                reportObject.Add(new FormReportFileModel()
+                {
+                    Silos = data.Silos,
+                    AvgDensityOfPearls = data.DetailedReportForChamber.First().AvgDensityOfPearls,
+                    Chamber = data.Chamber,
+                    NumberOfBlocks = data.NumberOfBlocks,
+                    Operator = data.Operator,
+                    PzNumber = data.DetailedReportForChamber.First().PzNumber,
+                    Shift = data.Shift,
+                    SumBlockWeight = data.DetailedReportForChamber.Sum(s => s.Weight),
+                    TimeFrom = data.TimeFrom,
+                    TimeTo = data.TimeTo,
+                });
+            }
+             SaveInFileLogic.OnSaveReportInFile<List<FormReportFileModel>>(reportObject, Path.Combine(ConfigurationManager.AppSettings["PathToFormReport"], "Raport_" + reportObject.First().TimeFrom.Date.ToString("yyyy-MM-dd") + ".xml"));
+
         }
 
         private void SetAvailableShifts()
@@ -255,7 +269,7 @@ namespace TOReportApplication.ViewModels
         }
 
         public void OnCommandCellEnded()
-        { 
+        {
             UpdateDataBase(SelectedDatailedReportRow);
         }
 
@@ -297,44 +311,45 @@ namespace TOReportApplication.ViewModels
 
         private void GetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
         {
-            DateReportItems = DateReportItems = new ObservableCollection<FormDateReportModel>();
+            DateReportItems = new ObservableCollection<FormDateReportModel>();
             GenerateDateReport(formReportsDbModel.DateReportDb).ForEach(DateReportItems.Add);
-
-            ChamberReportItems = new List<FormDateReportDBModel>(from li in formReportsDbModel.DateReportDb
-                    where li.ProductionDate >= DateReportItems.First().TimeFrom && li.ProductionDate <= DateReportItems.Last().TimeTo
-                    select li);
             SetAvailableShifts();
             IsChamberReportPanelEnabled = true;
             SetFormDetailedReport();
-        }
+        } 
 
         private void SetFormDetailedReport()
         {
 
-            if (SelectedDatedReportRow != null && SelectedChamberItem !=  SelectedDatedReportRow.Chamber)
+            if (ActualDatedReportRow != null && SelectedChamberItem != ActualDatedReportRow.Chamber)
             {
-                SelectedChamberItem = SelectedDatedReportRow.Chamber;
+                SelectedChamberItem = ActualDatedReportRow.Chamber;
             }
 
             logger.logger.ErrorFormat("Method SetFormDetailedReport");
             if (ActualDatedReportRow == null) return; // 2 warunek jak przyjdzie timer i nie wybrano zadnej komory zeby sie nie wywalilo
-            if (!IsSetFullVersionDetailedReport)
+
+
+            if (DetailedReportType == FormDetailedReportTypeEnum.ShortVersionDetailedReport)
             {
-                DetailedReportItems = new ObservableCollection<FormDatailedReportModel>(
-                    from it in ChamberReportItems
-                    where it.Chamber == SelectedDatedReportRow.Chamber && it.Silos == SelectedDatedReportRow.Silos &&
-                          SelectedDatedReportRow.TimeFrom <= it.ProductionDate &&
-                          it.ProductionDate <= SelectedDatedReportRow.TimeTo
-                    select it);
+
+                DetailedReportItems = new ObservableCollection<FormDatailedReportModel>(DateReportItems.First(s =>
+                    s.Chamber == ActualDatedReportRow.Chamber &&
+                    s.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
+                    s.Silos == ActualDatedReportRow.Silos &&
+                    s.Operator == ActualDatedReportRow.Operator).DetailedReportForChamber);
+
+                this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Reset);
             }
-            else
+            else if (DetailedReportType == FormDetailedReportTypeEnum.FullVersionDetailedReport)
             {
-                DetailedFullVersionReportItems= new ObservableCollection<FormDateReportDBModel>(
-                    from it in ChamberReportItems
-                    where it.Chamber == SelectedDatedReportRow.Chamber && it.Silos == SelectedDatedReportRow.Silos &&
-                          SelectedDatedReportRow.TimeFrom <= it.ProductionDate &&
-                          it.ProductionDate <= SelectedDatedReportRow.TimeTo
-                    select it);
+                DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>(DateReportItems.First(s =>
+                    s.Chamber == ActualDatedReportRow.Chamber &&
+                    s.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
+                    s.Silos == ActualDatedReportRow.Silos &&
+                    s.Operator == ActualDatedReportRow.Operator).DetailedReportForChamber);
+                SelectedDatedReportRow = null;
+                this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Stop);
             }
 
             logger.logger.ErrorFormat("End method SetFormDetailedReport");
@@ -365,7 +380,11 @@ namespace TOReportApplication.ViewModels
                         Chamber = obj[i].Chamber,
                         Silos = obj[i].Silos,
                         NumberOfBlocks = counter + 1,
-                        Operator = obj[i - counter].Operator
+                        Operator = obj[i - counter].Operator,
+                        DetailedReportForChamber =  (from it in obj where it.Chamber == obj[i].Chamber && it.Silos == obj[i].Silos &&
+                                obj[i - counter].ProductionDate <= it.ProductionDate &&
+                                it.ProductionDate <= obj[i].ProductionDate
+                                select it).ToList()
                     });
                     ShiftProperty = shift;
                     counter = 0;
@@ -386,13 +405,18 @@ namespace TOReportApplication.ViewModels
                         Chamber = obj[i].Chamber,
                         Silos = obj[i].Silos,
                         NumberOfBlocks = counter + 1,
-                        Operator = obj[i - counter].Operator
+                        Operator = obj[i - counter].Operator,
+                        DetailedReportForChamber = new List<FormDateReportDBModel>(from it in obj
+                            where it.Chamber == obj[i].Chamber && it.Silos == obj[i].Silos &&
+                                  obj[i - counter].ProductionDate <= it.ProductionDate &&
+                                  it.ProductionDate <= obj[i].ProductionDate
+                            select it).ToList()
                     });
                     ShiftProperty = shift;
                     counter = 0;
                     continue;
                 }
-
+    
                 chamber = obj[i].Chamber;
                 counter++;              
             }
@@ -403,6 +427,7 @@ namespace TOReportApplication.ViewModels
         public void Dispose()
         {
             this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction -= OnGetFormReportsModelItems;
+           // DetailedReportType = FormDetailedReportTypeEnum.Any;
         }
     }
 }

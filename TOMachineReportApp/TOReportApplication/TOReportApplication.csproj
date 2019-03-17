@@ -138,18 +138,23 @@
     </ApplicationDefinition>
     <Compile Include="DataBase\ApplicationRepository.cs" />
     <Compile Include="DataBase\DBConnection.cs" />
+    <Compile Include="Logic\Enums\DataContextEnum.cs" />
+    <Compile Include="Logic\Enums\FormDetailedReportTypeEnum.cs" />
+    <Compile Include="Logic\Enums\ShiftInfoEnum.cs" />
+    <Compile Include="Logic\Enums\TimerActionEnum.cs" />
     <Compile Include="Logic\GenerateModelLogic.cs" />
     <Compile Include="Logic\MessageBoxHelper.cs" />
     <Compile Include="Logic\ModelDictionaries.cs" />
     <Compile Include="Logic\MyLogger.cs" />
     <Compile Include="Logic\MyTimer.cs" />
-    <Compile Include="Logic\SaveReportInFileLogic.cs" />
+    <Compile Include="Logic\SaveBlowingMachineReportInFileLogic.cs" />
+    <Compile Include="Logic\SaveInFileLogic.cs" />
     <Compile Include="Logic\ShiftCalendarManager.cs" />
     <Compile Include="Model\BlowingMachineReportDto.cs" />
     <Compile Include="Model\BlowingMachineReportModel.cs" />
     <Compile Include="Model\FormDateReportDBModel.cs" />
     <Compile Include="Model\FormDateReportModel.cs" />
-    <Compile Include="Model\FormDetailedReportDBModel.cs" />
+    <Compile Include="Model\FormReportFileModel.cs" />
     <Compile Include="Model\FormReportsDBModel.cs" />
     <Compile Include="Model\MaterialTypeDto.cs" />
     <Compile Include="Model\MaterialTypeMenuModel.cs" />
@@ -176,6 +181,7 @@
     <Compile Include="Views\SettingsAndFilterPanelView.xaml.cs">
       <DependentUpon>SettingsAndFilterPanelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ViewsLogic\EnumConverter.cs" />
     <Compile Include="Views\ViewsLogic\InverseAndBooleansToBooleanConverter.cs" />
     <Compile Include="Views\ViewsLogic\NumericValidationRule.cs" />
     <Page Include="MainWindow.xaml">

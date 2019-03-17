@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace TOReportApplication.Model
 {
 
+    [Serializable]
     public class FormDatailedReportModel
     {
         public int Id { get; set; }
@@ -32,7 +33,7 @@ namespace TOReportApplication.Model
         [DisplayName("Komentarz")]
         public string Comments { get; set; }
         [DisplayName("Sr.g. perełek")]
-        public double? AvgDensityOfPearls { get; set; }
+        public string AvgDensityOfPearls { get; set; }
         [DisplayName("Numer nadany")]
         public int AssignedNumber { get; set; }
         [DisplayName("Numer PZ")]

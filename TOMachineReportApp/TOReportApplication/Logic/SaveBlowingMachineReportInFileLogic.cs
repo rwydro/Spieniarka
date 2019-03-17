@@ -8,7 +8,7 @@ using TOReportApplication.Model;
 
 namespace TOReportApplication.Logic
 {
-    public static class SaveReportInFileLogic
+    public static class SaveBlowingMachineReportInFileLogic
     {
 
         private static readonly string buttomDocumentMock =

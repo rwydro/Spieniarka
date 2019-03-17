@@ -10,6 +10,7 @@ using System.Xml;
 using Prism.Commands;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
+using TOReportApplication.Logic.Enums;
 using TOReportApplication.Model;
 using TOReportApplication.ViewModels.interfaces;
 using Unity;
@@ -132,7 +133,7 @@ namespace TOReportApplication.ViewModels
         {
             try
             {
-                var document = SaveReportInFileLogic.GenerateXml(SelectedShift, BlowingMachineShiftReportItems.ToList());
+                var document = SaveBlowingMachineReportInFileLogic.GenerateXml(SelectedShift, BlowingMachineShiftReportItems.ToList());
                 SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
                     SelectedShift, document);
             }

@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace TOReportApplication.ViewModels.interfaces
 {
-    public enum FormDetailedReportTypeEnum
-    {
-        ShortVersionDetailedReport = 0,
-        FullVersionDetailedReport = 1,
-    }
-
     public interface IFormViewModel
     {
         void Dispose();
