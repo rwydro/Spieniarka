@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TOReportApplication.Model
 {
-    public class BlowingMachineReportModel
+    public class BlowingMachineReportModel : ReportModelBase
     {
         public string Machine { get; set; }
 

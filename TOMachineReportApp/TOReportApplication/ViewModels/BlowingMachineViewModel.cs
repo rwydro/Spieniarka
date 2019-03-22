@@ -85,9 +85,9 @@ namespace TOReportApplication.ViewModels
             : base(container)
         {
             this.logger = logger;
-            SettingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
+            SettingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel<BlowingMachineReportModel>(container, repository, logger);
             SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.BlowingMachineVIewModel;
-            SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction += OnGetBlowingMachineReportsModelItems;
+            SettingsAndFilterPanelViewModel.GeneratedModelItemsAction += OnGetBlowingMachineReportsModelItems;
             BlowingMachineReportItems = new ObservableCollection<BlowingMachineReportModel>();
             ComboBoxValueCollection = new ObservableCollection<string>
             {
@@ -126,7 +126,7 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        public ISettingsAndFilterPanelViewModel SettingsAndFilterPanelViewModel { get; }
+        public ISettingsAndFilterPanelViewModel<BlowingMachineReportModel> SettingsAndFilterPanelViewModel { get; }
 
 
         private void SaveReportInFile()
@@ -212,17 +212,17 @@ namespace TOReportApplication.ViewModels
             return path;
         }
 
-        private void OnGetBlowingMachineReportsModelItems(BlowingMachineReportDto obj)
+        private void OnGetBlowingMachineReportsModelItems(object sender, EventBaseArgs<BlowingMachineReportModel> e)
         {
             BlowingMachineReportItems.Clear();
-            obj.Model.ForEach(x => BlowingMachineReportItems.Add(x));
-            SelectedDate = obj.SelectedDate;
+            e.ReportModel.Model.ForEach(x => BlowingMachineReportItems.Add(x));
+            SelectedDate = e.ReportModel.SelectedDate;
             IsGenerateShiftReportButtonEnabled = true;
         }
 
         public void Dispose()
         {
-            SettingsAndFilterPanelViewModel.BlowingMachineReportsModelItemsAction -= OnGetBlowingMachineReportsModelItems;
+            SettingsAndFilterPanelViewModel.GeneratedModelItemsAction -= OnGetBlowingMachineReportsModelItems;
         }
     }
 }

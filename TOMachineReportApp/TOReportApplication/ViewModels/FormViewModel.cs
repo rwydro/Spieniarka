@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Timers;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml;
@@ -60,6 +61,18 @@ namespace TOReportApplication.ViewModels
             {
                 isChamberReportPanelEnabled = value;
                 OnPropertyChanged("IsChamberReportPanelEnabled");
+            }
+        }
+
+        private bool isSaveInFilePanelEnabled { get; set; }
+
+        public bool IsSaveInFilePanelEnabled
+        {
+            get { return isSaveInFilePanelEnabled; }
+            set
+            {
+                isSaveInFilePanelEnabled = value;
+                OnPropertyChanged("IsSaveInFilePanelEnabled");
             }
         }
 
@@ -192,8 +205,8 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private readonly ISettingsAndFilterPanelViewModel settingsAndFilterPanelViewModel;
-        public ISettingsAndFilterPanelViewModel SettingsAndFilterPanelViewModel
+        private readonly ISettingsAndFilterPanelViewModel<FormDateReportDBModel> settingsAndFilterPanelViewModel;
+        public ISettingsAndFilterPanelViewModel<FormDateReportDBModel> SettingsAndFilterPanelViewModel
         {
             get { return this.settingsAndFilterPanelViewModel; }
         }
@@ -207,16 +220,24 @@ namespace TOReportApplication.ViewModels
         {
             this.logger = logger;
             this.applicationRepository = repository;
-            this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel(container, repository, logger);
+            this.settingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel<FormDateReportDBModel>(container, repository, logger);
             this.ShiftReportDataViewModel = shiftReportDataViewModel;
             this.SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.FormViewModel;
-            this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction += OnGetFormReportsModelItems;
+            this.SettingsAndFilterPanelViewModel.GeneratedModelItemsAction += OnGetFormReportsModelItems;
+            this.SettingsAndFilterPanelViewModel.IsReportGenerate += OnGenerateReport;
             this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Set);
             this.ShiftReportDataViewModel.OnSendMaterialTypeInfo += OnGetMaterialTypeData;
             SaveReportInFileCommand = new DelegateCommand(OnSaveReportInFile);
             GenerateDetailsReportForChamberCommand = new DelegateCommand<string>(OnGenerateDetailsReportForChamber);
             IsChamberReportPanelEnabled = false;
+            IsSaveInFilePanelEnabled = false;
             DetailedReportType = FormDetailedReportTypeEnum.Any;
+        }
+
+        private void OnGenerateReport(object sender, EventArgs e)
+        {
+            DetailedReportType = FormDetailedReportTypeEnum.Any;
+            IsChamberReportPanelEnabled = false;
         }
 
         private void OnGenerateDetailsReportForChamber(string isFullReport)
@@ -235,10 +256,50 @@ namespace TOReportApplication.ViewModels
             SetFormDetailedReport();
         }
 
+        private FormReportFileModel GetAdditionalRecord()
+        {
+            FormDateReportModel item = null;
+            switch (SelectedShiftItem)
+            {
+                case "1":
+                    item = DateReportItems.FirstOrDefault(s => s.Shift == "3\\1");
+                    if (item != null) item.Shift = "1";
+                    break;                   
+                case "2":
+                    item = DateReportItems.FirstOrDefault(s => s.Shift == "1\\2");
+                    if (item != null) item.Shift = "2";
+                    break;
+                case "3":
+                    item = DateReportItems.FirstOrDefault(s => s.Shift == "2\\3");
+                    if (item != null) item.Shift = "3";
+                    break;
+            }
+            return item != null
+                ? new FormReportFileModel()
+                {
+                    Silos = item.Silos,
+                    AvgDensityOfPearls = item.DetailedReportForChamber.First().AvgDensityOfPearls,
+                    Chamber = item.Chamber,
+                    NumberOfBlocks = item.NumberOfBlocks,
+                    Operator = item.Operator,
+                    PzNumber = item.DetailedReportForChamber.First().PzNumber,
+                    Shift = item.Shift,
+                    SumBlockWeight = item.DetailedReportForChamber.Sum(s => s.Weight),
+                    TimeFrom = item.TimeFrom,
+                    TimeTo = item.TimeTo,
+                }
+                : new FormReportFileModel();
+        }
+
         private void OnSaveReportInFile()
         {
             var reportObject = new List<FormReportFileModel>();
-            foreach (var data in DateReportItems)
+             GetAdditionalRecord();
+            var item = GetAdditionalRecord();
+            if(item.Shift != null)
+                reportObject.Add(item);
+
+            foreach (var data in DateReportItems.Where(s=>s.Shift == SelectedShiftItem))
             {
                 reportObject.Add(new FormReportFileModel()
                 {
@@ -254,18 +315,16 @@ namespace TOReportApplication.ViewModels
                     TimeTo = data.TimeTo,
                 });
             }
-             SaveInFileLogic.OnSaveReportInFile<List<FormReportFileModel>>(reportObject, Path.Combine(ConfigurationManager.AppSettings["PathToFormReport"], "Raport_" + reportObject.First().TimeFrom.Date.ToString("yyyy-MM-dd") + ".xml"));
+
+            
+             SaveInFileLogic.OnSaveReportInFile<List<FormReportFileModel>>(reportObject, Path.Combine(ConfigurationManager.AppSettings["PathToFormReport"], "Raport_" + reportObject.First().TimeFrom.Date.ToString("yyyy-MM-dd") + ".xml"), logger);
 
         }
 
         private void SetAvailableShifts()
         {
-            ShiftItems = new ObservableCollection<string>();
-            foreach (var item in DateReportItems)
-            {
-                if(!string.IsNullOrEmpty(ShiftItems.FirstOrDefault(s => s.Contains(item.Shift))))// tu poprawic
-                    ShiftItems.Add(item.Shift);
-            }                        
+            var items =  DateReportItems.ToList().FindAll(s => s.Shift == "1" || s.Shift == "2" || s.Shift == "3").Select(s => s.Shift).Distinct();
+            ShiftItems = new ObservableCollection<string>(items);
         }
 
         public void OnCommandCellEnded()
@@ -304,17 +363,18 @@ namespace TOReportApplication.ViewModels
             applicationRepository.UpdateData(query);
         }
 
-        private void OnGetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
+        private void OnGetFormReportsModelItems(object sender, EventBaseArgs<FormDateReportDBModel> e)
         {
-            Application.Current.Dispatcher.InvokeAsync(() => GetFormReportsModelItems(formReportsDbModel));
+              Application.Current.Dispatcher.InvokeAsync(() => GetFormReportsModelItems(e.ReportModel));
         }
 
-        private void GetFormReportsModelItems(FormReportsDBModel formReportsDbModel)
+        private void GetFormReportsModelItems(ReportModel<FormDateReportDBModel> formReportsDbModel)
         {
             DateReportItems = new ObservableCollection<FormDateReportModel>();
-            GenerateDateReport(formReportsDbModel.DateReportDb).ForEach(DateReportItems.Add);
+            GenerateDateReport(formReportsDbModel.Model).ForEach(DateReportItems.Add);
             SetAvailableShifts();
             IsChamberReportPanelEnabled = true;
+            IsSaveInFilePanelEnabled = true;
             SetFormDetailedReport();
         } 
 
@@ -329,27 +389,32 @@ namespace TOReportApplication.ViewModels
             logger.logger.ErrorFormat("Method SetFormDetailedReport");
             if (ActualDatedReportRow == null) return; // 2 warunek jak przyjdzie timer i nie wybrano zadnej komory zeby sie nie wywalilo
 
-
-            if (DetailedReportType == FormDetailedReportTypeEnum.ShortVersionDetailedReport)
+            switch (DetailedReportType)
             {
+                case FormDetailedReportTypeEnum.ShortVersionDetailedReport:
+                    DetailedReportItems = new ObservableCollection<FormDatailedReportModel>((from li in DateReportItems
+                        where li.Chamber == ActualDatedReportRow.Chamber &&
+                              li.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
+                              li.Silos == ActualDatedReportRow.Silos &&
+                              li.Operator == ActualDatedReportRow.Operator
+                        select li).First().DetailedReportForChamber);
 
-                DetailedReportItems = new ObservableCollection<FormDatailedReportModel>(DateReportItems.First(s =>
-                    s.Chamber == ActualDatedReportRow.Chamber &&
-                    s.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
-                    s.Silos == ActualDatedReportRow.Silos &&
-                    s.Operator == ActualDatedReportRow.Operator).DetailedReportForChamber);
-
-                this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Reset);
-            }
-            else if (DetailedReportType == FormDetailedReportTypeEnum.FullVersionDetailedReport)
-            {
-                DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>(DateReportItems.First(s =>
-                    s.Chamber == ActualDatedReportRow.Chamber &&
-                    s.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
-                    s.Silos == ActualDatedReportRow.Silos &&
-                    s.Operator == ActualDatedReportRow.Operator).DetailedReportForChamber);
-                SelectedDatedReportRow = null;
-                this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Stop);
+                    this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Reset);
+                    break;
+                case FormDetailedReportTypeEnum.FullVersionDetailedReport:
+                    DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>(DateReportItems.First(s =>
+                        s.Chamber == ActualDatedReportRow.Chamber &&
+                        s.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
+                        s.Silos == ActualDatedReportRow.Silos &&
+                        s.Operator == ActualDatedReportRow.Operator).DetailedReportForChamber);
+                    SelectedDatedReportRow = null;
+                    this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Stop);
+                    break;
+                case FormDetailedReportTypeEnum.Any:
+                    DetailedReportItems = new ObservableCollection<FormDatailedReportModel>();
+                    DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>();
+                    SelectedDatedReportRow = null;
+                    break;
             }
 
             logger.logger.ErrorFormat("End method SetFormDetailedReport");
@@ -426,8 +491,9 @@ namespace TOReportApplication.ViewModels
 
         public void Dispose()
         {
-            this.SettingsAndFilterPanelViewModel.FormReportsModelItemsAction -= OnGetFormReportsModelItems;
-           // DetailedReportType = FormDetailedReportTypeEnum.Any;
+            this.SettingsAndFilterPanelViewModel.GeneratedModelItemsAction -= OnGetFormReportsModelItems;
+            IsSaveInFilePanelEnabled = false;
+            DetailedReportType = FormDetailedReportTypeEnum.Any;
         }
     }
 }

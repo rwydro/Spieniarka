@@ -9,7 +9,7 @@ namespace TOReportApplication.Model
 {
 
     [Serializable]
-    public class FormDatailedReportModel
+    public class FormDatailedReportModel : ReportModelBase
     {
         public int Id { get; set; }
         [DisplayName("Silos")]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
@@ -16,7 +17,7 @@ using Unity;
 namespace TOReportApplication.ViewModels
 {
 
-    public class SettingsAndFilterPanelViewModel : ViewModelBase, ISettingsAndFilterPanelViewModel
+    public class SettingsAndFilterPanelViewModel<T> : ViewModelBase, ISettingsAndFilterPanelViewModel<T> where T : ReportModelBase
     {
         private readonly IApplicationRepository dbConnection;
         private readonly IMyLogger logger;
@@ -40,9 +41,25 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        public Action<FormReportsDBModel> FormReportsModelItemsAction { get; set; }
+        public event EventHandler<EventBaseArgs<T>> GeneratedModelItemsAction;
+        protected virtual void OnGeneratedModelItemsAction(EventBaseArgs<T> e)
+        {
+            EventHandler<EventBaseArgs<T>> handler = GeneratedModelItemsAction;
+            if (handler != null)
+            {
+                handler(this, e );
+            }
+        }
 
-        public Action<BlowingMachineReportDto> BlowingMachineReportsModelItemsAction { get; set; }
+        public event EventHandler IsReportGenerate;
+        protected virtual void OnReportGenerated()
+        {
+            EventHandler handler = IsReportGenerate;
+            if (handler != null)
+            {
+                handler(this,EventArgs.Empty);
+            }
+        }
 
         private DataContextEnum dataContextEnum { get; set; }
 
@@ -95,7 +112,7 @@ namespace TOReportApplication.ViewModels
         {
             this.dbConnection = dbConnection;
             this.logger = logger;
-            GenerateReportCommand = new DelegateCommand(OnGenereteDateReportAsync);
+            GenerateReportCommand = new DelegateCommand(OnGenereteDateReport);
             IsSaveInFileReportButtonEnabled = false;
             SelectedDate = DateTime.Now.Date;
             CurrentDateTime = DateTime.Now;
@@ -103,10 +120,16 @@ namespace TOReportApplication.ViewModels
             logger.logger.Debug($"SettingsAndFilterPanelViewModel with DataContext {DataContextEnum}");
         }
 
+        private void OnGenereteDateReport()
+        {
+            OnReportGenerated();
+            GenereteDateReport();
+        }
+
         private void OnTimerElapsed(object sender, EventArgs e)
         {
             logger.logger.DebugFormat("On timer Elapsed");
-            OnGenereteDateReportAsync();
+            GenereteDateReport();
         }
 
         public void SetTimer(TimerActionEnum action)
@@ -114,7 +137,7 @@ namespace TOReportApplication.ViewModels
             this.timer.SetTimerAction(action);
         }
      
-        private void OnGenereteDateReportAsync()
+        private void GenereteDateReport()
         {
             if (DataContextEnum == DataContextEnum.BlowingMachineVIewModel)
                 GenereteBlowingMachineReport();
@@ -127,19 +150,25 @@ namespace TOReportApplication.ViewModels
         }
 
 
-        private string GenerateBlowingMachineQuery()
+        private string GenerateBlowingMachineQuery(string dbColName)
         {
                 return string.Format(
-                    "SELECT * FROM public.spieniarka_probki_summary where data_koniec > '{0}' and data_koniec < '{1}'",
+                    "SELECT * FROM public.{0} where data_koniec > '{1}' and data_koniec < '{2}'",
+                    dbColName,
                     new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,7,0,0),
                     new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.AddDays(1).Day,7,0,0));
         }   
 
         private void GenereteBlowingMachineReport()
         {
-            var data = dbConnection.GetDataFromDB(GenerateBlowingMachineQuery());
-            var model = GenerateModelLogic<BlowingMachineReportModel>.GenerateReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
-            BlowingMachineReportsModelItemsAction(new BlowingMachineReportDto {Model = model,SelectedDate = SelectedDate});
+            var data = dbConnection.GetDataFromDB(GenerateBlowingMachineQuery("spieniarka_probki_summary"));
+            List<BlowingMachineReportModel> model = GenerateModelLogic<BlowingMachineReportModel>.GenerateReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
+            OnGeneratedModelItemsAction(new EventBaseArgs<T>(){ReportModel = new ReportModel<T>()
+            {
+                Model = model as List<T>,
+                SelectedDate = SelectedDate
+            }
+         });
             CurrentDateTime = DateTime.Now;
         }
 
@@ -147,7 +176,7 @@ namespace TOReportApplication.ViewModels
         {
             try
             {
-                var query = string.Format(
+                   var query = string.Format(
                     "SELECT * FROM public.forma_blok2 where data_czas > '{0}' and data_czas < '{1}'",
                     SelectedDate.AddHours(4), SelectedDate.AddDays(1).AddHours(10));
                 var data = dbConnection.GetDataFromDB(query);
@@ -157,10 +186,15 @@ namespace TOReportApplication.ViewModels
                 {
                     logger.logger.ErrorFormat("Pusta kolekcja: dateReportDbModelList{0} detailedReportDbModelList{1}", dateReportDbModelList.Count);
                 }
-                FormReportsModelItemsAction(new FormReportsDBModel
+
+                OnGeneratedModelItemsAction(new EventBaseArgs<T>()
                 {
-                    DateReportDb = dateReportDbModelList,
+                    ReportModel = new ReportModel<T>()
+                    {
+                        Model = dateReportDbModelList as List<T>
+                    }
                 });
+
                 CurrentDateTime = DateTime.Now;
             }
             catch (Exception ex)
