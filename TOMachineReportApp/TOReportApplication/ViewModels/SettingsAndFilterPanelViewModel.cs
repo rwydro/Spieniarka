@@ -17,7 +17,7 @@ using Unity;
 namespace TOReportApplication.ViewModels
 {
 
-    public class SettingsAndFilterPanelViewModel<T> : ViewModelBase, ISettingsAndFilterPanelViewModel<T> where T : ReportModelBase
+    public class SettingsAndFilterPanelViewModel<T> : ViewModelBase, ISettingsAndFilterPanelViewModel<T> where T : ReportModelBase, new()
     {
         private readonly IApplicationRepository dbConnection;
         private readonly IMyLogger logger;
@@ -150,19 +150,23 @@ namespace TOReportApplication.ViewModels
         }
 
 
-        private string GenerateBlowingMachineQuery(string dbColName)
+        private string GenerateBlowingMachineQuery(string dbTableName, string dbColName)
         {
                 return string.Format(
-                    "SELECT * FROM public.{0} where data_koniec > '{1}' and data_koniec < '{2}'",
-                    dbColName,
+                    "SELECT * FROM public.{0} where {1} > '{2}' and {3} < '{4}'",
+                    dbTableName, dbColName,
                     new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,7,0,0),
+                    dbColName,
                     new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.AddDays(1).Day,7,0,0));
-        }   
+        }
 
         private void GenereteBlowingMachineReport()
         {
-            var data = dbConnection.GetDataFromDB(GenerateBlowingMachineQuery("spieniarka_probki_summary"));
-            List<BlowingMachineReportModel> model = GenerateModelLogic<BlowingMachineReportModel>.GenerateReportModel(data,ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary);
+            var data = dbConnection.GetDataFromDB(typeof(T) == typeof(BlowingMachineReportModel) ? GenerateBlowingMachineQuery("spieniarka_probki_summary", "data_koniec") :
+                    GenerateBlowingMachineQuery("spieniarka_ciagla_probki","data_czas"));
+          
+            var model = GenerateModelLogic<T>.GenerateReportModel(data, typeof(T) == typeof(BlowingMachineReportModel) ? ModelDictionaries.BlowingMachineDbColumnNameToModelPropertyNameDictionary :
+                ModelDictionaries.ContinuousBlowingMachineDbColumnNameToModelPropertyNameDictionary);
             OnGeneratedModelItemsAction(new EventBaseArgs<T>(){ReportModel = new ReportModel<T>()
             {
                 Model = model as List<T>,

@@ -112,48 +112,9 @@
           <Data ss:Type="String">_ZMIANA_</Data>
         </Cell>
       </Row>
-      <Row ss:Index="4" ss:AutoFitHeight="0" ss:Height="30.75">
-        <Cell ss:StyleID="s27">
-          <Data ss:Type="String">Lp.</Data>
-        </Cell>
-        <Cell ss:StyleID="s19">
-          <Data ss:Type="String">Godzina rozpoczęcia</Data>
-        </Cell>
-        <Cell ss:StyleID="s19">
-          <Data ss:Type="String">Godzina zakończenia</Data>
-        </Cell>
-        <Cell ss:StyleID="s19">
-          <Data ss:Type="String">Silos/
-komora</Data>
-        </Cell>
-        <Cell ss:StyleID="s27">
-          <Data ss:Type="String">Gęstość zadana</Data>
-        </Cell>
-        <Cell ss:StyleID="s27">
-          <Data ss:Type="String">Gęstość średnia</Data>
-        </Cell>
-        <Cell ss:StyleID="s19">
-          <Data ss:Type="String">Surowiec</Data>
-        </Cell>
-        <Cell ss:StyleID="s19">
-          <Data ss:Type="String">Ilość spieniona</Data>
-        </Cell>
-        <Cell ss:StyleID="s19">
-          <Data ss:Type="String">Produkt</Data>
-        </Cell>
-        <Cell ss:StyleID="s19">
-          <Data ss:Type="String">PZ</Data>
-        </Cell>
-        <Cell ss:StyleID="s16" />
-      </Row>
+	 _COLUMNMOCK_
 	 _MYROW_
      _BUTTOM_
-	 <Row ss:Index="_MATERIALTABLEINDEX_">
-		<Cell ss:Index="2" ss:StyleID="s27">
-			<Data ss:Type="String">BILANS SUROWCA:</Data>
-		</Cell>
-		<Cell ss:StyleID="s27" />
-	</Row>
 	 _TYPETABLE_
     </Table>
     <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">

@@ -94,7 +94,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="0" ItemsSource="{Binding Path=ShiftItems}" SelectedItem="{Binding Path=SelectedShiftItem}" IsSelected="True"
-                                  Margin="10,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                  Margin="10,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="40" MinHeight="20"/>
                         <Button Grid.Column="1" IsEnabled="{Binding IsSaveInFilePanelEnabled}" Content="Zapisz raport do pliku" Cursor="Hand"  FontSize="14" Margin="5,0,15,0" HorizontalAlignment="Center"
                                 VerticalAlignment="Center" Command="{Binding SaveReportInFileCommand}"  Style="{StaticResource FormMidPanelButtonStyle}"/>
                     </Grid>
@@ -132,21 +132,7 @@
                                 </Style.Triggers>
                             </Style>
                         </DataGrid.Style>
-                        <!--<DataGrid.Columns>  
-                            <DataGridTextColumn Header="Nr nadany" Binding="{Binding AssignedNumber}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Data organiki" Binding="{Binding OrganicDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Data produkcji" Binding="{Binding ProductionDate, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Waga [kg]" Binding="{Binding Weight}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Czas cyklu [s]" Binding="{Binding CycleTimeInSecond}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Operator" Binding="{Binding Operator}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Silos" Binding="{Binding Silos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
-                            <DataGridTextColumn Header="Komora" Binding="{Binding Chamber, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
-                            <DataGridTextColumn Header="Ragranulat" Binding="{Binding Blow}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Gatunek" Binding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
-                            <DataGridTextColumn Header="Uwagi" Binding="{Binding Comments, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
-                            <DataGridTextColumn Header="Sr.g. perełek" Binding="{Binding AvgDensityOfPearls}" IsReadOnly="True"/>
-                </DataGrid.Columns>-->
-            </DataGrid>
+                    </DataGrid>
             </Border>
             </Grid>
         </Grid>

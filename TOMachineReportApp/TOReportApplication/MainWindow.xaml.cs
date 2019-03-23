@@ -33,5 +33,11 @@ namespace TOReportApplication
         {
             this.DataContext = container.Resolve<IBlowingMachineViewModel>();
         }
+
+
+        private void ContinuousBlowingMachineButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = container.Resolve<IContinuousBlowingMachineViewModel>();
+        }
     }
 }

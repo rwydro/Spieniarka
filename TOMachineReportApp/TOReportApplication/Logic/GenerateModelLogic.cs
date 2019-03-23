@@ -81,9 +81,12 @@ namespace TOReportApplication.Logic
         {
             try
             {
-                var converter = TypeDescriptor.GetConverter(typeof(T));
+                var converter = TypeDescriptor.GetConverter(typeof(T)); 
                 if (converter != null)
                 {
+                    if (converter.GetType() ==typeof(DoubleConverter))
+                        input = input.Replace(".", ",");
+                    
                     return (T) converter.ConvertFromString(input);
                 }
 

@@ -35,39 +35,8 @@
         </Border>
         <Border  BorderBrush="Black " CornerRadius="15" Grid.Row="1" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0">
             <DataGrid   HeadersVisibility="Column" BorderBrush="{x:Null}"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
+                IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
                 ItemsSource="{Binding Path=BlowingMachineReportItems}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine}"/>
-                    <DataGridTextColumn Header="Data poczatek" Binding="{Binding DateTimeStart, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
-                    <DataGridTextColumn Header="Data koniec" Binding="{Binding DateTimeStop, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
-                    <DataGridTextColumn Header="Nr zlecenia" Binding="{Binding OrderNumber}"/>
-                    <DataGridTextColumn Header="Nr recepty" Binding="{Binding RecipeNumber}"/>
-                    <DataGridTextColumn Header="Producent" Binding="{Binding Manufacturer}"/>
-                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}"/>
-                    <DataGridTextColumn Header="Gestosc zadana" Binding="{Binding DensitySet}"/>
-                    <DataGridTextColumn Header="Gestosc min" Binding="{Binding DensityMin}"/>
-                    <DataGridTextColumn Header="Gestosc srednia" Binding="{Binding DensityMean}"/>
-                    <DataGridTextColumn Header="Gestosc max" Binding="{Binding DensityMax}"/>
-                    <DataGridTextColumn Header="Ilosc zad Surowca" Binding="{Binding WeightSet}"/>
-                    <DataGridTextColumn Header="Ilosc rzecz Surowca" Binding="{Binding WeightActual}"/>
-                    <DataGridTextColumn Header="Ilosc rzecz partii" Binding="{Binding BatchesActual}"/>
-                    <DataGridTextColumn Header="Operator" Binding="{Binding Operator}"/>
-                    <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}"/>
-                    <DataGridTextColumn Header="Nr LOT" Binding="{Binding LotNumber}"/>
-                    <DataGridTextColumn Header="Material" Binding="{Binding Material}"/>
-                    <DataGridTextColumn Header="Czas cyklu" Binding="{Binding CycleTime}"/>
-                    <DataGridTextColumn Header="Silos 0" Binding="{Binding Silos0}"/>
-                    <DataGridTextColumn Header="Czas pary" Binding="{Binding TimeSteam}"/>
-                    <DataGridTextColumn Header="Wyl poziomu" Binding="{Binding LevelSwitch}"/>
-                    <DataGridTextColumn Header="Bajpas" Binding="{Binding Bypass}"/>
-                    <DataGridTextColumn Header="Wartosc nawazki" Binding="{Binding InputWeight}"/>
-                    <DataGridTextColumn Header="Cisn pary" Binding="{Binding SteamPressure}"/>
-                    <DataGridTextColumn Header="Predkosc mieszadla" Binding="{Binding SpeedAgitator}"/>
-                    <DataGridTextColumn Header="Predkosc sluzy lopatk" Binding="{Binding SpeedRotaryValve}"/>
-                    <DataGridTextColumn Header="Klapa suszarki" Binding="{Binding FlapFluidizedBed}"/>
-                    <DataGridTextColumn Header="Klapa transportu" Binding="{Binding FlapTransportUnit}"/>
-                </DataGrid.Columns>
             </DataGrid>
         </Border>
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"
@@ -105,39 +74,8 @@
                 <DropShadowEffect/>
             </UIElement.Effect>
             <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                IsReadOnly="true" AutoGenerateColumns="false" AlternatingRowBackground="LightGreen"
+                IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
                 ItemsSource="{Binding Path=BlowingMachineShiftReportItems}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine}"/>
-                    <DataGridTextColumn Header="Data poczatek" Binding="{Binding DateTimeStart, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
-                    <DataGridTextColumn Header="Data koniec" Binding="{Binding DateTimeStop, StringFormat=\{0:dd-MM-yyyy HH:mm:ss\}}"/>
-                    <DataGridTextColumn Header="Nr zlecenia" Binding="{Binding OrderNumber}"/>
-                    <DataGridTextColumn Header="Nr recepty" Binding="{Binding RecipeNumber}"/>
-                    <DataGridTextColumn Header="Producent" Binding="{Binding Manufacturer}"/>
-                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}"/>
-                    <DataGridTextColumn Header="Gestosc zadana" Binding="{Binding DensitySet}"/>
-                    <DataGridTextColumn Header="Gestosc min" Binding="{Binding DensityMin}"/>
-                    <DataGridTextColumn Header="Gestosc srednia" Binding="{Binding DensityMean}"/>
-                    <DataGridTextColumn Header="Gestosc max" Binding="{Binding DensityMax}"/>
-                    <DataGridTextColumn Header="Ilosc zad Surowca" Binding="{Binding WeightSet}"/>
-                    <DataGridTextColumn Header="Ilosc rzecz Surowca" Binding="{Binding WeightActual}"/>
-                    <DataGridTextColumn Header="Ilosc rzecz partii" Binding="{Binding BatchesActual}"/>
-                    <DataGridTextColumn Header="Operator" Binding="{Binding Operator}"/>
-                    <DataGridTextColumn Header="Komora" Binding="{Binding Chamber}"/>
-                    <DataGridTextColumn Header="Nr LOT" Binding="{Binding LotNumber}"/>
-                    <DataGridTextColumn Header="Material" Binding="{Binding Material}"/>
-                    <DataGridTextColumn Header="Czas cyklu" Binding="{Binding CycleTime}"/>
-                    <DataGridTextColumn Header="Silos 0" Binding="{Binding Silos0}"/>
-                    <DataGridTextColumn Header="Czas pary" Binding="{Binding TimeSteam}"/>
-                    <DataGridTextColumn Header="Wyl poziomu" Binding="{Binding LevelSwitch}"/>
-                    <DataGridTextColumn Header="Bajpas" Binding="{Binding Bypass}"/>
-                    <DataGridTextColumn Header="Wartosc nawazki" Binding="{Binding InputWeight}"/>
-                    <DataGridTextColumn Header="Cisn pary" Binding="{Binding SteamPressure}"/>
-                    <DataGridTextColumn Header="Predkosc mieszadla" Binding="{Binding SpeedAgitator}"/>
-                    <DataGridTextColumn Header="Predkosc sluzy lopatk" Binding="{Binding SpeedRotaryValve}"/>
-                    <DataGridTextColumn Header="Klapa suszarki" Binding="{Binding FlapFluidizedBed}"/>
-                    <DataGridTextColumn Header="Klapa transportu" Binding="{Binding FlapTransportUnit}"/>
-                </DataGrid.Columns>
             </DataGrid>
         </Border>
     </Grid>

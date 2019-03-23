@@ -150,6 +150,7 @@
     <Compile Include="Logic\SaveBlowingMachineReportInFileLogic.cs" />
     <Compile Include="Logic\SaveInFileLogic.cs" />
     <Compile Include="Logic\ShiftCalendarManager.cs" />
+    <Compile Include="Model\ContinuousBlowingMachineReportModel.cs" />
     <Compile Include="Model\ReportModel.cs" />
     <Compile Include="Model\BlowingMachineReportModel.cs" />
     <Compile Include="Model\FormDateReportDBModel.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="ViewModels\ContinuousBlowingMachineViewModel.cs" />
     <Compile Include="ViewModels\FormSetShiftReportDataViewModel.cs" />
     <Compile Include="ViewModels\BlowingMachineViewModel.cs" />
+    <Compile Include="ViewModels\interfaces\IContinuousBlowingMachineViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IFormSetShiftReportDataViewModel.cs" />
     <Compile Include="ViewModels\interfaces\ISettingsAndFilterPanelViewModel.cs" />
     <Compile Include="ViewModels\SettingsAndFilterPanelViewModel.cs" />

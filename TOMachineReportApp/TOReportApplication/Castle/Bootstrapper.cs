@@ -27,6 +27,7 @@ namespace TOReportApplication.Castle
             container.RegisterType<IShell, Shell>();
             container.RegisterType<IFormViewModel, FormViewModel>();
             container.RegisterType<IBlowingMachineViewModel, BlowingMachineViewModel>();
+            container.RegisterType<IContinuousBlowingMachineViewModel, ContinuousBlowingMachineViewModel>();
             container.RegisterType<IFormSetShiftReportDataViewModel, FormSetShiftReportDataViewModel>();
             container.RegisterType<IApplicationRepository,ApplicationRepository>();
             container.RegisterType<IMyLogger, MyLogger>();

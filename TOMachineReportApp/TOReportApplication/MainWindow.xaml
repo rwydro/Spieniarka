@@ -14,6 +14,9 @@
         <DataTemplate x:Name="blowingMachineViewTemplate"  DataType="{x:Type viewModels:BlowingMachineViewModel}">
             <views:BlowingMachineView DataContext="{Binding}"/>
         </DataTemplate>
+        <DataTemplate x:Name="continuousBlowingMachineViewTemplate"  DataType="{x:Type viewModels:ContinuousBlowingMachineViewModel}">
+            <views:BlowingMachineView DataContext="{Binding}"/>
+        </DataTemplate>
         <Style BasedOn="{StaticResource {x:Type Grid}}" TargetType="Grid" x:Key="LeftGridStyle">
             <Setter Property="Background" Value="White"/>
         </Style>
@@ -32,7 +35,7 @@
             </Grid.RowDefinitions>
             <Button Grid.Column="0" Grid.Row="0" Name="formButton" Content="Forma" Click="FormButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Button Grid.Column="0" Grid.Row="1" Name="blowingMachineButton" Content="Spieniarka" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="2" Name="continuousBlowingMachineButton" Content="SpieniarkaCiagla" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="2" Name="continuousBlowingMachineButton" Content="Spieniarka ciągła" Click="ContinuousBlowingMachineButton_OnClick" FontSize="20" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <ContentControl Content="{Binding}" Grid.Column="1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>

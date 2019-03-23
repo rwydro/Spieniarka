@@ -111,5 +111,21 @@ namespace TOReportApplication.Logic
                 {"klapa_suszarki","FlapFluidizedBed"},
                 {"klapa_transportu","FlapTransportUnit"}
             };
+
+        public static Dictionary<string, string> ContinuousBlowingMachineDbColumnNameToModelPropertyNameDictionary =
+            new Dictionary<string, string>()
+            {
+                {"maszyna","Machine"},
+                {"data_czas","Date"},
+                {"gatunek","Type"},
+                {"gestosc_zadana","DensitySet"},
+                {"operator","Operator"},
+                {"komora","Chamber"},
+                {"silos","Silos"},
+                {"gestosc_z_pomiaru","MeasurementDensity"},
+                {"otwarcie_pary","SteamOpening"},
+                {"material","Material"},
+                {"obroty_dozownika","DispenserRotation"},
+            };
     }
 }
