@@ -18,9 +18,6 @@ namespace SpieniarkaCiagla4._0
                 var data = File.ReadAllLines(filePath);
 
                 return ToDataTableObject(data);
-
-                Console.WriteLine($"Read file {filePath} was ended");
-                return data;
             }
             catch (Exception e)
             {
@@ -49,7 +46,7 @@ namespace SpieniarkaCiagla4._0
 
         private static string[] ToDataTableObject(string[] data)
         {
-            CultureInfo provider = CultureInfo.CreateSpecificCulture("de-DE");
+            CultureInfo provider = CultureInfo.CreateSpecificCulture("fr-FR");
             var table = new DataTable();
             var summaryProperties = typeof(SpieniarkaCiaglaColumnName).GetFields();
             foreach (var col in summaryProperties)
@@ -63,9 +60,10 @@ namespace SpieniarkaCiagla4._0
                 var rowIndex = 0;
                 var cols = line.Split(';');
                 var row = table.NewRow();
-                var date = DateTime.Parse(cols[0]);
+                var date = DateTime.ParseExact(cols[0], "d", provider);
                 var time = DateTime.Parse(cols[1]);
                 date = new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
+
                 for (var cIndex = 0; cIndex < cols.Length; cIndex++)
                 {
 
@@ -73,8 +71,9 @@ namespace SpieniarkaCiagla4._0
                         continue; //2 warunek po to ze na koncu pliku jest tez srednik i rozpoznaje ze tam jeszcze jedna kolumna jest
                     if (cIndex == 0)
                     {
-                        row[cIndex] = date.ToString("dd.MM.yyyy HH:mm:ss");
+                        row[cIndex] = date.ToString("dd-MM-yyyy HH:mm:ss");
                         rowIndex++;
+                        Console.WriteLine("date after parsed: {0}", row[cIndex]);
                         continue;
                     }
 

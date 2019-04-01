@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Configuration;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using log4net.Config;
 
 namespace SpieniarkaCiagla4._0
@@ -9,7 +11,10 @@ namespace SpieniarkaCiagla4._0
         private static ISpieniarkaCiaglaRepository spieniarkaCiaglaRepository;
         private static ISpieniarkaLogger myLogger;
 
-        private static string LogFilePath => ConfigurationManager.AppSettings["PathToLogFile"];
+        private static string LogFilePath
+        {
+            get { return ConfigurationManager.AppSettings["PathToLogFile"]; }
+        }
 
         static void Main(string[] args)
         {
@@ -22,7 +27,9 @@ namespace SpieniarkaCiagla4._0
 
         private static void Init()
         {
-
+ 
+            var cal = CultureInfo.InvariantCulture.Calendar;
+            Console.WriteLine("Calendar type: {0}", cal);
             XmlConfigurator.Configure();
             myLogger = new SpieniarkaLogger();
             spieniarkaCiaglaRepository = new SpieniarkaCiaglaRepository(myLogger);

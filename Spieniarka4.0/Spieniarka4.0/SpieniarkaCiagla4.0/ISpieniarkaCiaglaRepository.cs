@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Npgsql;
 using SpieniarkaCiagla;
@@ -17,10 +15,12 @@ namespace SpieniarkaCiagla4._0
 
     public class SpieniarkaCiaglaRepository : ISpieniarkaCiaglaRepository
     {
-        private Regex dateRegEx = new Regex(
-            @"(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2}) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]:[0-5][0-9]+)");
-        private SpieniarkaCiaglaDBConnection dbConnection;
-        private ISpieniarkaLogger logger;
+        private readonly Regex dateRegEx = new Regex(
+            @"(3[01]|[12][0-9]|0?[1-9])\-(1[012]|0?[1-9])\-((?:19|20)\d{2}) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]:[0-5][0-9]+)");
+
+        private readonly SpieniarkaCiaglaDBConnection dbConnection;
+        private readonly ISpieniarkaLogger logger;
+
         public SpieniarkaCiaglaRepository(ISpieniarkaLogger logger)
         {
             this.logger = logger;
@@ -31,7 +31,7 @@ namespace SpieniarkaCiagla4._0
         {
             dbConnection.OpenSession();
 
-            var query = String.Format("SELECT * FROM spieniarka_ciagla_probki order by data_czas desc limit 1");
+            var query = "SELECT * FROM spieniarka_ciagla_probki order by data_czas desc limit 1";
 
             var cmd = new NpgsqlCommand(query, dbConnection.session);
             cmd.ExecuteNonQuery();
@@ -40,8 +40,8 @@ namespace SpieniarkaCiagla4._0
             var date = new DateTime(2000, 01, 01);
             try
             {
-                NpgsqlDataAdapter da = new NpgsqlDataAdapter(query, dbConnection.session);
-                Console.WriteLine($"Executed  the query: {query} on connection {dbConnection.session}");
+                var da = new NpgsqlDataAdapter(query, dbConnection.session);
+                Console.WriteLine("Executed  the query: {0} on connection {1}", query, dbConnection.session);
 
                 da.Fill(ds);
 
@@ -52,7 +52,7 @@ namespace SpieniarkaCiagla4._0
                     return date;
                 }
 
-                date = (DateTime)dt.Rows[0].ItemArray[1];
+                date = (DateTime) dt.Rows[0].ItemArray[1];
             }
             catch (Exception e)
             {
@@ -67,36 +67,38 @@ namespace SpieniarkaCiagla4._0
         public void InsertMissingData(string[] lines, DateTime date)
         {
             dbConnection.OpenSession();
-            Console.WriteLine($"lines count: {lines.Length}, date: {date}");
-            var stringDate = date.ToString("yyyy-MM-dd HH:mm:ss");
+            var provider = CultureInfo.CreateSpecificCulture("de-DE");
+            var stringDate = date.ToString("yyyy-MM-dd HH:mm:ss", provider);
 
-            for (int i = lines.Length - 1; i >= 0; i--)
+            for (var i = lines.Length - 1; i >= 0; i--)
             {
-                var line = $"\'{lines[i].Replace(",", "','")}\'";
-                // line = $"\'{lines[i].Replace(".", "',")}\'";
+                Console.WriteLine("line: {0}", lines[0]);
+                var line = string.Format("\'{0}\'", lines[i].Replace(",", "','"));
+
+                Console.WriteLine("line: {0}", line);
                 var matchDateAsString = dateRegEx.Match(line);
                 try
                 {
-                    Console.WriteLine($"matchDateAsString: {matchDateAsString}");
-
-
-                    var matchDate = DateTime.Parse(matchDateAsString.Value).ToString("yyyy-MM-dd HH:mm:ss");
+                    var matchDate =
+                        DateTime.ParseExact(matchDateAsString.Value, "dd-MM-yyyy HH:mm:ss", provider)
+                            .ToString("yyyy-MM-dd HH:mm:ss", provider);
                     Console.WriteLine("{0} converts to {1}.", matchDateAsString.Value, matchDate);
                     var correctLine = line.Replace(matchDateAsString.Value, matchDate);
 
-
-                    if (matchDate.Contains(stringDate))
+                    if (correctLine.Contains(stringDate))
                     {
-                        Console.WriteLine($"No more the new lines");
+
+                        Console.WriteLine("No more the new lines");
                         return;
                     }
 
                     var query =
-                        "INSERT INTO public.spieniarka_ciagla_probki(data_czas, gestosc_z_pomiaru, gestosc_zadana, otwarcie_pary," +
-                        $" obroty_dozownika, material, gatunek, silos, komora, operator)  VALUES({correctLine})";
+                        string.Format(
+                            "INSERT INTO public.spieniarka_ciagla_probki(data_czas, gestosc_z_pomiaru, gestosc_zadana, otwarcie_pary, obroty_dozownika, material, gatunek, silos, komora, operator)  VALUES({0})",
+                            correctLine);
 
                     var cmd = new NpgsqlCommand(query, dbConnection.session);
-                    Console.WriteLine($"Executed the query {query}");
+                    Console.WriteLine("Executed the query {0}", query);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -105,7 +107,6 @@ namespace SpieniarkaCiagla4._0
                     Console.WriteLine(e);
 
                     Console.WriteLine("{0} is not in the correct format.", matchDateAsString.Value);
-
                 }
                 catch (Exception e)
                 {
@@ -115,8 +116,7 @@ namespace SpieniarkaCiagla4._0
 
                 Console.WriteLine("Above query was executed successful");
             }
-            Console.WriteLine($"End of for loop");
+            Console.WriteLine("End of for loop");
         }
-
     }
 }
