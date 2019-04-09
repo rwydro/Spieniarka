@@ -133,9 +133,9 @@ namespace TOReportApplication.ViewModels
         {
             try
             {
-                var document = SaveBlowingMachineReportInFileLogic.GenerateXml(SelectedShift, BlowingMachineShiftReportItems.ToList());
-                SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
-                    SelectedShift, document);
+                var document = BlowingMachineXmlGenerator.GenerateXml(SelectedShift, BlowingMachineShiftReportItems.ToList());
+                SaveInFileLogic.SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
+                    SelectedShift, document, logger);
             }
             catch (InvalidOperationException ex)
             {
@@ -162,29 +162,6 @@ namespace TOReportApplication.ViewModels
                         shiftInfo.EndShift.Hours, shiftInfo.EndShift.Minutes, shiftInfo.EndShift.Seconds)
                 select item).ToList());
             IsSaveInFileReportButtonEnabled = true;
-        }
-
-        private void SaveInFileAndOpen(string path, string shift, XmlDocument document)
-        {
-            try
-            {
-                var str = Path.Combine(path, string.Format("{0}_zmiana_{1}.xml", DateTime.Now.Day, shift));
-                document.Save(str);
-                bool result;
-                if (!bool.TryParse(ConfigurationManager.AppSettings["IsOpenReportAfterSaved"], out result))
-                    return;
-                Process.Start(str);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                logger.logger.Error("Błąd zapisu pliku", ex);
-                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
-            }
-            catch (Exception ex)
-            {
-                logger.logger.Error("Błąd zapisu pliku", ex);
-                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
-            }
         }
 
         private string CreateMissingFolders(string path)

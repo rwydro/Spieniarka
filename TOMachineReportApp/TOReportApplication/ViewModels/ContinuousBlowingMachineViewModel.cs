@@ -22,8 +22,8 @@ namespace TOReportApplication.ViewModels
 {
     public class ContinuousBlowingMachineViewModel : ViewModelBase, IContinuousBlowingMachineViewModel
     {
-        public ISettingsAndFilterPanelViewModel<ContinuousBlowingMachineReportModel> SettingsAndFilterPanelViewModel { get; }
         private readonly IMyLogger logger;
+        public ISettingsAndFilterPanelViewModel<ContinuousBlowingMachineReportModel> SettingsAndFilterPanelViewModel { get; }
 
 
         private ObservableCollection<ContinuousBlowingMachineReportModel> blowingMachineReportItems;
@@ -38,8 +38,8 @@ namespace TOReportApplication.ViewModels
             }
         }
 
-        private ObservableCollection<ContinuousBlowingMachineReportModel> blowingMachineShiftReportItems;
-        public ObservableCollection<ContinuousBlowingMachineReportModel> BlowingMachineShiftReportItems
+        private ObservableCollection<ContinuousBlowingMachineShiftReportModel> blowingMachineShiftReportItems;
+        public ObservableCollection<ContinuousBlowingMachineShiftReportModel> BlowingMachineShiftReportItems
         {
             get => blowingMachineShiftReportItems;
             set
@@ -132,14 +132,12 @@ namespace TOReportApplication.ViewModels
         {
             var shiftCalendarManager = new ShiftCalendarManager();
             var shiftInfo = shiftCalendarManager.GetShiftInfo(selectedShift);
+            var qweqweqwe =
+                ContinuousBlowingMachineReportLogic.GenerateContinuousBlowingMachineFileReportModel(
+                    BlowingMachineReportItems.ToArray(), shiftInfo,SelectedDate);
 
-            BlowingMachineShiftReportItems = new ObservableCollection<ContinuousBlowingMachineReportModel>((from item in BlowingMachineReportItems
-                where
-                    item.Date >= new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,
-                        shiftInfo.BeginningShift.Hours, shiftInfo.BeginningShift.Minutes, shiftInfo.BeginningShift.Seconds) &&
-                    item.Date <= new DateTime(SelectedDate.Year, SelectedDate.Month, shiftInfo.NumberOfShift == ShiftInfoEnum.ThirdShift ? SelectedDate.AddDays(1).Day : SelectedDate.Day,
-                        shiftInfo.EndShift.Hours, shiftInfo.EndShift.Minutes, shiftInfo.EndShift.Seconds)
-                select item).ToList());
+            BlowingMachineShiftReportItems = new ObservableCollection<ContinuousBlowingMachineShiftReportModel>(qweqweqwe);
+
             IsSaveInFileReportButtonEnabled = true;
         }
 
@@ -172,9 +170,9 @@ namespace TOReportApplication.ViewModels
         {
             try
             {
-                var document = SaveBlowingMachineReportInFileLogic.GenerateXml(SelectedShift, BlowingMachineShiftReportItems.ToList());
-                SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
-                    SelectedShift, document);
+                var document = BlowingMachineXmlGenerator.GenerateXml(SelectedShift, blowingMachineShiftReportItems.ToList());
+                SaveInFileLogic.SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
+                    SelectedShift, document, logger);
             }
             catch (InvalidOperationException ex)
             {
@@ -187,30 +185,7 @@ namespace TOReportApplication.ViewModels
                 MessageBoxHelper.ShowMessageBox("Błąd podczas zapisu pliku spróbuj ponownie", MessageBoxIcon.Exclamation);
             }
         }
-
-        private void SaveInFileAndOpen(string path, string shift, XmlDocument document)
-        {
-            try
-            {
-                var str = Path.Combine(path, string.Format("{0}_zmiana_{1}.xml", DateTime.Now.Day, shift));
-                document.Save(str);
-                bool result;
-                if (!bool.TryParse(ConfigurationManager.AppSettings["IsOpenReportAfterSaved"], out result))
-                    return;
-                Process.Start(str);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                logger.logger.Error("Błąd zapisu pliku", ex);
-                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
-            }
-            catch (Exception ex)
-            {
-                logger.logger.Error("Błąd zapisu pliku", ex);
-                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
-            }
-        }
-
+      
         private void OnGetBlowingMachineReportsModelItems(object sender, EventBaseArgs<ContinuousBlowingMachineReportModel> e)
         {
             BlowingMachineReportItems.Clear();

@@ -12,7 +12,7 @@ namespace TOReportApplication.Model
         [DisplayName("Data")]
         public DateTime Date { get; set; }
         [DisplayName("Gestosc z pomiaru")]
-        public string MeasurementDensity { get; set; }
+        public double MeasurementDensity { get; set; }
         [DisplayName("Otwarcie pary")]
         public string SteamOpening { get; set; }
         [DisplayName("Obroty dozownika")]

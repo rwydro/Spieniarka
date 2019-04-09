@@ -8,7 +8,7 @@ using TOReportApplication.Model;
 
 namespace TOReportApplication.Logic
 {
-    public static class SaveBlowingMachineReportInFileLogic
+    public static class BlowingMachineXmlGenerator
     {
 
         private static readonly string buttomDocumentMock =
@@ -26,11 +26,11 @@ namespace TOReportApplication.Logic
         private static readonly string rowMaterialTableMock =
             "<Row>\r\n  <Cell ss:Index=\"2\" ss:StyleID=\"s27\">\r\n    <Data ss:Type=\"String\">_ROWMATERIAL_</Data>\r\n  </Cell>\r\n  <Cell ss:StyleID=\"s27\">\r\n    <Data ss:Type=\"Number\">_RWNUM_</Data>\r\n  </Cell>\r\n</Row>";
 
-        private static readonly string rowContinuousMock = 
-            "<Row>\r\n    <Cell ss:StyleID=\"s23\">\r\n      <Data ss:Type=\"Number\">_NUMBER_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_STARTDATE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s28\" >\r\n      <Data ss:Type=\"String\">_SILOS_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s27\">\r\n      <Data ss:Type=\"String\">_DENSITYSET_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_MEASUREMENTDENSITY_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_TYPE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\" >\r\n      <Data ss:Type=\"String\">_STEAMOPENING_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_MATERIAL_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s21\" >\r\n      <Data ss:Type=\"String\">_DISPENSERROTATION_</Data>\r\n    </Cell>\r\n</Row>";
+        private static readonly string rowContinuousMock =
+            "<Row>\r\n    <Cell ss:StyleID=\"s23\">\r\n      <Data ss:Type=\"Number\">_NUMBER_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_STARTDATE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s28\" >\r\n      <Data ss:Type=\"String\">_ENDDATE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s27\">\r\n      <Data ss:Type=\"String\">_CHAMBER_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_SETDENSITY_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_AVGSETDENTISY_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_TYPE_</Data>\r\n    </Cell>\r\n    <Cell ss:StyleID=\"s23\" >\r\n      <Data ss:Type=\"String\">_MATERIAL_</Data>\r\n    </Cell>\r\n</Row>";
 
         private static readonly string columnContinuousMock = 
-            "<Row ss:Index=\"4\" ss:AutoFitHeight=\"0\" ss:Height=\"30.75\">\r\n        <Cell ss:StyleID=\"s27\">\r\n          <Data ss:Type=\"String\">Lp.</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Godzina rozpoczęcia</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Silos</Data>\r\n        </Cell>\r\n              <Cell ss:StyleID=\"s27\">\r\n          <Data ss:Type=\"String\">Gęstość zadana</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s27\">\r\n          <Data ss:Type=\"String\">Gęstość pomiaru</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Gatunek</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Otwarcie pary</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Materiał</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Obroty dozownika</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s16\" />\r\n      </Row>";
+            "<Row ss:Index=\"4\" ss:AutoFitHeight=\"0\" ss:Height=\"30.75\">\r\n        <Cell ss:StyleID=\"s27\">\r\n          <Data ss:Type=\"String\">Lp.</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Data rozpoczęcia</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Data zakończenia</Data>\r\n        </Cell>\r\n              <Cell ss:StyleID=\"s27\">\r\n          <Data ss:Type=\"String\">Komora</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s27\">\r\n          <Data ss:Type=\"String\">Gęstość zadana</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Średnia gęstość</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Gatunek</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s19\">\r\n          <Data ss:Type=\"String\">Materiał</Data>\r\n        </Cell>\r\n        <Cell ss:StyleID=\"s16\" />\r\n      </Row>";
 
 
         
@@ -59,7 +59,8 @@ namespace TOReportApplication.Logic
             if (typeof(T) == typeof(BlowingMachineReportModel))
             {
                 document.InnerXml = document.InnerXml
-                    .Replace("_MYROW_", GenerateMainTable(item as List<BlowingMachineReportModel>))
+                    .Replace("_HEADER_", "RAPORT ZMIANOWY SPIENIANIA - I STOPIEŃ")
+                    .Replace("_MYROW_", GenerateMainTable(item as List<BlowingMachineReportModel>))                   
                     .Replace("_BUTTOM_", GenerateButtomFields(item.Count))
                     .Replace("_TYPETABLE_", GenerateTypeTable(item.Count))
                     .Replace("_MATERIALTABLEINDEX_", (item.Count + 8).ToString());
@@ -67,7 +68,8 @@ namespace TOReportApplication.Logic
             else
             {
                 document.InnerXml = document.InnerXml
-                    .Replace("_MYROW_", GenerateContinuousMainTable(item as List<ContinuousBlowingMachineReportModel>))
+                    .Replace("_HEADER_", "RAPORT ZMIANOWY SPIENIANIA - II/III STOPIEŃ")
+                    .Replace("_MYROW_", GenerateContinuousMainTable(item as List<ContinuousBlowingMachineShiftReportModel>))
                     .Replace("_BUTTOM_", GenerateButtomFields(item.Count));
             }
          
@@ -95,7 +97,7 @@ namespace TOReportApplication.Logic
             return buttom.ToString();
         }
 
-        private static string GenerateContinuousMainTable(List<ContinuousBlowingMachineReportModel> item)
+        private static string GenerateContinuousMainTable(List<ContinuousBlowingMachineShiftReportModel> item)
         {
             var counter = 0;
             var stringBuilder = new StringBuilder();
@@ -103,15 +105,14 @@ namespace TOReportApplication.Logic
             foreach (var machineReportItem in item)
             {
                 ++counter;
-                stringBuilder.Append(rowContinuousMock).Replace("_NUMBER_", counter.ToString())
-                    .Replace("_STARTDATE_", machineReportItem.Date.ToString())
-                    .Replace("_DENSITYSET_", machineReportItem.DensitySet.ToString())
-                    .Replace("_MEASUREMENTDENSITY_", machineReportItem.MeasurementDensity.ToString())
-                    .Replace("_STEAMOPENING_", machineReportItem.SteamOpening.ToString())
-                    .Replace("_SILOS_", machineReportItem.Silos)
-                    .Replace("_TYPE_", machineReportItem.Type)
-                    .Replace("_MATERIAL_", machineReportItem.Material)
-                    .Replace("_DISPENSERROTATION_", machineReportItem.DispenserRotation);
+                stringBuilder.Append(rowContinuousMock).Replace("_NUMBER_", counter.ToString().Trim())
+                    .Replace("_STARTDATE_", machineReportItem.StartDate.ToString().Trim())
+                    .Replace("_ENDDATE_", machineReportItem.EndDate.ToString().Trim())
+                    .Replace("_CHAMBER_", machineReportItem.Chamber.ToString().Trim())
+                    .Replace("_SETDENSITY_", machineReportItem.DensitySet.ToString().Trim())
+                    .Replace("_AVGSETDENTISY_", machineReportItem.AvgDensityOfMeassurement.Trim())
+                    .Replace("_TYPE_", machineReportItem.Type.Trim())
+                    .Replace("_MATERIAL_", machineReportItem.Material.Trim());
             }
 
             typeDictionary = rowMaterialDictionary;

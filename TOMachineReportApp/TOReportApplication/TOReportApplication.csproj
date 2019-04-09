@@ -138,6 +138,7 @@
     </ApplicationDefinition>
     <Compile Include="DataBase\ApplicationRepository.cs" />
     <Compile Include="DataBase\DBConnection.cs" />
+    <Compile Include="Logic\ContinuousBlowingMachineReportLogic.cs" />
     <Compile Include="Logic\Enums\DataContextEnum.cs" />
     <Compile Include="Logic\Enums\FormDetailedReportTypeEnum.cs" />
     <Compile Include="Logic\Enums\ShiftInfoEnum.cs" />
@@ -147,9 +148,10 @@
     <Compile Include="Logic\ModelDictionaries.cs" />
     <Compile Include="Logic\MyLogger.cs" />
     <Compile Include="Logic\MyTimer.cs" />
-    <Compile Include="Logic\SaveBlowingMachineReportInFileLogic.cs" />
+    <Compile Include="Logic\BlowingMachineXmlGenerator.cs" />
     <Compile Include="Logic\SaveInFileLogic.cs" />
     <Compile Include="Logic\ShiftCalendarManager.cs" />
+    <Compile Include="Model\ContinuousBlowingMachineShiftReportModel.cs" />
     <Compile Include="Model\ContinuousBlowingMachineReportModel.cs" />
     <Compile Include="Model\ReportModel.cs" />
     <Compile Include="Model\BlowingMachineReportModel.cs" />

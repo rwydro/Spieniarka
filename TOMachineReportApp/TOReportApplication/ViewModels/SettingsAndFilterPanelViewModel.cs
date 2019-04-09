@@ -153,7 +153,7 @@ namespace TOReportApplication.ViewModels
         private string GenerateBlowingMachineQuery(string dbTableName, string dbColName)
         {
                 return string.Format(
-                    "SELECT * FROM public.{0} where {1} > '{2}' and {3} < '{4}'",
+                    "SELECT * FROM public.{0} where {1} > '{2}' and {3} < '{4}' order by {1}",
                     dbTableName, dbColName,
                     new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,7,0,0),
                     dbColName,

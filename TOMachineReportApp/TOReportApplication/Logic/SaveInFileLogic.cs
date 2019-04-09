@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using TOReportApplication.Model;
 
 namespace TOReportApplication.Logic
@@ -35,6 +38,28 @@ namespace TOReportApplication.Logic
                     log.logger.Error(e);
                 }
                    
+            }
+        }
+        public static void SaveInFileAndOpen(string path, string shift, XmlDocument document,IMyLogger logger)
+        {
+            try
+            {
+                var str = Path.Combine(path, string.Format("{0}_zmiana_{1}.xml", DateTime.Now.Day, shift));
+                document.Save(str);
+                bool result;
+                if (!bool.TryParse(ConfigurationManager.AppSettings["IsOpenReportAfterSaved"], out result))
+                    return;
+                Process.Start(str);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                logger.logger.Error("Błąd zapisu pliku", ex);
+                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
+            }
+            catch (Exception ex)
+            {
+                logger.logger.Error("Błąd zapisu pliku", ex);
+                MessageBoxHelper.ShowMessageBox("Nie można zapisać pliku. Sprawdź czy nie jest on otwarty", MessageBoxIcon.Exclamation);
             }
         }
     }
