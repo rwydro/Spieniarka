@@ -95,7 +95,7 @@
       <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="39.75" />
       <Row>
         <Cell ss:MergeAcross="8" ss:StyleID="s30">
-          <Data ss:Type="String">RAPORT ZMIANOWY SPIENIANIA</Data>
+          <Data ss:Type="String">_HEADER_</Data>
         </Cell>
       </Row>
       <Row>
