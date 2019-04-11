@@ -94,7 +94,7 @@ namespace SpieniarkaCiagla4._0
 
                     var query =
                         string.Format(
-                            "INSERT INTO public.spieniarka_ciagla_probki(data_czas, gestosc_z_pomiaru, gestosc_zadana, otwarcie_pary, obroty_dozownika, material, gatunek, silos, komora, operator)  VALUES({0})",
+                            "INSERT INTO public.spieniarka_ciagla_probki(data_czas, gestosc_z_pomiaru, gestosc_zadana, otwarcie_pary, obroty_dozownika, material, gatunek, komora, nr_pz, operator)  VALUES({0})",
                             correctLine);
 
                     var cmd = new NpgsqlCommand(query, dbConnection.session);
