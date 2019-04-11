@@ -17,7 +17,7 @@ namespace TOReportApplication.Model
         public string SteamOpening { get; set; }
         [DisplayName("Obroty dozownika")]
         public string DispenserRotation { get; set; }
-        [DisplayName("Silos")]
-        public string Silos { get; set; }
+        [DisplayName("Numer PZ")]
+        public string PzNumber { get; set; }
     }
 }

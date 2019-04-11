@@ -15,6 +15,8 @@ namespace TOReportApplication.Model
         public DateTime EndDate { get; set; }
         [DisplayName("Komora")]
         public string Chamber { get; set; }
+        [DisplayName("Numer PZ")]
+        public string PzNumber { get; set; }
         [DisplayName("Średnia gęstość z pomiaru")]
         public string AvgDensityOfMeassurement{ get; set; }
         [DisplayName("Gatunek")]

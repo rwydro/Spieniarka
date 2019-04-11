@@ -10,10 +10,10 @@ namespace TOReportApplication.Model
 {
     public class BlowingMachineReportModelBase : ReportModelBase
     {
-        [DisplayName("Operator")]
-        public string Operator { get; set; }
         [DisplayName("Komora")]
         public string Chamber { get; set; }
+        [DisplayName("Operator")]
+        public string Operator { get; set; }     
         [DisplayName("Gatunek")]
         public string Type { get; set; }
         [DisplayName("Material")]

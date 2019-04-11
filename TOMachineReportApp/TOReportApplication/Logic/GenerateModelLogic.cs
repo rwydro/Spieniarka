@@ -41,6 +41,7 @@ namespace TOReportApplication.Logic
                     string colName = dict.First(s => s.Key == c.ColumnName).Value;
                     PropertyInfo p = item.GetType().GetProperty(colName);
 
+            
                     if (p != null && row[c] != DBNull.Value)
                     {
 

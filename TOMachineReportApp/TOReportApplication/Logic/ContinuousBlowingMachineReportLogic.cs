@@ -55,7 +55,8 @@ namespace TOReportApplication.Logic
                         Type = dataForShift[i].Type,
                         StartDate = startDate,
                         EndDate = dataForShift[i].Date,
-                        Operator = dataForShift[i].Operator
+                        Operator = dataForShift[i].Operator,
+                        PzNumber = dataForShift[i].PzNumber
                     });
                     counter = 1;
                     sumDensityMeassurements = 0;

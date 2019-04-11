@@ -121,7 +121,7 @@ namespace TOReportApplication.Logic
                 {"gestosc_zadana","DensitySet"},
                 {"operator","Operator"},
                 {"komora","Chamber"},
-                {"silos","Silos"},
+                {"numer_pz","PzNumber"},
                 {"gestosc_z_pomiaru","MeasurementDensity"},
                 {"otwarcie_pary","SteamOpening"},
                 {"material","Material"},
