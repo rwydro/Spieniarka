@@ -132,11 +132,11 @@ namespace TOReportApplication.ViewModels
         {
             var shiftCalendarManager = new ShiftCalendarManager();
             var shiftInfo = shiftCalendarManager.GetShiftInfo(selectedShift);
-            var qweqweqwe =
+            var shiftReport =
                 ContinuousBlowingMachineReportLogic.GenerateContinuousBlowingMachineFileReportModel(
                     BlowingMachineReportItems.ToArray(), shiftInfo,SelectedDate);
 
-            BlowingMachineShiftReportItems = new ObservableCollection<ContinuousBlowingMachineShiftReportModel>(qweqweqwe);
+            BlowingMachineShiftReportItems = new ObservableCollection<ContinuousBlowingMachineShiftReportModel>(shiftReport);
 
             IsSaveInFileReportButtonEnabled = true;
         }
