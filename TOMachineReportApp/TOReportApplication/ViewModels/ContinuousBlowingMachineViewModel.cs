@@ -172,7 +172,7 @@ namespace TOReportApplication.ViewModels
             {
                 var document = BlowingMachineXmlGenerator.GenerateXml(SelectedShift, blowingMachineShiftReportItems.ToList());
                 SaveInFileLogic.SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
-                    SelectedShift, document, logger);
+                    SelectedShift,"Ciągła", document, logger);
             }
             catch (InvalidOperationException ex)
             {

@@ -180,7 +180,7 @@ namespace TOReportApplication.ViewModels
         {
             try
             {
-                   var query = string.Format(
+                var query = string.Format(
                     "SELECT * FROM public.forma_blok2 where data_czas > '{0}' and data_czas < '{1}'",
                     SelectedDate.AddHours(4), SelectedDate.AddDays(1).AddHours(10));
                 var data = dbConnection.GetDataFromDB(query);

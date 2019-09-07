@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -316,9 +317,9 @@ namespace TOReportApplication.ViewModels
                 });
             }
 
-            
-             SaveInFileLogic.OnSaveReportInFile<List<FormReportFileModel>>(reportObject, Path.Combine(ConfigurationManager.AppSettings["PathToFormReport"], "Raport_" + reportObject.First().TimeFrom.Date.ToString("yyyy-MM-dd") + ".xml"), logger);
-
+            var pathToReport = Path.Combine(ConfigurationManager.AppSettings["PathToFormReport"], "Raport_Forma_" + reportObject.First().TimeFrom.Date.ToString("yyyy-MM-dd") + ".xml");
+            SaveInFileLogic.OnSaveReportInFile<List<FormReportFileModel>>(reportObject, pathToReport, logger);
+            Process.Start(pathToReport);
         }
 
         private void SetAvailableShifts()
@@ -373,8 +374,13 @@ namespace TOReportApplication.ViewModels
             DateReportItems = new ObservableCollection<FormDateReportModel>();
             GenerateDateReport(formReportsDbModel.Model).ForEach(DateReportItems.Add);
             SetAvailableShifts();
-            IsChamberReportPanelEnabled = true;
-            IsSaveInFilePanelEnabled = true;
+          
+            if (DateReportItems.Count != 0)
+            {
+                IsChamberReportPanelEnabled = true;
+                IsSaveInFilePanelEnabled = true;
+            }
+
             SetFormDetailedReport();
         } 
 

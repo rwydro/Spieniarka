@@ -135,7 +135,7 @@ namespace TOReportApplication.ViewModels
             {
                 var document = BlowingMachineXmlGenerator.GenerateXml(SelectedShift, BlowingMachineShiftReportItems.ToList());
                 SaveInFileLogic.SaveInFileAndOpen(CreateMissingFolders(ConfigurationManager.AppSettings["PathToBlowingMachineReport"]),
-                    SelectedShift, document, logger);
+                    SelectedShift,"", document, logger);
             }
             catch (InvalidOperationException ex)
             {

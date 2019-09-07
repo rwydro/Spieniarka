@@ -40,11 +40,12 @@ namespace TOReportApplication.Logic
                    
             }
         }
-        public static void SaveInFileAndOpen(string path, string shift, XmlDocument document,IMyLogger logger)
+
+        public static void SaveInFileAndOpen(string path, string shift, string blowingMachineType, XmlDocument document,IMyLogger logger)
         {
             try
             {
-                var str = Path.Combine(path, string.Format("{0}_zmiana_{1}.xml", DateTime.Now.Day, shift));
+                var str = Path.Combine(path, string.Format("Spieniarka_{0}_{1}_zmiana_{2}.xml", blowingMachineType, DateTime.Now.Day, shift));
                 document.Save(str);
                 bool result;
                 if (!bool.TryParse(ConfigurationManager.AppSettings["IsOpenReportAfterSaved"], out result))

@@ -93,8 +93,9 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox Grid.Column="0" ItemsSource="{Binding Path=ShiftItems}" SelectedItem="{Binding Path=SelectedShiftItem}" IsSelected="True"
-                                  Margin="10,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="40" MinHeight="20"/>
+                        <ComboBox Grid.Column="0" ItemsSource="{Binding Path=ShiftItems}" SelectedItem="{Binding Path=SelectedShiftItem}" IsSelected="True" SelectedIndex="0" 
+                                  Margin="10,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="40" MinHeight="20"
+                                    IsSynchronizedWithCurrentItem="True"/>
                         <Button Grid.Column="1" IsEnabled="{Binding IsSaveInFilePanelEnabled}" Content="Zapisz raport do pliku" Cursor="Hand"  FontSize="14" Margin="5,0,15,0" HorizontalAlignment="Center"
                                 VerticalAlignment="Center" Command="{Binding SaveReportInFileCommand}"  Style="{StaticResource FormMidPanelButtonStyle}"/>
                     </Grid>
