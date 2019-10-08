@@ -69,7 +69,7 @@ namespace TOReportApplication.ViewModels
             set
             {
                 if(dataContextEnum == value) return;
-                if(value == DataContextEnum.BlowingMachineVIewModel)
+                if(value == DataContextEnum.BlowingMachineViewModel)
                     timer.Dispose();
                 dataContextEnum = value;
                 OnPropertyChanged("DataContextEnum");
@@ -139,11 +139,11 @@ namespace TOReportApplication.ViewModels
      
         private void GenereteDateReport()
         {
-            if (DataContextEnum == DataContextEnum.BlowingMachineVIewModel)
+            if (DataContextEnum == DataContextEnum.BlowingMachineViewModel)
                 GenereteBlowingMachineReport();
             if (DataContextEnum == DataContextEnum.FormViewModel)
             {
-                GenereteDateFormReport();
+                GenerateDateFormReport();
                 //this.timer.SetTimerAction(TimerActionEnum.Reset);
             }
             IsSaveInFileReportButtonEnabled = true;
@@ -176,7 +176,7 @@ namespace TOReportApplication.ViewModels
             CurrentDateTime = DateTime.Now;
         }
 
-        private void GenereteDateFormReport()
+        private void GenerateDateFormReport()
         {
             try
             {

@@ -112,7 +112,7 @@ namespace TOReportApplication.ViewModels
         {
             this.logger = logger;
             SettingsAndFilterPanelViewModel = new SettingsAndFilterPanelViewModel<ContinuousBlowingMachineReportModel>(container, repository, logger);
-            SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.BlowingMachineVIewModel;
+            SettingsAndFilterPanelViewModel.DataContextEnum = DataContextEnum.BlowingMachineViewModel;
             SettingsAndFilterPanelViewModel.GeneratedModelItemsAction += OnGetBlowingMachineReportsModelItems;
             BlowingMachineReportItems = new ObservableCollection<ContinuousBlowingMachineReportModel>();
             ComboBoxValueCollection = new ObservableCollection<string>

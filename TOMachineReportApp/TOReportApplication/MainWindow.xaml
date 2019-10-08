@@ -8,6 +8,9 @@
         mc:Ignorable="d"
         Title="MainWindow" MinHeight="800" Background="DarkGray">
     <Window.Resources>
+        <DataTemplate x:Name="adminModeViewTemplate"  DataType="{x:Type viewModels:AdminModeViewModel}">
+            <views:AdminModeView DataContext="{Binding}"/>
+        </DataTemplate>
         <DataTemplate x:Name="formViewTemplate"  DataType="{x:Type viewModels:FormViewModel}">
             <views:FormView DataContext="{Binding}"/>
         </DataTemplate>
@@ -32,10 +35,12 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" Grid.Row="0" Name="formButton" Content="Forma" Click="FormButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="1" Name="blowingMachineButton" Content="Spieniarka" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="2" Name="continuousBlowingMachineButton" Content="Spieniarka ciągła" Click="ContinuousBlowingMachineButton_OnClick" FontSize="20" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="0" Name="adminModeButton" Content="Tryb Admina" Click="AdminMode_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="1" Name="formButton" Content="Forma" Click="FormButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="2" Name="blowingMachineButton" Content="Spieniarka" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="3" Name="continuousBlowingMachineButton" Content="Spieniarka ciągła" Click="ContinuousBlowingMachineButton_OnClick" FontSize="20" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <ContentControl Content="{Binding}" Grid.Column="1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>

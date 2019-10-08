@@ -138,12 +138,14 @@
     </ApplicationDefinition>
     <Compile Include="DataBase\ApplicationRepository.cs" />
     <Compile Include="DataBase\DBConnection.cs" />
+    <Compile Include="Logic\AdminModeSearchCriteriaLogic.cs" />
     <Compile Include="Logic\ContinuousBlowingMachineReportLogic.cs" />
     <Compile Include="Logic\Enums\DataContextEnum.cs" />
     <Compile Include="Logic\Enums\FormDetailedReportTypeEnum.cs" />
     <Compile Include="Logic\Enums\ShiftInfoEnum.cs" />
     <Compile Include="Logic\Enums\TimerActionEnum.cs" />
     <Compile Include="Logic\GenerateModelLogic.cs" />
+    <Compile Include="Logic\interfaces\IAdminModeSearchCriteriaLogic.cs" />
     <Compile Include="Logic\MessageBoxHelper.cs" />
     <Compile Include="Logic\ModelDictionaries.cs" />
     <Compile Include="Logic\MyLogger.cs" />
@@ -162,9 +164,13 @@
     <Compile Include="Model\MaterialTypeDto.cs" />
     <Compile Include="Model\MaterialTypeMenuModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModels\AdminModeSettingsAndFilterPanelViewModel.cs" />
+    <Compile Include="ViewModels\AdminModeViewModel.cs" />
     <Compile Include="ViewModels\ContinuousBlowingMachineViewModel.cs" />
     <Compile Include="ViewModels\FormSetShiftReportDataViewModel.cs" />
     <Compile Include="ViewModels\BlowingMachineViewModel.cs" />
+    <Compile Include="ViewModels\interfaces\IAdminModeSettingsAndFilterPanelViewModel.cs" />
+    <Compile Include="ViewModels\interfaces\IAdminModeViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IContinuousBlowingMachineViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IFormSetShiftReportDataViewModel.cs" />
     <Compile Include="ViewModels\interfaces\ISettingsAndFilterPanelViewModel.cs" />
@@ -174,6 +180,12 @@
     <Compile Include="ViewModels\interfaces\IFormViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\AdminModeSettingsAndFilterPanelView.xaml.cs">
+      <DependentUpon>AdminModeSettingsAndFilterPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AdminModeView.xaml.cs">
+      <DependentUpon>AdminModeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FormSetShiftReportDataView.xaml.cs">
       <DependentUpon>FormSetShiftReportDataView.xaml</DependentUpon>
     </Compile>
@@ -187,6 +199,7 @@
       <DependentUpon>SettingsAndFilterPanelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewsLogic\EnumConverter.cs" />
+    <Compile Include="Views\ViewsLogic\DataContextEnumDescriptionTypeConverter.cs" />
     <Compile Include="Views\ViewsLogic\InverseAndBooleansToBooleanConverter.cs" />
     <Compile Include="Views\ViewsLogic\NumericValidationRule.cs" />
     <Page Include="MainWindow.xaml">
@@ -203,6 +216,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AdminModeSettingsAndFilterPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AdminModeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FormSetShiftReportDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

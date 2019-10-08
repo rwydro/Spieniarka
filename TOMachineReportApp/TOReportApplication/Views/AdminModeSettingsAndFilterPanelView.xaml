@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="TOReportApplication.Views.AdminModeSettingsAndFilterPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TOReportApplication.Views"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:viewsLogic="clr-namespace:TOReportApplication.Views.ViewsLogic"
+             xmlns:enums="clr-namespace:TOReportApplication.Logic.Enums"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <FrameworkElement.Resources>
+        <Style x:Key="AdminModeSettingsAndFilterPanelButtonStyle" TargetType="{x:Type Button}"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="FrameworkElement.MinHeight" Value="30" />
+            <Setter Property="FrameworkElement.MinWidth" Value="110" />
+            <Setter Property="Control.FontSize" Value="12" />
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <viewsLogic:DataContextEnumDescriptionTypeConverter x:Key="DataContextEnumDescriptionTypeConverter"/>
+    </FrameworkElement.Resources>
+    <Grid>
+        <StackPanel Margin="50,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel Grid.Row="0">
+                    <StackPanel Margin="10">
+                        <Label Content="Maszyna" />
+                        <ComboBox ItemsSource="{Binding Path=MachinesList,
+                            Converter={StaticResource DataContextEnumDescriptionTypeConverter}}"
+                                  SelectedItem="{Binding Path=SelectedMachine, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto" MinWidth="150">
+                        <Label x:Name="fromDate" FontWeight="Bold" FontSize="12" Content="Data od"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left" />
+                        <xctk:DateTimePicker FrameworkElement.HorizontalAlignment="Stretch"
+                                             FrameworkElement.VerticalAlignment="Bottom"
+                                             CalendarDisplayMode="Month" CalendarWidth="400" AutoCloseCalendar="true"
+                                             Value="{Binding SelectedFromDate, Mode=TwoWay}"
+                                             Maximum="{Binding CurrentDateTime}" />
+                    </StackPanel>
+                    <StackPanel Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto" MinWidth="150">
+                        <Label x:Name="toDate" FontWeight="Bold" FontSize="12" Content="Data do"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left" />
+                        <xctk:DateTimePicker FrameworkElement.HorizontalAlignment="Stretch"
+                                             FrameworkElement.VerticalAlignment="Bottom"
+                                             CalendarDisplayMode="Month" CalendarWidth="400" AutoCloseCalendar="true"
+                                             Value="{Binding SelectedToDate, Mode=TwoWay}"
+                                             Maximum="{Binding CurrentDateTime}" />
+                    </StackPanel>
+                </WrapPanel>
+                <WrapPanel Grid.Row="1" Grid.Column="0" IsEnabled="False">
+                    <StackPanel Margin="10">
+                        <Label Content="Zmiana" />
+                        <ComboBox />
+                    </StackPanel>
+                    <StackPanel Margin="10">
+                        <Label Content="Surowiec" />
+                        <ComboBox />
+                    </StackPanel>
+                    <StackPanel Margin="10">
+                        <Label Content="Gatunek" />
+                        <ComboBox />
+                    </StackPanel>
+                    <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                        <Label Content="Nr PZ" />
+                        <ComboBox />
+                    </StackPanel>
+                </WrapPanel>
+                <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1">
+                    <Button Content="Szukaj" Style="{StaticResource AdminModeSettingsAndFilterPanelButtonStyle}" 
+                            Command="{Binding Path=SearchButtonClickCommand}"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

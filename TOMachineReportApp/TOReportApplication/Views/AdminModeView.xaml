@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="TOReportApplication.Views.AdminModeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TOReportApplication.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Unloaded="AdminMode_OnUnloaded">
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="AdminModeButtonStyle">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="MinWidth" Value="20"/>
+            <Setter Property= "FontSize" Value="13"/>
+        </Style>
+        <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}" x:Key="AdminModeDataGridStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGrid}">
+                        <Border x:Name="Border" BorderBrush="#282828" BorderThickness="2" CornerRadius="13" SnapsToDevicePixels="True"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0">
+            <local:AdminModeSettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                                              DataContext="{Binding Path=AdminModeSettingsAndFilterPanelViewModel}"/>
+        </Border>
+        <Border Grid.Row="1" BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0" >
+            <UIElement.Effect>
+                <DropShadowEffect/>
+            </UIElement.Effect>
+            <DataGrid ItemsSource="{Binding Path=ReportModel}"
+                      HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
+                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn">
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>

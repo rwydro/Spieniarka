@@ -24,6 +24,12 @@ namespace TOReportApplication
         }
 
 
+        private void AdminMode_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = container.Resolve<IAdminModeViewModel>();
+        }
+
+
         private void FormButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.DataContext = container.Resolve<IFormViewModel>();

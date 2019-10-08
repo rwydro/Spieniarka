@@ -31,6 +31,7 @@ namespace TOReportApplication.Castle
             container.RegisterType<IFormSetShiftReportDataViewModel, FormSetShiftReportDataViewModel>();
             container.RegisterType<IApplicationRepository,ApplicationRepository>();
             container.RegisterType<IMyLogger, MyLogger>();
+            container.RegisterType<IAdminModeViewModel, AdminModeViewModel>();
         }
 
     }
