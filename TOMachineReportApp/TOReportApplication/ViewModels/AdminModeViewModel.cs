@@ -17,7 +17,7 @@ namespace TOReportApplication.ViewModels
     public class AdminModeViewModel: ViewModelBase, IAdminModeViewModel
     {
 
-        public Action SearchButtonClickedAction { get; set; }
+        public Action<object> SearchButtonClickedAction { get; set; }
 
         private ObservableCollection<object> reportModel;
         public ObservableCollection<object> ReportModel
@@ -46,7 +46,7 @@ namespace TOReportApplication.ViewModels
         private void OnSearchButtonClick()
         {
 
-            SearchButtonClickedAction();
+            SearchButtonClickedAction(AdminModeSettingsAndFilterPanelViewModel.SelectedMachine);
             switch (AdminModeSettingsAndFilterPanelViewModel.SelectedMachine)
             {
                 case DataContextEnum.FormViewModel:      

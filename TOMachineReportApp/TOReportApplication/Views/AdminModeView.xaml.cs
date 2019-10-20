@@ -5,8 +5,11 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Xml;
+using TOReportApplication.Logic.Enums;
+using TOReportApplication.ViewModels;
 using TOReportApplication.ViewModels.interfaces;
 
 namespace TOReportApplication.Views
@@ -16,9 +19,9 @@ namespace TOReportApplication.Views
     /// </summary>
     public partial class AdminModeView : UserControl
     {
-        private readonly ContextMenu contextMenu = new ContextMenu();
+        private ContextMenu contextMenu;
         private XmlDocument xmldoc;
-
+        private string fileName = "";
 
         public AdminModeView()
         {
@@ -32,25 +35,32 @@ namespace TOReportApplication.Views
             viewModel.SearchButtonClickedAction += OnSearchButtonClicked;
         }
 
-        private void OnSearchButtonClicked()
+        private void OnSearchButtonClicked(object machine)
         {
-            var file = new FileInfo(
-                "FormaKolumny.xml");
-            if (file.Exists && file.Length != 0)
+            contextMenu = new ContextMenu();
+            xmldoc = null;
+            switch (machine)
             {
-                xmldoc = new XmlDocument();
-
-                var fs = new FileStream(
-                    "FormaKolumny.xml",
-                    FileMode.Open, FileAccess.Read);
-                xmldoc.Load(fs);
-                fs.Close();
+                case DataContextEnum.FormViewModel:
+                    fileName = "FormaKolumny.xml";
+                    break;
+                case DataContextEnum.BlowingMachineViewModel:
+                    fileName = "SpieniarkaKolumny.xml";
+                    break;
+                case DataContextEnum.ContinuousBlowingMachineViewModel:
+                    fileName = "SpieniarkaCiaglaKolumny.xml";
+                    break;
             }
-        }
 
-        private void AdminMode_OnUnloaded(object sender, RoutedEventArgs e)
-        {
-            ((IAdminModeViewModel) DataContext).Dispose();
+            var file = new FileInfo(fileName);
+            if (!file.Exists || file.Length == 0) return;
+
+            xmldoc = new XmlDocument();
+            var fs = new FileStream(
+                fileName,
+                FileMode.Open, FileAccess.Read);
+            xmldoc.Load(fs);
+            fs.Close();
         }
 
         private void DataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -67,11 +77,11 @@ namespace TOReportApplication.Views
         private void SaveColumnsVisibilityInFile()
         {
             using (var settingwriter = new XmlTextWriter(
-                "FormaKolumny.xml",
+                fileName,
                 null))
             {
                 settingwriter.WriteStartDocument();
-                settingwriter.WriteStartElement("Form");
+                settingwriter.WriteStartElement("Machine");
                 foreach (var element in DataGridName.Columns)
                 {
                     var newColumnHeader = element.Header.ToString().Replace(" ", "_").Replace("[", "_")
@@ -180,6 +190,11 @@ namespace TOReportApplication.Views
             }
 
             return null;
+        }
+
+        private void AdminMode_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            ((IAdminModeViewModel)DataContext).Dispose();
         }
     }
 }

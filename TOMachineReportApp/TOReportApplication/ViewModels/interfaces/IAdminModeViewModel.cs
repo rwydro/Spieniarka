@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TOReportApplication.Logic.Enums;
 
 namespace TOReportApplication.ViewModels.interfaces
 {
     public interface IAdminModeViewModel
     {
         void Dispose();
-        Action SearchButtonClickedAction { get; set; }
+        Action<object> SearchButtonClickedAction { get; set; }
     }
 }
