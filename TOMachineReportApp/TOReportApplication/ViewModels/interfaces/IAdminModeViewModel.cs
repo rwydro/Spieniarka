@@ -9,5 +9,6 @@ namespace TOReportApplication.ViewModels.interfaces
     public interface IAdminModeViewModel
     {
         void Dispose();
+        Action SearchButtonClickedAction { get; set; }
     }
 }
