@@ -102,10 +102,8 @@ namespace TOReportApplication.ViewModels
         }
 
         public Action SearchButtonClickAction { get; set; }
-        public Action SaveButtonClickAction { get; set; }
 
         public DelegateCommand SearchButtonClickCommand { get; set; }
-        public DelegateCommand SaveButtonClickCommand { get; set; }
 
         public AdminModeSettingsAndFilterPanelViewModel(IUnityContainer container) : base(container)
         {
@@ -119,7 +117,6 @@ namespace TOReportApplication.ViewModels
                 DataContextEnum.ContinuousBlowingMachineViewModel,
             };
             SearchButtonClickCommand = new DelegateCommand(OnSearchButtonClick);
-            SaveButtonClickCommand = new DelegateCommand(OnSaveButtonClick);
         }
 
         private void OnSaveButtonClick()

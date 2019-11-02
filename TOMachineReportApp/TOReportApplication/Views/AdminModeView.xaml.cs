@@ -22,6 +22,7 @@ namespace TOReportApplication.Views
         private ContextMenu contextMenu;
         private XmlDocument xmldoc;
         private string fileName = "";
+        private IAdminModeViewModel viewModel;
 
         public AdminModeView()
         {
@@ -34,7 +35,7 @@ namespace TOReportApplication.Views
 
         private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var viewModel = (IAdminModeViewModel) DataContext;
+            viewModel = (IAdminModeViewModel) DataContext;
             viewModel.SearchButtonClickedAction += OnSearchButtonClicked;
         }
 
@@ -204,18 +205,10 @@ namespace TOReportApplication.Views
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            Button button = e.OriginalSource as Button;
-
-            // navigate up to the header 
-            var columnHeader = sender as DataGridColumnHeader;
-            columnHeader.ContextMenu = contextMenu;
-
+            viewModel.ReportModelToSaveInFile = DataGridName.ItemContainerGenerator.Items;
+            viewModel.SaveInFile();
+            //viewModel.ReportModelToSaveInFile = 
 
         }
-
-        private void DataGridName_OnLoadingRow(object sender, DataGridRowEventArgs e)
-        {
-        }
-
     }
 }

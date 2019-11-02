@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,8 +19,22 @@ namespace TOReportApplication.ViewModels
 {
     public class AdminModeViewModel: ViewModelBase, IAdminModeViewModel
     {
+        private IMyLogger logger;
 
         public Action<object> SearchButtonClickedAction { get; set; }
+
+
+        private ReadOnlyCollection<object> reportModelToSaveInFile;
+        public ReadOnlyCollection<object> ReportModelToSaveInFile
+        {
+            get => reportModelToSaveInFile;
+            set
+            {
+                if (reportModelToSaveInFile == value) return;
+                reportModelToSaveInFile = value;
+                OnPropertyChanged(nameof(ReportModelToSaveInFile));
+            }
+        }
 
         private ObservableCollection<object> reportModel;
         public ObservableCollection<object> ReportModel
@@ -36,12 +52,32 @@ namespace TOReportApplication.ViewModels
 
         private IAdminModeSearchCriteriaLogic SearchCriteriaLogic;
 
-        public AdminModeViewModel(IUnityContainer container, IApplicationRepository dbConnection) : base(container)
+        public AdminModeViewModel(IUnityContainer container, IApplicationRepository dbConnection, IMyLogger logger) : base(container)
         {
+            this.logger = logger;
             AdminModeSettingsAndFilterPanelViewModel = new AdminModeSettingsAndFilterPanelViewModel(container);
             AdminModeSettingsAndFilterPanelViewModel.SearchButtonClickAction += OnSearchButtonClick;
             SearchCriteriaLogic = new AdminModeSearchCriteriaLogic(dbConnection);
             ReportModel = new ObservableCollection<object>();
+        }
+
+        public void SaveInFile()
+        {
+            var pathToReport = Path.Combine(ConfigurationManager.AppSettings["PathToFormReport"], "Raport_Forma_" + ".xml");
+   
+            switch (AdminModeSettingsAndFilterPanelViewModel.SelectedMachine)
+            {
+                case DataContextEnum.FormViewModel:
+                    SaveInFileLogic.OnSaveReportInFile<List<object>>(ReportModel.ToList(), pathToReport, logger);
+                    break;
+                case DataContextEnum.BlowingMachineViewModel:
+                    SaveInFileLogic.OnSaveReportInFile<List<BlowingMachineReportModel>>(ReportModelToSaveInFile.ToList(), pathToReport, logger);
+                    break;
+                case DataContextEnum.ContinuousBlowingMachineViewModel:
+                    SaveInFileLogic.OnSaveReportInFile<List<object>>(ReportModelToSaveInFile.ToList(), pathToReport, logger);
+                    break;
+            }
+          
         }
 
         private void OnSearchButtonClick()
