@@ -26,7 +26,10 @@ namespace TOReportApplication.Views
         public AdminModeView()
         {
             InitializeComponent();
+            DataGridName.Visibility = Visibility.Visible;
         }
+
+
 
 
         private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -124,6 +127,8 @@ namespace TOReportApplication.Views
                     menuItem.IsChecked = element.Visibility == Visibility.Visible;
                 }
             }
+
+            DataGridName.Visibility = Visibility.Visible;
         }
 
         private void OnMenuItemUnchecked(object sender, RoutedEventArgs e)
@@ -196,5 +201,21 @@ namespace TOReportApplication.Views
         {
             ((IAdminModeViewModel)DataContext).Dispose();
         }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = e.OriginalSource as Button;
+
+            // navigate up to the header 
+            var columnHeader = sender as DataGridColumnHeader;
+            columnHeader.ContextMenu = contextMenu;
+
+
+        }
+
+        private void DataGridName_OnLoadingRow(object sender, DataGridRowEventArgs e)
+        {
+        }
+
     }
 }

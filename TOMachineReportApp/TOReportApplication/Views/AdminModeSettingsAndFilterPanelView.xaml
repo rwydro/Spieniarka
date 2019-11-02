@@ -22,16 +22,11 @@
     <Grid>
         <StackPanel Margin="50,0,0,0">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <WrapPanel Grid.Row="0">
+                <WrapPanel>
                     <StackPanel Margin="10">
                         <Label Content="Maszyna" />
                         <ComboBox ItemsSource="{Binding Path=MachinesList,
@@ -61,25 +56,7 @@
                                              Maximum="{Binding CurrentDateTime}" />
                     </StackPanel>
                 </WrapPanel>
-                <WrapPanel Grid.Row="1" Grid.Column="0" IsEnabled="False">
-                    <StackPanel Margin="10">
-                        <Label Content="Zmiana" />
-                        <ComboBox />
-                    </StackPanel>
-                    <StackPanel Margin="10">
-                        <Label Content="Surowiec" />
-                        <ComboBox />
-                    </StackPanel>
-                    <StackPanel Margin="10">
-                        <Label Content="Gatunek" />
-                        <ComboBox />
-                    </StackPanel>
-                    <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
-                        <Label Content="Nr PZ" />
-                        <ComboBox />
-                    </StackPanel>
-                </WrapPanel>
-                <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1">
+                <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="1">
                     <Button Content="Szukaj" Style="{StaticResource AdminModeSettingsAndFilterPanelButtonStyle}" 
                             Command="{Binding Path=SearchButtonClickCommand}"/>
                 </StackPanel>

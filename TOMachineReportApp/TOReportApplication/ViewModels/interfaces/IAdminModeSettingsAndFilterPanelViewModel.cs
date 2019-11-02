@@ -12,5 +12,6 @@ namespace TOReportApplication.ViewModels.interfaces
         DateTime SelectedToDate { get; set; }
         object SelectedMachine { get; set; }
         Action SearchButtonClickAction { get; set; }
+        Action SaveButtonClickAction { get; set; }
     }
 }
