@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
 using TOReportApplication.Logic.Enums;
@@ -17,26 +14,27 @@ using Unity;
 
 namespace TOReportApplication.ViewModels
 {
-    public class AdminModeViewModel: ViewModelBase, IAdminModeViewModel
+    public class AdminModeViewModel : ViewModelBase, IAdminModeViewModel
     {
-        private IMyLogger logger;
+        private readonly IMyLogger logger;
 
-        public Action<object> SearchButtonClickedAction { get; set; }
+        private ObservableCollection<object> reportModel;
 
 
         private ReadOnlyCollection<object> reportModelToSaveInFile;
-        public ReadOnlyCollection<object> ReportModelToSaveInFile
+
+        private readonly IAdminModeSearchCriteriaLogic SearchCriteriaLogic;
+
+        public AdminModeViewModel(IUnityContainer container, IApplicationRepository dbConnection, IMyLogger logger) :
+            base(container)
         {
-            get => reportModelToSaveInFile;
-            set
-            {
-                if (reportModelToSaveInFile == value) return;
-                reportModelToSaveInFile = value;
-                OnPropertyChanged(nameof(ReportModelToSaveInFile));
-            }
+            this.logger = logger;
+            AdminModeSettingsAndFilterPanelViewModel = new AdminModeSettingsAndFilterPanelViewModel(container);
+            AdminModeSettingsAndFilterPanelViewModel.SearchButtonClickAction += OnSearchButtonClick;
+            SearchCriteriaLogic = new AdminModeSearchCriteriaLogic(dbConnection);
+            ReportModel = new ObservableCollection<object>();
         }
 
-        private ObservableCollection<object> reportModel;
         public ObservableCollection<object> ReportModel
         {
             get => reportModel;
@@ -50,52 +48,85 @@ namespace TOReportApplication.ViewModels
 
         public IAdminModeSettingsAndFilterPanelViewModel AdminModeSettingsAndFilterPanelViewModel { get; }
 
-        private IAdminModeSearchCriteriaLogic SearchCriteriaLogic;
+        public Action<object> SearchButtonClickedAction { get; set; }
 
-        public AdminModeViewModel(IUnityContainer container, IApplicationRepository dbConnection, IMyLogger logger) : base(container)
+        public ReadOnlyCollection<object> ReportModelToSaveInFile
         {
-            this.logger = logger;
-            AdminModeSettingsAndFilterPanelViewModel = new AdminModeSettingsAndFilterPanelViewModel(container);
-            AdminModeSettingsAndFilterPanelViewModel.SearchButtonClickAction += OnSearchButtonClick;
-            SearchCriteriaLogic = new AdminModeSearchCriteriaLogic(dbConnection);
-            ReportModel = new ObservableCollection<object>();
+            get => reportModelToSaveInFile;
+            set
+            {
+                if (reportModelToSaveInFile == value) return;
+                reportModelToSaveInFile = value;
+                OnPropertyChanged(nameof(ReportModelToSaveInFile));
+            }
         }
 
         public void SaveInFile()
         {
-            var pathToReport = Path.Combine(ConfigurationManager.AppSettings["PathToFormReport"], "Raport_Forma_" + ".xml");
-   
+            var saveFileDialog1 = new SaveFileDialog {CreatePrompt = false, Filter = "Xml|*.xml", OverwritePrompt = true};
+
             switch (AdminModeSettingsAndFilterPanelViewModel.SelectedMachine)
             {
                 case DataContextEnum.FormViewModel:
-                    SaveInFileLogic.OnSaveReportInFile<List<object>>(ReportModel.ToList(), pathToReport, logger);
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        var fileModel = new List<FormDateReportDBModel>();
+                        foreach (var el in ReportModelToSaveInFile)
+                            if (el is FormDateReportDBModel)
+                                fileModel.Add(el as FormDateReportDBModel);
+                        SaveInFileLogic.OnSaveReportInFile<List<FormDateReportDBModel>>(fileModel,
+                            saveFileDialog1.FileName, logger);
+                    }
+
                     break;
                 case DataContextEnum.BlowingMachineViewModel:
-                    SaveInFileLogic.OnSaveReportInFile<List<BlowingMachineReportModel>>(ReportModelToSaveInFile.ToList(), pathToReport, logger);
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        var fileModel = new List<BlowingMachineReportModel>();
+                        foreach (var el in ReportModelToSaveInFile)
+                            if (el is BlowingMachineReportModel)
+                                fileModel.Add(el as BlowingMachineReportModel);
+                        SaveInFileLogic.OnSaveReportInFile<List<BlowingMachineReportModel>>(fileModel,
+                            saveFileDialog1.FileName, logger);
+                    }
+
                     break;
                 case DataContextEnum.ContinuousBlowingMachineViewModel:
-                    SaveInFileLogic.OnSaveReportInFile<List<object>>(ReportModelToSaveInFile.ToList(), pathToReport, logger);
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        var fileModel = new List<ContinuousBlowingMachineReportModel>();
+                        foreach (var el in ReportModelToSaveInFile)
+                            if (el is ContinuousBlowingMachineReportModel)
+                                fileModel.Add(el as ContinuousBlowingMachineReportModel);
+                        SaveInFileLogic.OnSaveReportInFile<List<ContinuousBlowingMachineReportModel>>(fileModel,
+                            saveFileDialog1.FileName, logger);
+                    }
+
                     break;
             }
-          
         }
 
         private void OnSearchButtonClick()
         {
-
             SearchButtonClickedAction(AdminModeSettingsAndFilterPanelViewModel.SelectedMachine);
             switch (AdminModeSettingsAndFilterPanelViewModel.SelectedMachine)
             {
-                case DataContextEnum.FormViewModel:      
-                    var formModel = SearchCriteriaLogic.GenerateFormReportModel(AdminModeSettingsAndFilterPanelViewModel.SelectedFromDate, AdminModeSettingsAndFilterPanelViewModel.SelectedToDate);  
+                case DataContextEnum.FormViewModel:
+                    var formModel = SearchCriteriaLogic.GenerateFormReportModel(
+                        AdminModeSettingsAndFilterPanelViewModel.SelectedFromDate,
+                        AdminModeSettingsAndFilterPanelViewModel.SelectedToDate);
                     ReportModel = new ObservableCollection<object>(formModel);
                     break;
                 case DataContextEnum.BlowingMachineViewModel:
-                    var blowingMachineModel = SearchCriteriaLogic.GenerateBlowingMachineReport(AdminModeSettingsAndFilterPanelViewModel.SelectedFromDate, AdminModeSettingsAndFilterPanelViewModel.SelectedToDate);
+                    var blowingMachineModel = SearchCriteriaLogic.GenerateBlowingMachineReport(
+                        AdminModeSettingsAndFilterPanelViewModel.SelectedFromDate,
+                        AdminModeSettingsAndFilterPanelViewModel.SelectedToDate);
                     ReportModel = new ObservableCollection<object>(blowingMachineModel);
                     break;
                 case DataContextEnum.ContinuousBlowingMachineViewModel:
-                    var continuousBlowingMachineModel = SearchCriteriaLogic.GenerateContinuousBlowingMachineReport(AdminModeSettingsAndFilterPanelViewModel.SelectedFromDate, AdminModeSettingsAndFilterPanelViewModel.SelectedToDate);
+                    var continuousBlowingMachineModel = SearchCriteriaLogic.GenerateContinuousBlowingMachineReport(
+                        AdminModeSettingsAndFilterPanelViewModel.SelectedFromDate,
+                        AdminModeSettingsAndFilterPanelViewModel.SelectedToDate);
                     ReportModel = new ObservableCollection<object>(continuousBlowingMachineModel);
                     break;
             }
@@ -103,7 +134,6 @@ namespace TOReportApplication.ViewModels
 
         public void Dispose()
         {
-
         }
-    }
+     }
 }

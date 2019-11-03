@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Xml;
+using Microsoft.Win32;
 using TOReportApplication.Logic.Enums;
 using TOReportApplication.ViewModels;
 using TOReportApplication.ViewModels.interfaces;
@@ -205,10 +206,9 @@ namespace TOReportApplication.Views
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            viewModel.ReportModelToSaveInFile = DataGridName.ItemContainerGenerator.Items;
-            viewModel.SaveInFile();
-            //viewModel.ReportModelToSaveInFile = 
+                viewModel.ReportModelToSaveInFile = DataGridName.ItemContainerGenerator.Items;
+                viewModel.SaveInFile();
 
-        }
+            }
     }
 }
