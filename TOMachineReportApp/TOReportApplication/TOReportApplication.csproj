@@ -146,6 +146,7 @@
     <Compile Include="DataBase\DBConnection.cs" />
     <Compile Include="Logic\AdminModeSearchCriteriaLogic.cs" />
     <Compile Include="Logic\ContinuousBlowingMachineReportLogic.cs" />
+    <Compile Include="Logic\DisplayNameHelper.cs" />
     <Compile Include="Logic\Enums\DataContextEnum.cs" />
     <Compile Include="Logic\Enums\FormDetailedReportTypeEnum.cs" />
     <Compile Include="Logic\Enums\ShiftInfoEnum.cs" />

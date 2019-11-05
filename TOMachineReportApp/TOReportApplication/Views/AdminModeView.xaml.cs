@@ -5,17 +5,20 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms.VisualStyles;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Xml;
-using Microsoft.Win32;
+using TOReportApplication.Logic;
 using TOReportApplication.Logic.Enums;
-using TOReportApplication.ViewModels;
 using TOReportApplication.ViewModels.interfaces;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using MenuItem = System.Windows.Controls.MenuItem;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace TOReportApplication.Views
 {
-    /// <summary>
+
+   /// <summary>
     ///     Interaction logic for AdminModeView.xaml
     /// </summary>
     public partial class AdminModeView : UserControl
@@ -24,16 +27,15 @@ namespace TOReportApplication.Views
         private XmlDocument xmldoc;
         private string fileName = "";
         private IAdminModeViewModel viewModel;
-
+        private DataContextEnum selectedMachine;
+        
         public AdminModeView()
         {
             InitializeComponent();
             DataGridName.Visibility = Visibility.Visible;
         }
 
-
-
-
+        
         private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             viewModel = (IAdminModeViewModel) DataContext;
@@ -44,7 +46,8 @@ namespace TOReportApplication.Views
         {
             contextMenu = new ContextMenu();
             xmldoc = null;
-            switch (machine)
+            selectedMachine = (DataContextEnum)machine;
+            switch (selectedMachine)
             {
                 case DataContextEnum.FormViewModel:
                     fileName = "FormaKolumny.xml";
@@ -122,8 +125,8 @@ namespace TOReportApplication.Views
 
                 if (xmldoc != null)
                 {
+  
                     var xmlNode = xmldoc.GetElementsByTagName(newColumnHeader);
-                    ;
                     var elementVisibilityText = xmlNode[0].InnerText;
                     element.Visibility = elementVisibilityText == "Visible" ? Visibility.Visible : Visibility.Hidden;
                     menuItem.IsChecked = element.Visibility == Visibility.Visible;
@@ -201,14 +204,65 @@ namespace TOReportApplication.Views
 
         private void AdminMode_OnUnloaded(object sender, RoutedEventArgs e)
         {
-            ((IAdminModeViewModel)DataContext).Dispose();
+            ((IAdminModeViewModel) DataContext).Dispose();
+        }
+
+
+        private void SaveReportInFile(XmlDocument doc)
+        {
+            XmlDeclaration xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            XmlElement root = doc.DocumentElement;
+            doc.InsertBefore(xmlDeclaration, root);
+
+            XmlElement element1 = doc.CreateElement(string.Empty, "body", string.Empty);
+            doc.AppendChild(element1);
+
+            foreach (var rowObject in DataGridName.Items)
+            {
+                XmlElement element2 = doc.CreateElement(string.Empty, "Raport", string.Empty);
+                element1.AppendChild(element2);
+                foreach (DataGridColumn column in DataGridName.Columns)
+                {
+                    if (column.Visibility == Visibility.Visible)
+                    {
+                        var correctRow = DisplayNameHelper.GetPropertyValues(rowObject, column.Header.ToString());
+
+                        foreach (var item in correctRow)
+                        {
+                            if (item.Key == column.Header.ToString())
+                            {
+                                XmlElement element3 = doc.CreateElement(string.Empty, column.Header.ToString()
+                                    .Replace(" ", "_")
+                                    .Replace("[", "")
+                                    .Replace("]", "")
+                                    .Replace("%", "procent"), string.Empty);
+                                XmlText text1 = doc.CreateTextNode(item.Value.ToString());
+                                element3.AppendChild(text1);
+                                element2.AppendChild(element3);
+                            }
+                        }
+                    }
+                }
+            }
+          
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-                viewModel.ReportModelToSaveInFile = DataGridName.ItemContainerGenerator.Items;
-                viewModel.SaveInFile();
-
+            var saveFileDialog1 = new SaveFileDialog { CreatePrompt = false, Filter = "Xml|*.xml", OverwritePrompt = true };
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                XmlDocument doc = new XmlDocument();
+                SaveReportInFile(doc);
+                doc.Save(saveFileDialog1.FileName);
             }
+        }
+
+
+        private void DataGridName_OnAddingNewItem(object sender, AddingNewItemEventArgs e)
+        {
+          
+        }
     }
+
 }
