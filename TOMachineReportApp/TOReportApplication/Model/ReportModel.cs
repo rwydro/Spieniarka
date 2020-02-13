@@ -12,7 +12,7 @@ namespace TOReportApplication.Model
         public ReportModel<T> ReportModel { get; set; }
     }
 
-
+    [Serializable]
     public abstract class ReportModelBase
     {
     }

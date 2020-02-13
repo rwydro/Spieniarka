@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -208,19 +212,64 @@ namespace TOReportApplication.Views
         }
 
 
-        private void SaveReportInFile(XmlDocument doc)
+        private string SaveReportInFile()
         {
-            XmlDeclaration xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
-            XmlElement root = doc.DocumentElement;
-            doc.InsertBefore(xmlDeclaration, root);
+            /*          XmlDeclaration xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+                        XmlElement root = doc.DocumentElement;
+                        doc.InsertBefore(xmlDeclaration, root);
 
-            XmlElement element1 = doc.CreateElement(string.Empty, "body", string.Empty);
-            doc.AppendChild(element1);
+                        XmlElement element1 = doc.CreateElement(string.Empty, "body", string.Empty);
+                        doc.AppendChild(element1);
+
+
+
+
+                        foreach (var rowObject in DataGridName.Items)
+                            {
+                                                XmlElement element2 = doc.CreateElement(string.Empty, "Raport", string.Empty);
+                                                element1.AppendChild(element2);
+                                foreach (DataGridColumn column in DataGridName.Columns)
+                                {
+                                    if (column.Visibility == Visibility.Visible)
+                                    {
+                                        var correctRow = DisplayNameHelper.GetPropertyValues(rowObject, column.Header.ToString());
+
+                                     foreach (var item in correctRow)
+                                        {
+                                            if (item.Key == column.Header.ToString())
+                                            {
+                                                XmlElement element3 = doc.CreateElement(string.Empty, column.Header.ToString()
+                                                    .Replace(" ", "_")
+                                                    .Replace("[", "")
+                                                    .Replace("]", "")
+                                                    .Replace("%", "procent"), string.Empty);
+
+                                                XmlText text1 = doc.CreateTextNode(item.Value.ToString());
+                                                element3.AppendChild(text1);
+                                                element2.AppendChild(element3);
+                                            }
+                                        }
+                                    }
+                                }
+                           }*/
+            DataTable dt = new DataTable();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < DataGridName.Columns.Count; i++)
+            {
+                if (DataGridName.Columns[i].Visibility == Visibility.Visible)
+                {
+
+                    dt.Columns.Add(DataGridName.Columns[i].Header.ToString()
+                        .Replace(" ", "_")
+                        .Replace("[", "")
+                        .Replace("]", "")
+                        .Replace("%", "procent"));
+                }
+            }
 
             foreach (var rowObject in DataGridName.Items)
             {
-                XmlElement element2 = doc.CreateElement(string.Empty, "Raport", string.Empty);
-                element1.AppendChild(element2);
+                DataRow datar = dt.NewRow();
                 foreach (DataGridColumn column in DataGridName.Columns)
                 {
                     if (column.Visibility == Visibility.Visible)
@@ -229,32 +278,46 @@ namespace TOReportApplication.Views
 
                         foreach (var item in correctRow)
                         {
-                            if (item.Key == column.Header.ToString())
-                            {
-                                XmlElement element3 = doc.CreateElement(string.Empty, column.Header.ToString()
+                            if(item.Key == column.Header.ToString())
+                                datar[item.Key
                                     .Replace(" ", "_")
-                                    .Replace("[", "")
-                                    .Replace("]", "")
-                                    .Replace("%", "procent"), string.Empty);
-                                XmlText text1 = doc.CreateTextNode(item.Value.ToString());
-                                element3.AppendChild(text1);
-                                element2.AppendChild(element3);
-                            }
+                                .Replace("[", "")
+                                .Replace("]", "")
+                                .Replace("%", "procent")] = item.Value;
                         }
                     }
                 }
+
+                dt.Rows.Add(datar);
             }
-          
+
+            IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
+                Select(column => column.ColumnName);
+            sb.AppendLine(string.Join(";", columnNames));
+
+            foreach (DataRow row in dt.Rows)
+            {
+                IEnumerable<string> fields = row.ItemArray.Select(field => field.ToString());
+                sb.AppendLine(string.Join(";", fields));
+            }
+
+            return sb.ToString();
+            File.WriteAllText("D:\\ApkaRaporty\\test.csv", sb.ToString());
+
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var saveFileDialog1 = new SaveFileDialog { CreatePrompt = false, Filter = "Xml|*.xml", OverwritePrompt = true };
+            var saveFileDialog1 = new SaveFileDialog { CreatePrompt = false, Filter = "Csv|*.csv", OverwritePrompt = true };
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                XmlDocument doc = new XmlDocument();
-                SaveReportInFile(doc);
-                doc.Save(saveFileDialog1.FileName);
+                //XmlDocument doc = new XmlDocument();
+                var dataToSave = SaveReportInFile();
+                using (var file = new StreamWriter(saveFileDialog1.FileName))
+                {
+                  file.Write(dataToSave);
+                  file.Flush();
+                }
             }
         }
 

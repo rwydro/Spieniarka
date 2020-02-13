@@ -104,6 +104,7 @@ namespace TOReportApplication.Model
         [DisplayName("Otwarcie zaworu pary 4")]
         [XmlElement("Otwarcie zaworu pary 4")]
         public double Flap4 { get; set; }
+        [DisplayName("AutoKlwProcUs")]
         [XmlElement("AutoKlwProcUs")]
         public double AutoKlwProcUs { get; set; }
         [DisplayName("Ustawione autoklaw [%]")]
@@ -115,12 +116,16 @@ namespace TOReportApplication.Model
         [DisplayName("Ciśnienie ustawione autoklawu")]
         [XmlElement("Ciśnienie ustawione autoklawu")]
         public double AutoKlwCisLs { get; set; }
+        [DisplayName("AutoKlwProcFs")]
         [XmlElement("AutoKlwProcFs")]
         public double AutoKlwProcFs { get; set; }
+        [DisplayName("AutoKlwCisFs")]
         [XmlElement("AutoKlwCisFs")]
         public double AutoKlwCisFs { get; set; }
+        [DisplayName("AutoKlwProcMs")]
         [XmlElement("AutoKlwProcMs")]
         public double AutoKlwProcMs { get; set; }
+        [DisplayName("AutoKlwCisMs")]
         [XmlElement("AutoKlwCisMs")]
         public double AutoKlwCisMs { get; set; }
         [DisplayName("Czas autoklawu")]

@@ -29,8 +29,9 @@
                 <WrapPanel>
                     <StackPanel Margin="10">
                         <Label Content="Maszyna" />
-                        <ComboBox ItemsSource="{Binding Path=MachinesList,
+                        <ComboBox ItemsSource="{Binding Path=MachinesList, 
                             Converter={StaticResource DataContextEnumDescriptionTypeConverter}}"
+                                  IsSelected="true" SelectedIndex="0"
                                   SelectedItem="{Binding Path=SelectedMachine, Mode=TwoWay}"/>
                     </StackPanel>
                     <StackPanel Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto"

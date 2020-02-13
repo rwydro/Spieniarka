@@ -117,6 +117,7 @@
     </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -160,6 +161,7 @@
     <Compile Include="Logic\BlowingMachineXmlGenerator.cs" />
     <Compile Include="Logic\SaveInFileLogic.cs" />
     <Compile Include="Logic\ShiftCalendarManager.cs" />
+    <Compile Include="Model\BlockHistoryModel.cs" />
     <Compile Include="Model\ContinuousBlowingMachineShiftReportModel.cs" />
     <Compile Include="Model\ContinuousBlowingMachineReportModel.cs" />
     <Compile Include="Model\ReportModel.cs" />
@@ -173,11 +175,13 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\AdminModeSettingsAndFilterPanelViewModel.cs" />
     <Compile Include="ViewModels\AdminModeViewModel.cs" />
+    <Compile Include="ViewModels\BlockHistoryViewModel.cs" />
     <Compile Include="ViewModels\ContinuousBlowingMachineViewModel.cs" />
     <Compile Include="ViewModels\FormSetShiftReportDataViewModel.cs" />
     <Compile Include="ViewModels\BlowingMachineViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IAdminModeSettingsAndFilterPanelViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IAdminModeViewModel.cs" />
+    <Compile Include="ViewModels\interfaces\IBlockHistoryViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IContinuousBlowingMachineViewModel.cs" />
     <Compile Include="ViewModels\interfaces\IFormSetShiftReportDataViewModel.cs" />
     <Compile Include="ViewModels\interfaces\ISettingsAndFilterPanelViewModel.cs" />
@@ -192,6 +196,9 @@
     </Compile>
     <Compile Include="Views\AdminModeView.xaml.cs">
       <DependentUpon>AdminModeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BlockHistoryView.xaml.cs">
+      <DependentUpon>BlockHistoryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FormSetShiftReportDataView.xaml.cs">
       <DependentUpon>FormSetShiftReportDataView.xaml</DependentUpon>
@@ -228,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AdminModeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BlockHistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

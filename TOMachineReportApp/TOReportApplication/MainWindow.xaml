@@ -11,6 +11,9 @@
         <DataTemplate x:Name="adminModeViewTemplate"  DataType="{x:Type viewModels:AdminModeViewModel}">
             <views:AdminModeView DataContext="{Binding}"/>
         </DataTemplate>
+        <DataTemplate x:Name="blockHistoryTemplate"  DataType="{x:Type viewModels:BlockHistoryViewModel}">
+            <views:BlockHistoryView DataContext="{Binding}"/>
+        </DataTemplate>
         <DataTemplate x:Name="formViewTemplate"  DataType="{x:Type viewModels:FormViewModel}">
             <views:FormView DataContext="{Binding}"/>
         </DataTemplate>
@@ -32,15 +35,17 @@
         </Grid.ColumnDefinitions>
         <Grid Style="{StaticResource LeftGridStyle}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" Grid.Row="0" Name="adminModeButton" Content="Tryb Admina" Click="AdminMode_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="1" Name="formButton" Content="Forma" Click="FormButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="2" Name="blowingMachineButton" Content="Spieniarka" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.Row="3" Name="continuousBlowingMachineButton" Content="Spieniarka ciągła" Click="ContinuousBlowingMachineButton_OnClick" FontSize="20" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="0" Name="adminModeButton" FontSize="20" Content="Eksport danych" Click="AdminMode_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Button Grid.Column="0" Grid.Row="1" Name="blockHistoryButton" FontSize="20" Content="Historia bloku" Click="BlockHistory_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Button Grid.Column="0" Grid.Row="2" Name="formButton" FontSize="20" Content="Forma" Click="FormButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="3" Name="blowingMachineButton" FontSize="20" Content="Spieniarka" Click="BlowingMachineButton_OnClick" Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Grid.Column="0" Grid.Row="4" Name="continuousBlowingMachineButton" FontSize="20" Content="Spieniarka ciągła" Click="ContinuousBlowingMachineButton_OnClick"  Margin="5,50,5,50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <ContentControl Content="{Binding}" Grid.Column="1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>

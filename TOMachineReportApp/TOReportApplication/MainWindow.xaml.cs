@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,12 +22,19 @@ namespace TOReportApplication
         {
             InitializeComponent();
             this.container = container;
+            var isAdminModeEnabled = ConfigurationManager.AppSettings["IsAdminModeEnabled"];
+            adminModeButton.Visibility = (isAdminModeEnabled != null && bool.Parse(isAdminModeEnabled)) ? Visibility.Visible: Visibility.Hidden;
         }
 
 
         private void AdminMode_OnClick(object sender, RoutedEventArgs e)
         {
             this.DataContext = container.Resolve<IAdminModeViewModel>();
+        }
+
+        private void BlockHistory_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = container.Resolve<IBlockHistoryViewModel>();
         }
 
 

@@ -58,7 +58,7 @@ namespace TOReportApplication.Logic
         {
             var query = string.Format(
                 "SELECT * FROM public.forma_blok2 where data_czas > '{0}' and data_czas < '{1}'",
-                selectedFromDate.AddHours(4), selectedToDate.AddDays(1).AddHours(10));
+                selectedFromDate, selectedToDate);
             var data = dbConnection.GetDataFromDB(query);
             var dateReportDbModelList = GenerateModelLogic<FormDateReportDBModel>.GenerateReportModel(data, ModelDictionaries.FormDetailedReportDbModelPropertyNameDictionary);
             return dateReportDbModelList;

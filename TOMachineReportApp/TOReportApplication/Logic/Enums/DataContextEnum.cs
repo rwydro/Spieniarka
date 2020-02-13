@@ -15,7 +15,9 @@ namespace TOReportApplication.Logic.Enums
         [Description("Spieniarka")]
         BlowingMachineViewModel,
         [Description("Spieniarka Ciągła")]
-        ContinuousBlowingMachineViewModel
+        ContinuousBlowingMachineViewModel,
+        [Description("historia Bloków")]
+        BlockHistoryViewModel
     }
 
 }

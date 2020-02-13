@@ -97,7 +97,7 @@ namespace TOReportApplication.ViewModels
                         selectedMachine = DataContextEnum.ContinuousBlowingMachineViewModel;
                         break;
                 }
-                OnPropertyChanged("SelectedMachine");
+                OnPropertyChanged(nameof(SelectedMachine));
             }
         }
 
@@ -116,6 +116,7 @@ namespace TOReportApplication.ViewModels
                 DataContextEnum.BlowingMachineViewModel,
                 DataContextEnum.ContinuousBlowingMachineViewModel,
             };
+            SelectedMachine = "Forma";
             SearchButtonClickCommand = new DelegateCommand(OnSearchButtonClick);
         }
 

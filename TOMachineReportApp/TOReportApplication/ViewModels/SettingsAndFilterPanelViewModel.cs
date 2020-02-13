@@ -139,17 +139,35 @@ namespace TOReportApplication.ViewModels
      
         private void GenereteDateReport()
         {
-            if (DataContextEnum == DataContextEnum.BlowingMachineViewModel)
+            switch (DataContextEnum)
+            {
+                case DataContextEnum.BlowingMachineViewModel:
+                    GenereteBlowingMachineReport();
+                    break;
+                case DataContextEnum.FormViewModel:
+                    GenerateDateFormReport();
+                    break;
+                case DataContextEnum.BlockHistoryViewModel:
+                    GenerateBlocksHistoryReport();
+                    break;
+
+            }
+            /*if (DataContextEnum == DataContextEnum.BlowingMachineViewModel)
                 GenereteBlowingMachineReport();
             if (DataContextEnum == DataContextEnum.FormViewModel)
             {
                 GenerateDateFormReport();
                 //this.timer.SetTimerAction(TimerActionEnum.Reset);
-            }
+            }*/
             IsSaveInFileReportButtonEnabled = true;
         }
 
 
+        private void GenerateBlocksHistoryReport()
+        {
+
+        }
+        
         private string GenerateBlowingMachineQuery(string dbTableName, string dbColName)
         {
                 return string.Format(
