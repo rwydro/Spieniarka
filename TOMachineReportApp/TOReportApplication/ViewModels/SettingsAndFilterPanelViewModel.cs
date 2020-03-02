@@ -165,17 +165,19 @@ namespace TOReportApplication.ViewModels
 
         private void GenerateBlocksHistoryReport()
         {
+            GenerateDateFormReport();
 
         }
         
         private string GenerateBlowingMachineQuery(string dbTableName, string dbColName)
         {
+            var newEndDate = SelectedDate.AddDays(1);
                 return string.Format(
                     "SELECT * FROM public.{0} where {1} > '{2}' and {3} < '{4}' order by {1}",
                     dbTableName, dbColName,
                     new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day,7,0,0),
                     dbColName,
-                    new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.AddDays(1).Day,7,0,0));
+                    new DateTime(newEndDate.Year, newEndDate.Month, newEndDate.Day,7,0,0));
         }
 
         private void GenereteBlowingMachineReport()

@@ -4,19 +4,64 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TOReportApplication.Views"
+             xmlns:viewsLogic="clr-namespace:TOReportApplication.Views.ViewsLogic"
+             xmlns:enums="clr-namespace:TOReportApplication.Logic.Enums"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Unloaded="BlockHistoryView_OnUnloaded">
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}" x:Key="BlockHistoryButtonStyle">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="MinWidth" Value="20"/>
+            <Setter Property= "FontSize" Value="12"/>
+        </Style>
+        <viewsLogic:EnumConverter x:Key="EnumConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="4*"/>
+                <RowDefinition Height="3*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0">
             <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                                               DataContext="{Binding Path=SettingsAndFilterPanelViewModel}"/>
         </Border>
+        <Grid Grid.Row="1">
+            <Border BorderBrush="Black " CornerRadius="15"  BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0">
+                <Border.Effect>
+                    <DropShadowEffect/>
+                </Border.Effect>
+                <DataGrid ItemsSource="{Binding FormReportItems}" SelectedItem="{Binding FormItemSelected}"
+                          Name="FormSearchFilterResults"   IsReadOnly="True"  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
+                                AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                           >
+                </DataGrid>
+            </Border>
+        </Grid>
+        <Button Grid.Row="2" Style="{StaticResource BlockHistoryButtonStyle}">Zapisz blok</Button>
+        <Border  BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0" Grid.Row="3">
+            <UIElement.Effect>
+                <DropShadowEffect/>
+            </UIElement.Effect>
+            <DataGrid ItemsSource="{Binding SelectedFormBlockHistory}" SelectedItem="{Binding FormItemSelected}"
+                      IsReadOnly="True"  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
+                      AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+            >
+            </DataGrid>
+        </Border>
+        <Border  BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,5,10" Background="#F0F0F0" Grid.Row="4">
+            <UIElement.Effect>
+                <DropShadowEffect/>
+            </UIElement.Effect>
+            <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
+                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                      ItemsSource="{Binding Path=SelectedBlowingMachineBlockHistory}">
+            </DataGrid>
+        </Border>
+            <Border Grid.Row="5" BorderThickness="0,3,0,0" Background="Transparent" BorderBrush="Black"/>
     </Grid>
 </UserControl>

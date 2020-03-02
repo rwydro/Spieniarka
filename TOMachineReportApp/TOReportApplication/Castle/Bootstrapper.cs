@@ -30,6 +30,7 @@ namespace TOReportApplication.Castle
             container.RegisterType<IContinuousBlowingMachineViewModel, ContinuousBlowingMachineViewModel>();
             container.RegisterType<IFormSetShiftReportDataViewModel, FormSetShiftReportDataViewModel>();
             container.RegisterType<IApplicationRepository,ApplicationRepository>();
+            container.RegisterType<IBlockHistoryGetDataLogic, BlockHistoryGetDataLogic>();
             container.RegisterType<IBlockHistoryViewModel,BlockHistoryViewModel>();
             container.RegisterType<IMyLogger, MyLogger>();
             container.RegisterType<IAdminModeViewModel, AdminModeViewModel>();

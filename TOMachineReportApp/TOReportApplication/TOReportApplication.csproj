@@ -53,7 +53,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>CE98A976955BA55718DEFB4968D98F56B3612BC2</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>4E271F9F37F89F0E0959E670DFD6F9468D7ED138</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>TOReportApplication_TemporaryKey.pfx</ManifestKeyFile>
@@ -146,6 +146,7 @@
     <Compile Include="DataBase\ApplicationRepository.cs" />
     <Compile Include="DataBase\DBConnection.cs" />
     <Compile Include="Logic\AdminModeSearchCriteriaLogic.cs" />
+    <Compile Include="Logic\BlockHistoryGetDataLogic.cs" />
     <Compile Include="Logic\ContinuousBlowingMachineReportLogic.cs" />
     <Compile Include="Logic\DisplayNameHelper.cs" />
     <Compile Include="Logic\Enums\DataContextEnum.cs" />
