@@ -56,6 +56,20 @@ namespace TOReportApplication.ViewModels
             }
         }
 
+
+        private ObservableCollection<ContinuousBlowingMachineReportModel> selectedContinuousBlowingMachineBlockHistory;
+
+        public ObservableCollection<ContinuousBlowingMachineReportModel> SelectedContinuousBlowingMachineBlockHistory //todo moze by tu zrobil jakies stata ktory by trzyaml obecny stan widoku(na jakim raorcie jestes co wybrales itp)
+        {
+            get { return selectedContinuousBlowingMachineBlockHistory; }
+            set
+            {
+                if (selectedContinuousBlowingMachineBlockHistory == value) return;
+                selectedContinuousBlowingMachineBlockHistory = value;
+                OnPropertyChanged("SelectedContinuousBlowingMachineBlockHistory");
+            }
+        }
+
         private FormDateReportDBModel formItemSelected;
 
         public FormDateReportDBModel FormItemSelected //todo moze by tu zrobil jakies stata ktory by trzyaml obecny stan widoku(na jakim raorcie jestes co wybrales itp)
@@ -83,11 +97,21 @@ namespace TOReportApplication.ViewModels
 
         private async void GetBlockHistory()
         {
-            var data = await dataLogic.GetBlowingMachineData(FormItemSelected.ProductionDate, FormItemSelected.Chamber, FormItemSelected.PzNumber);
+            var blowingMachineReportModels = await dataLogic.GetBlowingMachineData(FormItemSelected.ProductionDate, FormItemSelected.Chamber, FormItemSelected.PzNumber);
             SelectedFormBlockHistory = new ObservableCollection<FormDatailedReportModel>(new List<FormDatailedReportModel>(){ FormItemSelected });
-            SelectedBlowingMachineBlockHistory = new ObservableCollection<BlowingMachineReportModel>(new List<BlowingMachineReportModel>(){ data.FirstOrDefault() });
-            //SelectedFormBlockHistory.Add(FormItemSelected);
-        }
+            if (blowingMachineReportModels.Count > 0)
+            {
+                SelectedBlowingMachineBlockHistory = new ObservableCollection<BlowingMachineReportModel>(new List<BlowingMachineReportModel>() { blowingMachineReportModels[0] });
+
+            }
+
+            var continuousBlowingMachineReportModels = await dataLogic.GetContinuousBlowingMachineData(FormItemSelected.ProductionDate, FormItemSelected.Chamber, FormItemSelected.PzNumber);
+            if (continuousBlowingMachineReportModels.Count > 0)
+            {
+                SelectedContinuousBlowingMachineBlockHistory = new ObservableCollection<ContinuousBlowingMachineReportModel>(new List<ContinuousBlowingMachineReportModel>() { continuousBlowingMachineReportModels[0] });
+            }
+        
+    }
 
         public BlockHistoryViewModel(IUnityContainer container, IApplicationRepository repository, IMyLogger logger, IBlockHistoryGetDataLogic dataLogic) : base(container)
         {

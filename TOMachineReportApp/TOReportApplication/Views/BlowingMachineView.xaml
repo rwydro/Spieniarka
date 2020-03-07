@@ -74,7 +74,7 @@
                 <DropShadowEffect/>
             </UIElement.Effect>
             <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen"
                 ItemsSource="{Binding Path=BlowingMachineShiftReportItems}">
             </DataGrid>
         </Border>
