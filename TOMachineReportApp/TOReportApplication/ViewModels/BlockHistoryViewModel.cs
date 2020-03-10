@@ -95,6 +95,31 @@ namespace TOReportApplication.ViewModels
             }
         }
 
+        private string pz;
+        public string Pz 
+        {
+            get { return pz; }
+            set
+            {
+                if (pz == value) return;
+                pz = value;
+                OnPropertyChanged("Pz");
+            }
+        }
+
+
+        private string blockNumber;
+        public string BlockNumber
+        {
+            get { return blockNumber; }
+            set
+            {
+                if (blockNumber == value) return;
+                blockNumber = value;
+                OnPropertyChanged("BlockNumber");
+            }
+        }
+
         private async void GetBlockHistory()
         {
             var blowingMachineReportModels = await dataLogic.GetBlowingMachineData(FormItemSelected.ProductionDate, FormItemSelected.Chamber, FormItemSelected.PzNumber);
@@ -120,11 +145,23 @@ namespace TOReportApplication.ViewModels
             this.SettingsAndFilterPanelViewModel.GeneratedModelItemsAction += OnGetFormBlocks;
             this.dataLogic = dataLogic;
             FormItemSelected = null;
+            Pz = "";
+            BlockNumber = "";
         }
 
         private void OnGetFormBlocks(object sender, EventBaseArgs<FormDateReportDBModel> result)
         {
-            FormReportItems = new ObservableCollection<FormDatailedReportModel>(result.ReportModel.Model);
+            IEnumerable<FormDatailedReportModel> data = result.ReportModel.Model;
+            if (Pz != "")
+            {
+                data = data.Where(el => el.PzNumber.ToString() == (Pz));
+            }
+            if (BlockNumber != "")
+            {
+                data = data.Where(el => el.AssignedNumber.ToString() == BlockNumber);
+            }
+
+            FormReportItems = new ObservableCollection<FormDatailedReportModel>(data);
         }
 
         public void Dispose()

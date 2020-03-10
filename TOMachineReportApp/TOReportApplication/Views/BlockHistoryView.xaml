@@ -27,8 +27,24 @@
                 <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0">
-            <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                                              DataContext="{Binding Path=SettingsAndFilterPanelViewModel}"/>
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="10">
+                    <Label FontWeight="Bold" FontSize="12" Content="Numer Pz"/>
+                    <TextBox Text="{Binding Pz}" TextAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="10">
+                    <Label FontWeight="Bold" FontSize="12" Content="Numer bloku"/>
+                    <TextBox Text="{Binding BlockNumber}" TextAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                </StackPanel>
+                <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="2"
+                                                  DataContext="{Binding Path=SettingsAndFilterPanelViewModel}"/>
+            </Grid>
         </Border>
         <Grid Grid.Row="1">
             <Border BorderBrush="Black " CornerRadius="15"  BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0">
@@ -37,7 +53,7 @@
                 </Border.Effect>
                 <DataGrid ItemsSource="{Binding FormReportItems}" SelectedItem="{Binding FormItemSelected}"
                           Name="FormSearchFilterResults"   IsReadOnly="True"  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
-                                AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen" 
+                                AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen"  AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
                            >
                 </DataGrid>
             </Border>
@@ -58,7 +74,7 @@
                 <DropShadowEffect/>
             </UIElement.Effect>
             <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" 
                       ItemsSource="{Binding Path=SelectedBlowingMachineBlockHistory}">
             </DataGrid>
         </Border>
@@ -67,7 +83,7 @@
                 <DropShadowEffect/>
             </UIElement.Effect>
             <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" 
                       ItemsSource="{Binding Path=SelectedCBlowingMachineBlockHistory}">
             </DataGrid>
         </Border>
