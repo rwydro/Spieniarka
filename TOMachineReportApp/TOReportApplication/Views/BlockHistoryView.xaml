@@ -74,7 +74,7 @@
                 <DropShadowEffect/>
             </UIElement.Effect>
             <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" 
+                      IsReadOnly="true" AutoGenerateColumns="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingBlowingMachineColumn" AlternatingRowBackground="LightGreen" 
                       ItemsSource="{Binding Path=SelectedBlowingMachineBlockHistory}">
             </DataGrid>
         </Border>
@@ -83,8 +83,8 @@
                 <DropShadowEffect/>
             </UIElement.Effect>
             <DataGrid HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                      IsReadOnly="true" AutoGenerateColumns="True" AlternatingRowBackground="LightGreen" 
-                      ItemsSource="{Binding Path=SelectedCBlowingMachineBlockHistory}">
+                      IsReadOnly="true" AutoGenerateColumns="True"  AutoGeneratingColumn="DataGrid_OnAutoGeneratingBlowingMachineColumn" AlternatingRowBackground="LightGreen" 
+                      ItemsSource="{Binding Path=SelectedContinuousBlowingMachineBlockHistory}">
             </DataGrid>
         </Border>
     </Grid>

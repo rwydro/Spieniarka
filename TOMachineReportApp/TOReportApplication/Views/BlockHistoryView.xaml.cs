@@ -93,6 +93,26 @@ namespace TOReportApplication.Views
             return null;
         }
 
+
+        private void DataGrid_OnAutoGeneratingBlowingMachineColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            var displayName = GetPropertyDisplayName(e.PropertyDescriptor);
+            if (e.PropertyType == typeof(DateTime))
+            {
+                DataGridTextColumn dataGridTextColumn = e.Column as DataGridTextColumn;
+                if (dataGridTextColumn != null)
+                {
+                    dataGridTextColumn.Binding.StringFormat = "{0:dd-MM-yyyy HH:mm:ss}";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(displayName))
+            {
+                e.Column.Header = displayName;
+            }
+
+        }
+
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");

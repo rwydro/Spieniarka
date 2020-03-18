@@ -122,6 +122,8 @@ namespace TOReportApplication.ViewModels
 
         private async void GetBlockHistory()
         {
+            SelectedBlowingMachineBlockHistory = null;
+            SelectedContinuousBlowingMachineBlockHistory = null;
             var blowingMachineReportModels = await dataLogic.GetBlowingMachineData(FormItemSelected.ProductionDate, FormItemSelected.Chamber, FormItemSelected.PzNumber);
             SelectedFormBlockHistory = new ObservableCollection<FormDatailedReportModel>(new List<FormDatailedReportModel>(){ FormItemSelected });
             if (blowingMachineReportModels.Count > 0)

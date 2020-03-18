@@ -46,6 +46,7 @@ namespace TOReportApplication.Logic
                 new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, endDate.Minute, endDate.Second));
 
             var data = dbConnection.GetDataFromDB(query);
+            var qweqw = data.Rows.Count;
             return GenerateModelLogic<ContinuousBlowingMachineReportModel>.GenerateReportModel(data, ModelDictionaries.ContinuousBlowingMachineDbColumnNameToModelPropertyNameDictionary);
         }
 
