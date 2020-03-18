@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using FluentNHibernate.Utils;
 using TOReportApplication.DataBase;
 using TOReportApplication.Logic;
 using TOReportApplication.Logic.Enums;
@@ -135,7 +136,7 @@ namespace TOReportApplication.ViewModels
             var continuousBlowingMachineReportModels = await dataLogic.GetContinuousBlowingMachineData(FormItemSelected.ProductionDate, FormItemSelected.Chamber, FormItemSelected.PzNumber);
             if (continuousBlowingMachineReportModels.Count > 0)
             {
-                SelectedContinuousBlowingMachineBlockHistory = new ObservableCollection<ContinuousBlowingMachineReportModel>(new List<ContinuousBlowingMachineReportModel>() { continuousBlowingMachineReportModels[0] });
+                SelectedContinuousBlowingMachineBlockHistory = new ObservableCollection<ContinuousBlowingMachineReportModel>(continuousBlowingMachineReportModels);
             }
         
     }

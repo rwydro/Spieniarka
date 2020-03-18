@@ -214,44 +214,6 @@ namespace TOReportApplication.Views
 
         private string SaveReportInFile()
         {
-            /*          XmlDeclaration xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
-                        XmlElement root = doc.DocumentElement;
-                        doc.InsertBefore(xmlDeclaration, root);
-
-                        XmlElement element1 = doc.CreateElement(string.Empty, "body", string.Empty);
-                        doc.AppendChild(element1);
-
-
-
-
-                        foreach (var rowObject in DataGridName.Items)
-                            {
-                                                XmlElement element2 = doc.CreateElement(string.Empty, "Raport", string.Empty);
-                                                element1.AppendChild(element2);
-                                foreach (DataGridColumn column in DataGridName.Columns)
-                                {
-                                    if (column.Visibility == Visibility.Visible)
-                                    {
-                                        var correctRow = DisplayNameHelper.GetPropertyValues(rowObject, column.Header.ToString());
-
-                                     foreach (var item in correctRow)
-                                        {
-                                            if (item.Key == column.Header.ToString())
-                                            {
-                                                XmlElement element3 = doc.CreateElement(string.Empty, column.Header.ToString()
-                                                    .Replace(" ", "_")
-                                                    .Replace("[", "")
-                                                    .Replace("]", "")
-                                                    .Replace("%", "procent"), string.Empty);
-
-                                                XmlText text1 = doc.CreateTextNode(item.Value.ToString());
-                                                element3.AppendChild(text1);
-                                                element2.AppendChild(element3);
-                                            }
-                                        }
-                                    }
-                                }
-                           }*/
             DataTable dt = new DataTable();
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < DataGridName.Columns.Count; i++)

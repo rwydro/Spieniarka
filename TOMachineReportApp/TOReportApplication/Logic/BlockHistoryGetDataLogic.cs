@@ -40,13 +40,12 @@ namespace TOReportApplication.Logic
         public async Task<List<ContinuousBlowingMachineReportModel>> GetContinuousBlowingMachineData(DateTime endDate, int chamber, int pz)
         {
             var query = string.Format(
-                "SELECT * FROM public.spieniarka_ciagla_probki where komora = '{0}' and numer_pz = '{1}' and data_czas > '{2}' order by data_czas limit 1",
+                "SELECT * FROM public.spieniarka_ciagla_probki where komora = '{0}' and numer_pz = '{1}' and data_czas > '{2}' order by data_czas limit 10",
                 chamber,
                 pz,
                 new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, endDate.Minute, endDate.Second));
 
             var data = dbConnection.GetDataFromDB(query);
-            var qweqw = data.Rows.Count;
             return GenerateModelLogic<ContinuousBlowingMachineReportModel>.GenerateReportModel(data, ModelDictionaries.ContinuousBlowingMachineDbColumnNameToModelPropertyNameDictionary);
         }
 
