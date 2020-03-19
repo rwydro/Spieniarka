@@ -20,19 +20,18 @@
     <Grid>
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="4*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="3*"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="2.5*"/>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0">
             <Grid>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Margin="10">
                     <Label FontWeight="Bold" FontSize="12" Content="Numer Pz"/>
@@ -44,6 +43,7 @@
                 </StackPanel>
                 <local:SettingsAndFilterPanelView HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="2"
                                                   DataContext="{Binding Path=SettingsAndFilterPanelViewModel}"/>
+                <Button Click="ButtonBase_OnClick" Grid.Column="3"  Margin="10" Style="{StaticResource BlockHistoryButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom">Zapisz raport</Button>
             </Grid>
         </Border>
         <Grid Grid.Row="1">
@@ -53,38 +53,39 @@
                 </Border.Effect>
                 <DataGrid ItemsSource="{Binding FormReportItems}" SelectedItem="{Binding FormItemSelected}"
                           Name="FormSearchFilterResults"   IsReadOnly="True"  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
-                                AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen"  AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                                AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen"  AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"                 
                            >
+
                 </DataGrid>
             </Border>
         </Grid>
-        <Button Click="ButtonBase_OnClick" Grid.Row="2"  Margin="10,0,10,10" Style="{StaticResource BlockHistoryButtonStyle}">Zapisz blok</Button>
-        <Border  BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Row="3">
+        <Border Grid.Row="2" BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" >
+                <UIElement.Effect>
+                    <DropShadowEffect/>
+                </UIElement.Effect>
+                <DataGrid Name="FormRow" ItemsSource="{Binding SelectedFormBlockHistory}" SelectedItem="{Binding FormItemSelected}"
+                          IsReadOnly="True"  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
+                          AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                          ToolTip="Tabela formy"
+                >
+                </DataGrid>
+            </Border>
+            <Border  BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Row="3">
             <UIElement.Effect>
                 <DropShadowEffect/>
             </UIElement.Effect>
-            <DataGrid Name="FormRow" ItemsSource="{Binding SelectedFormBlockHistory}" SelectedItem="{Binding FormItemSelected}"
-                      IsReadOnly="True"  HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
-                      AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
-            >
+            <DataGrid Name="BlowingRow" HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
+                      IsReadOnly="true" AutoGenerateColumns="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingBlowingMachineColumn" AlternatingRowBackground="LightGreen" 
+                      ItemsSource="{Binding Path=SelectedBlowingMachineBlockHistory}" ToolTip="Tabela spieniarkiI">
             </DataGrid>
         </Border>
         <Border  BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Row="4">
             <UIElement.Effect>
                 <DropShadowEffect/>
             </UIElement.Effect>
-            <DataGrid Name="BlowingRow" HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
-                      IsReadOnly="true" AutoGenerateColumns="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingBlowingMachineColumn" AlternatingRowBackground="LightGreen" 
-                      ItemsSource="{Binding Path=SelectedBlowingMachineBlockHistory}">
-            </DataGrid>
-        </Border>
-        <Border  BorderBrush="Black " CornerRadius="15" BorderThickness="2" Margin="10,0,10,10" Background="#F0F0F0" Grid.Row="5">
-            <UIElement.Effect>
-                <DropShadowEffect/>
-            </UIElement.Effect>
             <DataGrid Name="CBlowingRow" HeadersVisibility="Column" BorderBrush="{x:Null}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,2,5,10"
                       IsReadOnly="true" AutoGenerateColumns="True"  AutoGeneratingColumn="DataGrid_OnAutoGeneratingBlowingMachineColumn" AlternatingRowBackground="LightGreen" 
-                      ItemsSource="{Binding Path=SelectedContinuousBlowingMachineBlockHistory}">
+                      ItemsSource="{Binding Path=SelectedContinuousBlowingMachineBlockHistory}" ToolTip="Tabela spieniarkiII">
             </DataGrid>
         </Border>
     </Grid>
