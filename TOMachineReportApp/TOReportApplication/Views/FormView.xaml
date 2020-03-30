@@ -116,7 +116,7 @@
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-                    <DataGrid Name="DataGridDetailedReport"   IsReadOnly="True" AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn" HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
+                    <DataGrid Name="DataGridDetailedReport"  AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn" HeadersVisibility="Column" BorderBrush="{x:Null}"  Margin="5,3,3,10" 
                                 AutoGenerateColumns="True"  AlternatingRowBackground="LightGreen" CellEditEnding="DataGrid_OnCellEditEnding" >
                         <DataGrid.Style>
                             <Style TargetType="DataGrid">

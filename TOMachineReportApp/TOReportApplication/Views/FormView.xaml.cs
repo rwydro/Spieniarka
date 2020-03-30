@@ -59,7 +59,10 @@ namespace TOReportApplication.Views
                 {
                     column.IsReadOnly = false;
                 }
-
+                else
+                {
+                    column.IsReadOnly = true;
+                }
             }
         }
 
