@@ -359,7 +359,7 @@ namespace TOReportApplication.ViewModels
         {
             var query = String.Format(CultureInfo.InvariantCulture,
                 "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3}, silos = {4}, komora = {5}, data_organiki = '{6}', pz = '{7}' " +
-                "where id_blok = {8}", item.Comments, item.Type, item.AvgDensityOfPearls, item.AssignedNumber, item.Silos, item.Chamber, item.OrganicDate.ToString("yyyy-MM-dd"), item.PzNumber, item.Id);
+                "where id_blok = {8}", item.Comments, item.Type, item.AvgDensityOfPearls.Replace(",", "."), item.AssignedNumber, item.Silos, item.Chamber, item.OrganicDate.ToString("yyyy-MM-dd"), item.PzNumber, item.Id);
             logger.logger.DebugFormat("Updata data query: {0}", query);
             applicationRepository.UpdateData(query);
         }
@@ -461,7 +461,9 @@ namespace TOReportApplication.ViewModels
                     counter = 0;
                     continue;
                 }
-                if (chamber != obj[i+1].Chamber && counter != 0 )// ostatni warunek po to zeby wyswietlac nie zakonczone cykle
+                // predostatni warunek po to zeby wyswietlac nie zakonczone cykle
+                // ostatni warunek dla przypadku gdy w 2 zmianie zaczynamy blok w 3 nie ma zadnego wpisu i potem jest kontynuacja bloku na nastepny dzien(np zepsula sie maszyna)
+                if (chamber != obj[i+1].Chamber && counter != 0 || obj[i].ProductionDate.Day != obj[i + 1].ProductionDate.Day)
                 {
                     var dateFrom = obj[i - counter].ProductionDate;
                     var toDate = obj[i].ProductionDate;
@@ -492,6 +494,7 @@ namespace TOReportApplication.ViewModels
                 counter++;              
             }
 
+            //return list;
             return shiftCalendarManager.RemoveNastedRows(list);
         }
 

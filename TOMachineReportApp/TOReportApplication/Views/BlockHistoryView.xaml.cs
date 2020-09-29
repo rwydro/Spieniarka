@@ -148,7 +148,7 @@ namespace TOReportApplication.Views
         {
             StringBuilder sb = new StringBuilder();
             String result = "";
-
+            var replacedStr = "";
             if (FormRow.Items.Count > 0)
             {
                 FormRow.SelectAllCells();
@@ -156,6 +156,7 @@ namespace TOReportApplication.Views
                 ApplicationCommands.Copy.Execute(null, FormRow);
                 CBlowingRow.UnselectAllCells();
                 result = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+               // replacedStr = result.Replace(",", ";");
                 sb.Append(result);
             }
       
@@ -167,7 +168,8 @@ namespace TOReportApplication.Views
                 ApplicationCommands.Copy.Execute(null, BlowingRow);
                 BlowingRow.UnselectAllCells();
                 result = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-                sb.Append(result);
+                replacedStr = result.Replace(",", ";");
+                sb.Append(replacedStr);
             }
 
 
@@ -178,7 +180,8 @@ namespace TOReportApplication.Views
                 ApplicationCommands.Copy.Execute(null, CBlowingRow);
                 CBlowingRow.UnselectAllCells();
                 result = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-                sb.Append(result);
+                replacedStr = result.Replace(",", ";");
+                sb.Append(replacedStr);
             }
 
 
