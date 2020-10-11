@@ -426,75 +426,36 @@ namespace TOReportApplication.ViewModels
             logger.logger.ErrorFormat("End method SetFormDetailedReport");
         }
 
-        private List<FormDateReportModel> GenerateDateReport(List<FormDateReportDBModel> obj)
-        {   
+        public List<FormDateReportModel> GenerateDateReport(List<FormDateReportDBModel> obj)
+        {
             int counter = 0;
             int chamber = 0;
             bool isLastChamber = false;
             var list = new List<FormDateReportModel>();
             var shiftCalendarManager = new ShiftCalendarManager();
 
-            for (int i = 0; i < obj.Count; i++)
-            {
-                if ((i + 1) == obj.Count)
-                {
-                    var dateFrom = obj[i - counter].ProductionDate;
-                    var toDate = obj[i].ProductionDate;
-                    var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
-                        new TimeSpan(dateFrom.Hour, dateFrom.Minute, dateFrom.Second),
-                        new TimeSpan(toDate.Hour, toDate.Minute, toDate.Second)));
-                    list.Add(new FormDateReportModel()
-                    {
-                        Shift = shift,
-                        TimeFrom = obj[i - counter].ProductionDate,
-                        TimeTo = obj[i].ProductionDate,
-                        Chamber = obj[i].Chamber,
-                        Silos = obj[i].Silos,
-                        NumberOfBlocks = counter + 1,
-                        Operator = obj[i - counter].Operator,
-                        DetailedReportForChamber =  (from it in obj where it.Chamber == obj[i].Chamber && it.Silos == obj[i].Silos &&
-                                obj[i - counter].ProductionDate <= it.ProductionDate &&
-                                it.ProductionDate <= obj[i].ProductionDate
-                                select it).ToList()
-                    });
-                    ShiftProperty = shift;
-                    counter = 0;
-                    continue;
-                }
-                // predostatni warunek po to zeby wyswietlac nie zakonczone cykle
-                // ostatni warunek dla przypadku gdy w 2 zmianie zaczynamy blok w 3 nie ma zadnego wpisu i potem jest kontynuacja bloku na nastepny dzien(np zepsula sie maszyna)
-                if (chamber != obj[i+1].Chamber && counter != 0 || obj[i].ProductionDate.Day != obj[i + 1].ProductionDate.Day)
-                {
-                    var dateFrom = obj[i - counter].ProductionDate;
-                    var toDate = obj[i].ProductionDate;
-                    var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
-                        new TimeSpan(dateFrom.Hour, dateFrom.Minute, dateFrom.Second),
-                        new TimeSpan(toDate.Hour, toDate.Minute, toDate.Second)));
-                    list.Add(new FormDateReportModel()
-                    {
-                        Shift = shift,
-                        TimeFrom = obj[i - counter].ProductionDate,
-                        TimeTo = obj[i].ProductionDate,
-                        Chamber = obj[i].Chamber,
-                        Silos = obj[i].Silos,
-                        NumberOfBlocks = counter + 1,
-                        Operator = obj[i - counter].Operator,
-                        DetailedReportForChamber = new List<FormDateReportDBModel>(from it in obj
-                            where it.Chamber == obj[i].Chamber && it.Silos == obj[i].Silos &&
-                                  obj[i - counter].ProductionDate <= it.ProductionDate &&
-                                  it.ProductionDate <= obj[i].ProductionDate
-                            select it).ToList()
-                    });
-                    ShiftProperty = shift;
-                    counter = 0;
-                    continue;
-                }
-    
-                chamber = obj[i].Chamber;
-                counter++;              
-            }
+            var queryLastNames = from item in obj
+                                 group item by item.Chamber into newGroup
+                                 select newGroup;
 
-            //return list;
+            foreach (var item in queryLastNames)
+            {
+                var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
+                    new TimeSpan(item.First().ProductionDate.Hour, item.First().ProductionDate.Minute, item.First().ProductionDate.Second),
+                    new TimeSpan(item.Last().ProductionDate.Hour, item.Last().ProductionDate.Minute, item.Last().ProductionDate.Second)));
+                list.Add(new FormDateReportModel()
+                {
+                    Shift = shift,
+                    TimeFrom = item.First().ProductionDate,
+                    TimeTo = item.Last().ProductionDate,
+                    Chamber = item.Last().Chamber,
+                    Silos = item.Last().Silos,
+                    NumberOfBlocks = item.ToArray().Length,
+                    Operator = item.Last().Operator,
+                    DetailedReportForChamber = (from it in item
+                                                select it).ToList()
+                });
+            }
             return shiftCalendarManager.RemoveNastedRows(list);
         }
 
