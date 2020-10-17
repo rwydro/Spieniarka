@@ -433,30 +433,40 @@ namespace TOReportApplication.ViewModels
             bool isLastChamber = false;
             var list = new List<FormDateReportModel>();
             var shiftCalendarManager = new ShiftCalendarManager();
+            var itemsList = new List<FormDateReportDBModel>();
 
-            var queryLastNames = from item in obj
-                                 group item by item.Chamber into newGroup
-                                 select newGroup;
-
-            foreach (var item in queryLastNames)
+            foreach (var item in obj)
             {
-                var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
-                    new TimeSpan(item.First().ProductionDate.Hour, item.First().ProductionDate.Minute, item.First().ProductionDate.Second),
-                    new TimeSpan(item.Last().ProductionDate.Hour, item.Last().ProductionDate.Minute, item.Last().ProductionDate.Second)));
-                list.Add(new FormDateReportModel()
+                if((item == obj.First()) || (item.Silos == itemsList.Last().Silos && item.Chamber == itemsList.Last().Chamber && item != obj.Last()))
                 {
-                    Shift = shift,
-                    TimeFrom = item.First().ProductionDate,
-                    TimeTo = item.Last().ProductionDate,
-                    Chamber = item.Last().Chamber,
-                    Silos = item.Last().Silos,
-                    NumberOfBlocks = item.ToArray().Length,
-                    Operator = item.Last().Operator,
-                    DetailedReportForChamber = (from it in item
-                                                select it).ToList()
-                });
+                    itemsList.Add(item);
+                }
+                else
+                {
+                        var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
+                            new TimeSpan(itemsList.First().ProductionDate.Hour, itemsList.First().ProductionDate.Minute, itemsList.First().ProductionDate.Second),
+                            new TimeSpan(itemsList.Last().ProductionDate.Hour, itemsList.Last().ProductionDate.Minute, itemsList.Last().ProductionDate.Second)));
+                    list.Add(new FormDateReportModel()
+                    {
+                        Shift = shift,
+                        TimeFrom = itemsList.First().ProductionDate,
+                        TimeTo = itemsList.Last().ProductionDate,
+                        Chamber = itemsList.Last().Chamber,
+                        Silos = itemsList.Last().Silos,
+                        NumberOfBlocks = itemsList.Count,
+                        Operator = itemsList.Last().Operator,
+                        DetailedReportForChamber = (from it in itemsList
+                                                    select it).ToList()
+                    });
+
+                    itemsList.Clear();
+                    itemsList.Add(item);
+            
+                }
             }
-            return shiftCalendarManager.RemoveNastedRows(list);
+
+
+            return list.IsEmpty() ? null : shiftCalendarManager.RemoveNastedRows(list, list.First().TimeFrom);
         }
 
         public void Dispose()

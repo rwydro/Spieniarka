@@ -17,7 +17,7 @@ namespace TOReportApplication.Logic
     }
     public class ShiftCalendarManager
     {
-         private List<ShifTimeDefinition> shiftsDefinition =new List<ShifTimeDefinition>()
+         private List<ShifTimeDefinition> shiftsDefinition = new List<ShifTimeDefinition>()
          {
              new ShifTimeDefinition(){BeginningShift = new TimeSpan(7,0,0),EndShift = new TimeSpan(15,00,00), NumberOfShift = ShiftInfoEnum.FirstShift},
              new ShifTimeDefinition(){BeginningShift = new TimeSpan(15,0,0),EndShift = new TimeSpan(23,00,00),NumberOfShift = ShiftInfoEnum.SecondShift},
@@ -34,23 +34,20 @@ namespace TOReportApplication.Logic
             {@"3\1", ShiftInfoEnum.ThirdToFirstShift}
         };
 
-        public List<FormDateReportModel> RemoveNastedRows(List<FormDateReportModel> dateReportModel)
+        public List<FormDateReportModel> RemoveNastedRows(List<FormDateReportModel> dateReportModel, DateTime selectedDate)
         {
+
+
             int index = 0;
             int counter = -1;
             string shift = shiftInfoDictionary.Last().Key;
             var newDateReportModel = new List<FormDateReportModel>();
-
-            for (int i = 0; i < dateReportModel.Count; i++)
-            {
-               
-                if(dateReportModel[i].TimeTo.Hour >= shiftsDefinition.First().BeginningShift.Hours && dateReportModel[i].TimeTo.Date.Day == dateReportModel.First().TimeTo.Day)
-                    newDateReportModel.Add(dateReportModel[i]);
-                if (dateReportModel[i].TimeTo.Hour < shiftsDefinition.Last().EndShift.Hours && dateReportModel[i].TimeTo.Date.Day > dateReportModel.First().TimeTo.Day)
-                   newDateReportModel.Add(dateReportModel[i]);
-
-               counter++;
-            }
+            var beginingDate = new DateTime(selectedDate.Year, selectedDate.Month, selectedDate.Day, 7,0,0);
+            var endDate = beginingDate.AddDays(1);
+            newDateReportModel = (from el in dateReportModel where el.TimeFrom >= beginingDate && el.TimeFrom < endDate
+                                 select el).ToList();
+    
+          
             return newDateReportModel;
         }
 
