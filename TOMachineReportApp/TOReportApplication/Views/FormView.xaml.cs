@@ -36,7 +36,8 @@ namespace TOReportApplication.Views
 
         private void DataGrid_OnCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            ((IFormViewModel)this.DataContext).OnCommandCellEnded();
+
+            ((IFormViewModel)this.DataContext).OnCommandCellEnded((e.EditingElement as TextBox).Text, e.Column.Header.ToString());
         }
 
         private void DataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)

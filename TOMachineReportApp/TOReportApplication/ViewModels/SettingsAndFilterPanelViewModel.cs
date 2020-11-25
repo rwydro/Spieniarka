@@ -137,7 +137,7 @@ namespace TOReportApplication.ViewModels
             this.timer.SetTimerAction(action);
         }
      
-        private void GenereteDateReport()
+        public void GenereteDateReport()
         {
             switch (DataContextEnum)
             {

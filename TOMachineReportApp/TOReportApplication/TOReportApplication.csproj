@@ -53,10 +53,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>8AE388524C015B7E83FDFA78FECDE0054AC07F99</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>169DD6420965D7017996E629F7787F1399686F67</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>TOReportApplication_5_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>TOReportApplication_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>

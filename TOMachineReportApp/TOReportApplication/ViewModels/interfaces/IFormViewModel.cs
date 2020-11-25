@@ -9,6 +9,6 @@ namespace TOReportApplication.ViewModels.interfaces
     public interface IFormViewModel
     {
         void Dispose();
-        void OnCommandCellEnded();
+        void OnCommandCellEnded(string value, string colName);
     }
 }
