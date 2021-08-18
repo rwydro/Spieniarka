@@ -73,7 +73,6 @@ namespace SpieniarkaCiagla4._0
                     {
                         row[cIndex] = date.ToString("dd-MM-yyyy HH:mm:ss");
                         rowIndex++;
-                        Console.WriteLine("date after parsed: {0}", row[cIndex]);
                         continue;
                     }
 

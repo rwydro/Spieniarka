@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spieniarka4.0", "Spieniarka4.0\Spieniarka4.0.csproj", "{4E7F3E4A-92AD-49BE-B922-95B91F2EC95F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpieniarkaCiagla", "..\SpieniarkaCiagla\SpieniarkaCiagla.csproj", "{C4DE9C27-8BF9-4863-91B0-218FE5C71D70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpieniarkaCiagla4.0", "SpieniarkaCiagla4.0\SpieniarkaCiagla4.0.csproj", "{C896ACF6-D9B1-4E4B-A7E9-AF50EF9B2116}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{4E7F3E4A-92AD-49BE-B922-95B91F2EC95F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E7F3E4A-92AD-49BE-B922-95B91F2EC95F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E7F3E4A-92AD-49BE-B922-95B91F2EC95F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4DE9C27-8BF9-4863-91B0-218FE5C71D70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4DE9C27-8BF9-4863-91B0-218FE5C71D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4DE9C27-8BF9-4863-91B0-218FE5C71D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4DE9C27-8BF9-4863-91B0-218FE5C71D70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C896ACF6-D9B1-4E4B-A7E9-AF50EF9B2116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C896ACF6-D9B1-4E4B-A7E9-AF50EF9B2116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C896ACF6-D9B1-4E4B-A7E9-AF50EF9B2116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C896ACF6-D9B1-4E4B-A7E9-AF50EF9B2116}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

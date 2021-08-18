@@ -16,6 +16,5 @@ namespace TOReportApplication.ViewModels.interfaces
         void SetTimer(TimerActionEnum action);
         //Action IsReportGenerate { get; set; }
         event EventHandler IsReportGenerate;
-        void GenereteDateReport();
     }
 }

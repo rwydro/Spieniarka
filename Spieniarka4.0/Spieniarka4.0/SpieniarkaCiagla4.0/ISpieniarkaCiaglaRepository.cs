@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Npgsql;
 using SpieniarkaCiagla;
@@ -64,15 +65,42 @@ namespace SpieniarkaCiagla4._0
             return date;
         }
 
+        private bool IfAddedNewData(DateTime date, string lastLine)
+        {
+            var provider = CultureInfo.CreateSpecificCulture("de-DE");
+            var stringDate = date.ToString("yyyy-MM-dd HH:mm:ss", provider);
+            Console.WriteLine("line: {0}", lastLine);
+            var line = string.Format("\'{0}\'", lastLine.Replace(",", "','"));
+
+            Console.WriteLine("line: {0}", line);
+            var matchDateAsString = dateRegEx.Match(line);
+            var matchDate =
+                DateTime.ParseExact(matchDateAsString.Value, "dd-MM-yyyy HH:mm:ss", provider)
+                    .ToString("yyyy-MM-dd HH:mm:ss", provider);
+            Console.WriteLine("{0} converts to {1}.", matchDateAsString.Value, matchDate);
+            var correctLine = line.Replace(matchDateAsString.Value, matchDate);
+            if (correctLine.Contains(stringDate))
+            {
+
+                Console.WriteLine("No more the new lines");
+                return false;
+            }
+
+            return true;
+        }
+
         public void InsertMissingData(string[] lines, DateTime date)
         {
             dbConnection.OpenSession();
             var provider = CultureInfo.CreateSpecificCulture("de-DE");
-            var stringDate = date.ToString("yyyy-MM-dd HH:mm:ss", provider);
+            
+            if(!IfAddedNewData(date,lines.Last()))
+                return;
+            
 
-            for (var i = lines.Length - 1; i >= 0; i--)
+            for (var i = 0; i < lines.Length; i++)
             {
-                Console.WriteLine("line: {0}", lines[0]);
+                Console.WriteLine("line: {0}", lines[i]);
                 var line = string.Format("\'{0}\'", lines[i].Replace(",", "','"));
 
                 Console.WriteLine("line: {0}", line);
@@ -85,16 +113,11 @@ namespace SpieniarkaCiagla4._0
                     Console.WriteLine("{0} converts to {1}.", matchDateAsString.Value, matchDate);
                     var correctLine = line.Replace(matchDateAsString.Value, matchDate);
 
-                    if (correctLine.Contains(stringDate))
-                    {
-
-                        Console.WriteLine("No more the new lines");
-                        return;
-                    }
+                   
 
                     var query =
                         string.Format(
-                            "INSERT INTO public.spieniarka_ciagla_probki(data_czas, gestosc_z_pomiaru, gestosc_zadana, otwarcie_pary, obroty_dozownika, material, gatunek, komora, nr_pz, operator)  VALUES({0})",
+                            "INSERT INTO public.spieniarka_ciagla_probki(data_czas, gestosc_z_pomiaru, gestosc_zadana, otwarcie_pary, obroty_dozownika, material, gatunek, komora, numer_pz, operator)  VALUES({0})",
                             correctLine);
 
                     var cmd = new NpgsqlCommand(query, dbConnection.session);

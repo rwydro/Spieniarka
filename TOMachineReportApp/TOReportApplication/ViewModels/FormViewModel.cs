@@ -29,7 +29,7 @@ namespace TOReportApplication.ViewModels
     {
         public DelegateCommand SaveReportInFileCommand { get; set; }
         public DelegateCommand<string> GenerateDetailsReportForChamberCommand { get; set; }
-        private bool isFullDetailedReportOpen { get; set; }
+
         private string shiftProperty { get; set; }
 
         public string ShiftProperty
@@ -233,7 +233,6 @@ namespace TOReportApplication.ViewModels
             IsChamberReportPanelEnabled = false;
             IsSaveInFilePanelEnabled = false;
             DetailedReportType = FormDetailedReportTypeEnum.Any;
-            isFullDetailedReportOpen = false;
         }
 
         private void OnGenerateReport(object sender, EventArgs e)
@@ -248,13 +247,11 @@ namespace TOReportApplication.ViewModels
             {
                 DetailedReportType = FormDetailedReportTypeEnum.FullVersionDetailedReport;
                 IsChamberReportPanelEnabled = false;
-                isFullDetailedReportOpen = true;
             }
             else
             {
                 DetailedReportType = FormDetailedReportTypeEnum.ShortVersionDetailedReport;
                 IsChamberReportPanelEnabled = true;
-                isFullDetailedReportOpen = false;
             }
 
             SetFormDetailedReport();
@@ -331,31 +328,10 @@ namespace TOReportApplication.ViewModels
             ShiftItems = new ObservableCollection<string>(items);
         }
 
-        public void OnCommandCellEnded(string value, string columnName)
+        public void OnCommandCellEnded()
         {
-            switch (columnName)
-            {
-                case "Komora":
-                    int chamberValue = int.Parse(value);
-                    SelectedDatailedReportRow.Chamber = chamberValue;
-                    break;
-                case "Silos":
-                    int silosValue = int.Parse(value);
-                    SelectedDatailedReportRow.Silos = silosValue;
-                    break;
-                case "Komentarz":
-                    SelectedDatailedReportRow.Comments = value;
-                    break;
-                case "Gatunek":
-                    SelectedDatailedReportRow.Type = value;
-                    break;
-
-            }
             UpdateDataBase(SelectedDatailedReportRow);
-            //SettingsAndFilterPanelViewModel.GenereteDateReport();
- 
         }
-
 
         private void OnGetMaterialTypeData(MaterialTypeMenuModel obj)
         {
@@ -381,42 +357,16 @@ namespace TOReportApplication.ViewModels
 
         private void UpdateDataBase(FormDatailedReportModel item)
         {
-            try
-            {
-                var query = String.Format(CultureInfo.InvariantCulture,
-                    "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3}, silos = {4}, komora = {5}, data_organiki = '{6}', pz = '{7}' " +
-                    "where id_blok = {8}", item.Comments, item.Type, item.AvgDensityOfPearls.Replace(",", "."), item.AssignedNumber, item.Silos, item.Chamber, item.OrganicDate.ToString("yyyy-MM-dd"), item.PzNumber, item.Id);
-                logger.logger.DebugFormat("Updata data query: {0}", query);
-                applicationRepository.UpdateData(query);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-               
-            }
-
+            var query = String.Format(CultureInfo.InvariantCulture,
+                "UPDATE public.forma_blok2  Set uwaga = '{0}',gatunek='{1}',getosc_perelek = {2}, nrnadany = {3}, silos = {4}, komora = {5}, data_organiki = '{6}', pz = '{7}' " +
+                "where id_blok = {8}", item.Comments, item.Type, item.AvgDensityOfPearls.Replace(",", "."), item.AssignedNumber, item.Silos, item.Chamber, item.OrganicDate.ToString("yyyy-MM-dd"), item.PzNumber, item.Id);
+            logger.logger.DebugFormat("Updata data query: {0}", query);
+            applicationRepository.UpdateData(query);
         }
 
         private void OnGetFormReportsModelItems(object sender, EventBaseArgs<FormDateReportDBModel> e)
         {
-              Application.Current.Dispatcher.InvokeAsync(() =>
-              {
-                  GetFormReportsModelItems(e.ReportModel);
-                  //if (DetailedReportItems == null || DetailedReportItems.Count == 0)
-                  //{
-                  //    return;
-                  //}
-                  if (ActualDatedReportRow != null)
-                  {
-                      ActualDatedReportRow = (from el in DateReportItems
-                          where el.Chamber == ActualDatedReportRow.Chamber &&
-                                el.Silos == ActualDatedReportRow.Silos &&
-                                el.Operator == ActualDatedReportRow.Operator
-                          select el).FirstOrDefault();
-                  }
-             
-                  OnGenerateDetailsReportForChamber(isFullDetailedReportOpen.ToString());
-              });
+              Application.Current.Dispatcher.InvokeAsync(() => GetFormReportsModelItems(e.ReportModel));
         }
 
         private void GetFormReportsModelItems(ReportModel<FormDateReportDBModel> formReportsDbModel)
@@ -448,30 +398,28 @@ namespace TOReportApplication.ViewModels
             switch (DetailedReportType)
             {
                 case FormDetailedReportTypeEnum.ShortVersionDetailedReport:
-                    DetailedReportItems = new ObservableCollection<FormDatailedReportModel>(ActualDatedReportRow.DetailedReportForChamber);
-                    //DetailedReportItems = new ObservableCollection<FormDatailedReportModel>((from li in  DateReportItems
-                    //    where li.Chamber == ActualDatedReportRow.Chamber &&
-                    //          li.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
-                    //          li.Silos == ActualDatedReportRow.Silos &&
-                    //          li.Operator == ActualDatedReportRow.Operator
-                    //    select li).First().DetailedReportForChamber);
+                    DetailedReportItems = new ObservableCollection<FormDatailedReportModel>((from li in DateReportItems
+                        where li.Chamber == ActualDatedReportRow.Chamber &&
+                              li.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
+                              li.Silos == ActualDatedReportRow.Silos &&
+                              li.Operator == ActualDatedReportRow.Operator
+                        select li).First().DetailedReportForChamber);
 
                     this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Reset);
                     break;
                 case FormDetailedReportTypeEnum.FullVersionDetailedReport:
-                    /*DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>(DateReportItems.First(s =>
+                    DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>(DateReportItems.First(s =>
                         s.Chamber == ActualDatedReportRow.Chamber &&
                         s.NumberOfBlocks == ActualDatedReportRow.NumberOfBlocks &&
                         s.Silos == ActualDatedReportRow.Silos &&
                         s.Operator == ActualDatedReportRow.Operator).DetailedReportForChamber);
-                    SelectedDatedReportRow = null;*/
-                    DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>(ActualDatedReportRow.DetailedReportForChamber);
+                    SelectedDatedReportRow = null;
                     this.SettingsAndFilterPanelViewModel.SetTimer(TimerActionEnum.Stop);
                     break;
                 case FormDetailedReportTypeEnum.Any:
                     DetailedReportItems = new ObservableCollection<FormDatailedReportModel>();
                     DetailedFullVersionReportItems = new ObservableCollection<FormDateReportDBModel>();
-                    ActualDatedReportRow = null;
+                    SelectedDatedReportRow = null;
                     break;
             }
 
@@ -489,22 +437,13 @@ namespace TOReportApplication.ViewModels
 
             foreach (var item in obj)
             {
-                if (item.Chamber == 16)
-                {
-
-                }
                 if((item == obj.First()) || (item.Silos == itemsList.Last().Silos && item.Chamber == itemsList.Last().Chamber && item != obj.Last()))
                 {
                     itemsList.Add(item);
                 }
                 else
                 {
-                    if (item == obj.Last())
-                    {
-                        itemsList.Add(item);
-                    }
-                        
-                    var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
+                        var shift = shiftCalendarManager.GetShiftAsString(shiftCalendarManager.GetShift(
                             new TimeSpan(itemsList.First().ProductionDate.Hour, itemsList.First().ProductionDate.Minute, itemsList.First().ProductionDate.Second),
                             new TimeSpan(itemsList.Last().ProductionDate.Hour, itemsList.Last().ProductionDate.Minute, itemsList.Last().ProductionDate.Second)));
                     list.Add(new FormDateReportModel()

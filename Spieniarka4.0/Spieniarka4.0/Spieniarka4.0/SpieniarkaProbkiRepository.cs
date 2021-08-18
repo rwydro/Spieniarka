@@ -122,45 +122,6 @@ namespace SpieniarkaApplication.DataBase
                 Console.WriteLine("Above query was executed successful");
             }
             Console.WriteLine($"End of for loop");
-        }
-        //public void InsertMissingData(string[] lines, DateTime date)
-        //{
-        //    dbConnection.OpenSession();
-        //    Console.WriteLine($"lines count: {lines.Length}, date: {date}");
-        //    var stringDate = date.ToString("dd-MM-yyyy HH:mm:ss");
-
-        //    for (int i = lines.Length-1; i >= 0; i--)
-        //    {
-        //        try
-        //        {
-        //            var line = $"\'{lines[i].Replace("\t", "','")}\'";
-        //            var matchDateAsString = dateRegEx.Match(line);
-        //            var matchDate = Convert.ToDateTime(dateRegEx.Match(line).Value).ToString("yyyy-MM-dd HH:mm:ss");
-        //            var correctLine = line.Replace(matchDateAsString.Value, matchDate);
-        //            if (correctLine.Contains(stringDate))
-        //            {
-        //                Console.WriteLine($"line:{correctLine}, dateAsString: {stringDate}");
-        //                return;
-        //            }
-
-        //            var query = String.Format(
-        //                "INSERT INTO public.spieniarka_probki(symbol, wersja, data_czas, nr_zlecenia, nr_wsadu, nawazka_zadana, nawazka_rzecz, licznik_regulacji, gestosc_zadana, gestosc_rzecz, czas_pracowania, cisn_pary, temp_pary, temp_kotla, czas_cyklu, j_wagi, j_gest, j_cisn, j_temp) VALUES({0})",
-        //                correctLine);
-        //            var cmd = new NpgsqlCommand(query, dbConnection.session);
-        //            Console.WriteLine($"Executed the query {query}");
-
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Console.WriteLine(e);
-        //            Console.ReadKey();
-        //        }
-
-        //        Console.WriteLine("Above query was executed successful");
-        //    }
-        //    Console.WriteLine($"End of for loop");
-        //}
-        
+        }   
     }
 }

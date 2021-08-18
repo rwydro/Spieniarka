@@ -22,9 +22,9 @@ namespace SpieniarkaApplication
             
             RunFtpCommand();
             Console.WriteLine("Start Logic");
-            var date = spieniarkaProbkiRepository.GetDateLastRecord(FileType.Batch);
-            spieniarkaProbkiRepository.InsertMissingData(FilesLogic.GetDataFromFile(BatchFilePath, FileType.Batch), date, FileType.Batch);
-            date = spieniarkaProbkiRepository.GetDateLastRecord(FileType.Summary);
+            //var date = spieniarkaProbkiRepository.GetDateLastRecord(FileType.Batch);
+            //spieniarkaProbkiRepository.InsertMissingData(FilesLogic.GetDataFromFile(BatchFilePath, FileType.Batch), date, FileType.Batch);
+            var date = spieniarkaProbkiRepository.GetDateLastRecord(FileType.Summary);
             spieniarkaProbkiRepository.InsertMissingData(FilesLogic.GetDataFromFile(SummaryFilePath, FileType.Summary), date, FileType.Summary);
         }
 

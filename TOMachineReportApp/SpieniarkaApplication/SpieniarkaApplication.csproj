@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>80F12BE098C1C50E032C8EFB7114B4F6C9C25CA1</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>FC196ECF1EDA408F93F5B55A648B921C1BD31872</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>SpieniarkaApplication_TemporaryKey.pfx</ManifestKeyFile>
@@ -59,9 +59,7 @@
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
@@ -101,7 +99,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="Properties\app.manifest" />
     <None Include="SpieniarkaApplication_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
